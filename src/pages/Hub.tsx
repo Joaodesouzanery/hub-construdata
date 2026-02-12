@@ -29,30 +29,8 @@ const Hub = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <HeroSection />
-      <StatsBar />
 
-      {/* Banner ConstruData Software */}
-      <ConstruDataBanner />
-
-      {/* Quick Tools Section - sempre visível */}
-      <div id="ferramentas">
-        <QuickToolsSection />
-      </div>
-
-      {/* Calculadora BDI interativa */}
-      <div id="calculadora">
-        <CalculadoraSection />
-      </div>
-
-      {/* Preços de Materiais */}
-      <div id="materiais">
-        <MaterialPricesSection />
-      </div>
-
-      {/* Legislação & Normas */}
-      <LegislacaoSection />
-
-      {/* Conteúdo por Abas */}
+      {/* Conteúdo por Abas - logo abaixo do Hero */}
       <div id="conteudo">
         <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
@@ -79,6 +57,29 @@ const Hub = () => {
           )}
         </div>
       </main>
+
+      {/* Banner Publicidade ConstruData */}
+      <ConstruDataBanner />
+
+      <StatsBar />
+
+      {/* Quick Tools Section - sempre visível */}
+      <div id="ferramentas">
+        <QuickToolsSection />
+      </div>
+
+      {/* Calculadora BDI interativa */}
+      <div id="calculadora">
+        <CalculadoraSection />
+      </div>
+
+      {/* Preços de Materiais */}
+      <div id="materiais">
+        <MaterialPricesSection />
+      </div>
+
+      {/* Legislação & Normas */}
+      <LegislacaoSection />
 
       {/* Agenda de Eventos */}
       <EventosSection />
