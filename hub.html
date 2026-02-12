@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub ConstruData - Central de Conteúdo</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================
+           CSS VARIABLES & RESET
+           ============================================ */
+        :root {
+            --primary: #1a56db;
+            --primary-dark: #1e40af;
+            --primary-light: #dbeafe;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --bg-white: #ffffff;
+            --bg-light: #f8fafc;
+            --bg-gray: #f1f5f9;
+            --border: #e2e8f0;
+            --border-light: #f1f5f9;
+            --success: #16a34a;
+            --warning: #eab308;
+            --purple: #7c3aed;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.1);
+            --transition: 0.2s ease;
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-primary);
+            background-color: var(--bg-light);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ============================================
+           HEADER / NAVIGATION
+           ============================================ */
+        .header {
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 0.925rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: color var(--transition);
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Active nav link style */
+        .nav-links a.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 24px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Mobile menu toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .hero {
+            background: linear-gradient(135deg, var(--secondary) 0%, #1e3a5f 100%);
+            color: #fff;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            padding: 6px 20px;
+            border-radius: var(--radius-full);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: rgba(255,255,255,0.75);
+            max-width: 640px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ============================================
+           STICKY TAB NAVIGATION
+           ============================================ */
+        .tab-nav {
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 72px; /* Below the header */
+            z-index: 900;
+        }
+
+        .tab-nav .container {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .tab-nav .container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 24px;
+            font-size: 0.925rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all var(--transition);
+            font-family: inherit;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+            background: var(--bg-light);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* ============================================
+           MAIN CONTENT LAYOUT (2-column grid)
+           ============================================ */
+        .content-area {
+            padding: 40px 0 60px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        /* Tab content panels */
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* ============================================
+           CARD BASE STYLES
+           ============================================ */
+        .card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: box-shadow var(--transition), transform var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Category tags */
+        .tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            margin-bottom: 8px;
+        }
+
+        .tag-legislacao { background: #fef3c7; color: #92400e; }
+        .tag-licitacoes { background: #dbeafe; color: #1e40af; }
+        .tag-tecnologia { background: #d1fae5; color: #065f46; }
+        .tag-investimentos { background: #ede9fe; color: #5b21b6; }
+        .tag-normas { background: #fce7f3; color: #9d174d; }
+        .tag-infraestrutura { background: #e0e7ff; color: #3730a3; }
+        .tag-engenharia { background: #ccfbf1; color: #134e4a; }
+        .tag-opiniao { background: #fff7ed; color: #9a3412; }
+
+        /* ============================================
+           NEWS SECTION (Tab 1 - Notícias do Setor)
+           ============================================ */
+
+        /* Featured news card */
+        .featured-card {
+            margin-bottom: 32px;
+        }
+
+        .featured-card img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+
+        .featured-card .card-body {
+            padding: 24px;
+        }
+
+        .featured-card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.35;
+        }
+
+        .featured-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+
+        .featured-card .meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 16px;
+            font-size: 0.825rem;
+            color: var(--text-muted);
+        }
+
+        .featured-card .meta i {
+            margin-right: 4px;
+        }
+
+        /* Secondary news grid (2x2) */
+        .news-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .news-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .news-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .news-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.55;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .news-card .meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .news-card .meta i {
+            margin-right: 3px;
+        }
+
+        /* ============================================
+           UPDATES SECTION (Tab 2 - Atualizações)
+           ============================================ */
+        .update-card {
+            display: flex;
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            margin-bottom: 16px;
+            transition: box-shadow var(--transition);
+        }
+
+        .update-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Colored left border indicator */
+        .update-card .indicator {
+            width: 5px;
+            flex-shrink: 0;
+        }
+
+        .update-card .indicator-blue { background: var(--primary); }
+        .update-card .indicator-green { background: var(--success); }
+        .update-card .indicator-yellow { background: var(--warning); }
+        .update-card .indicator-purple { background: var(--purple); }
+
+        .update-card .update-body {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .update-type {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+            margin-bottom: 8px;
+        }
+
+        .type-feature { background: var(--primary-light); color: var(--primary); }
+        .type-improvement { background: #dcfce7; color: var(--success); }
+        .type-fix { background: #fef9c3; color: #a16207; }
+        .type-announcement { background: #ede9fe; color: var(--purple); }
+
+        .update-card h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .update-card p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .update-card .version-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .update-card .version-date i {
+            margin-right: 4px;
+        }
+
+        /* ============================================
+           BLOG & ARTICLES SECTION (Tab 3)
+           ============================================ */
+        .article-card {
+            display: flex;
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 24px;
+            transition: box-shadow var(--transition);
+        }
+
+        .article-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .article-card img {
+            width: 260px;
+            min-height: 200px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .article-card .article-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .article-card .tags {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .article-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .article-card p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .article-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .article-author img {
+            width: 36px;
+            height: 36px;
+            min-height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .article-author .author-info {
+            font-size: 0.825rem;
+        }
+
+        .article-author .author-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .article-author .author-date {
+            color: var(--text-muted);
+        }
+
+        /* ============================================
+           SIDEBAR
+           ============================================ */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+        }
+
+        .sidebar-card h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        /* Quick Access links */
+        .quick-links {
+            list-style: none;
+        }
+
+        .quick-links li {
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .quick-links li:last-child {
+            border-bottom: none;
+        }
+
+        .quick-links a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: color var(--transition);
+        }
+
+        .quick-links a:hover {
+            color: var(--primary);
+        }
+
+        .quick-links a i {
+            width: 20px;
+            text-align: center;
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        /* Statistics grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px 8px;
+            background: var(--bg-light);
+            border-radius: var(--radius-md);
+        }
+
+        .stat-item i {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .stat-item .stat-value {
+            display: block;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .stat-item .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Newsletter form */
+        .newsletter-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.55;
+        }
+
+        .newsletter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .newsletter-form input[type="email"] {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 0.875rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            outline: none;
+            font-family: inherit;
+            transition: border-color var(--transition);
+        }
+
+        .newsletter-form input[type="email"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+        }
+
+        .newsletter-form .btn {
+            width: 100%;
+        }
+
+        /* Social media icons */
+        .social-icons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            background: var(--bg-light);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            transition: all var(--transition);
+        }
+
+        .social-icons a:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        .footer {
+            background: var(--secondary);
+            color: rgba(255,255,255,0.7);
+            padding: 60px 0 0;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 48px;
+            padding-bottom: 40px;
+        }
+
+        .footer-brand .logo {
+            font-size: 1.35rem;
+            color: #fff;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .footer-brand .logo span {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .footer-brand p {
+            font-size: 0.875rem;
+            line-height: 1.65;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .footer h4 {
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            transition: color var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        .footer-contact li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            list-style: none;
+        }
+
+        .footer-contact li i {
+            width: 16px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 20px 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.4);
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.25rem;
+            }
+
+            .hero {
+                padding: 60px 0;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            /* Mobile nav open state */
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 72px;
+                left: 0;
+                right: 0;
+                background: var(--bg-white);
+                border-bottom: 1px solid var(--border);
+                padding: 16px 24px;
+                gap: 16px;
+                box-shadow: var(--shadow-lg);
+            }
+
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .article-card {
+                flex-direction: column;
+            }
+
+            .article-card img {
+                width: 100%;
+                height: 200px;
+                min-height: auto;
+            }
+
+            .featured-card img {
+                height: 250px;
+            }
+
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .tab-nav {
+                top: 72px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 0 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+         HEADER / NAVIGATION BAR
+         ============================================ -->
+    <header class="header">
+        <div class="container">
+            <!-- Logo -->
+            <a href="index.html" class="logo">Constru<span>Data</span></a>
+
+            <!-- Navigation Links -->
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="#">Soluções</a></li>
+                <li><a href="hub.html" class="active">Hub</a></li>
+                <li><a href="#">Preços</a></li>
+                <li><a href="#">Contato</a></li>
+            </ul>
+
+            <!-- CTA Button -->
+            <a href="#" class="btn btn-primary">Teste Grátis</a>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ============================================
+         HERO SECTION
+         ============================================ -->
+    <section class="hero">
+        <div class="container">
+            <span class="hero-badge">Central de Conteúdo</span>
+            <h1>Hub ConstruData</h1>
+            <p>Sua fonte central de notícias, legislação, artigos técnicos e atualizações do setor de saneamento e infraestrutura no Brasil.</p>
+        </div>
+    </section>
+
+    <!-- ============================================
+         STICKY TAB NAVIGATION
+         ============================================ -->
+    <nav class="tab-nav" id="tabNav">
+        <div class="container">
+            <button class="tab-btn active" data-tab="noticias">📰 Notícias do Setor</button>
+            <button class="tab-btn" data-tab="atualizacoes">🚀 Atualizações do Sistema</button>
+            <button class="tab-btn" data-tab="blog">📝 Blog &amp; Artigos</button>
+        </div>
+    </nav>
+
+    <!-- ============================================
+         MAIN CONTENT AREA (2-column grid)
+         ============================================ -->
+    <main class="content-area">
+        <div class="container">
+            <div class="content-grid">
+
+                <!-- ================================
+                     LEFT COLUMN (Main Content)
+                     ================================ -->
+                <div class="main-content">
+
+                    <!-- ============================
+                         TAB 1: Notícias do Setor
+                         ============================ -->
+                    <div class="tab-panel active" id="panel-noticias">
+
+                        <!-- Featured News Card -->
+                        <article class="card featured-card">
+                            <img src="https://placehold.co/800x450/1a56db/ffffff?text=Not%C3%ADcia+Destaque" alt="Notícia em destaque sobre regulatório de saneamento">
+                            <div class="card-body">
+                                <span class="tag tag-legislacao">Legislação</span>
+                                <h2>Governo Federal anuncia novo marco regulatório para saneamento básico</h2>
+                                <p>As novas diretrizes prometem modernizar o setor de saneamento no Brasil, trazendo mais transparência para licitações e maior eficiência operacional. Especialistas avaliam impactos para municípios e concessionárias em todo o território nacional.</p>
+                                <div class="meta">
+                                    <span><i class="far fa-calendar"></i> 10 Fev 2026</span>
+                                    <span><i class="far fa-clock"></i> 8 min de leitura</span>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Secondary News Grid (2x2) -->
+                        <div class="news-grid">
+                            <!-- News Card 1 -->
+                            <article class="card news-card">
+                                <img src="https://placehold.co/400x250/0f172a/ffffff?text=Licita%C3%A7%C3%B5es" alt="Licitações em alta">
+                                <div class="card-body">
+                                    <span class="tag tag-licitacoes">Licitações</span>
+                                    <h3>Prefeituras abrem 340 novas licitações para obras de infraestrutura</h3>
+                                    <p>O volume de licitações no primeiro trimestre de 2026 cresce 22% em relação ao mesmo período do ano anterior.</p>
+                                    <div class="meta">
+                                        <span><i class="far fa-calendar"></i> 08 Fev 2026</span>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <!-- News Card 2 -->
+                            <article class="card news-card">
+                                <img src="https://placehold.co/400x250/16a34a/ffffff?text=Tecnologia" alt="Inovações tecnológicas no setor">
+                                <div class="card-body">
+                                    <span class="tag tag-tecnologia">Tecnologia</span>
+                                    <h3>IA e drones revolucionam monitoramento de redes de água no país</h3>
+                                    <p>Concessionárias brasileiras adotam soluções de inteligência artificial para reduzir perdas hídricas.</p>
+                                    <div class="meta">
+                                        <span><i class="far fa-calendar"></i> 05 Fev 2026</span>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <!-- News Card 3 -->
+                            <article class="card news-card">
+                                <img src="https://placehold.co/400x250/7c3aed/ffffff?text=Investimentos" alt="Investimentos em infraestrutura">
+                                <div class="card-body">
+                                    <span class="tag tag-investimentos">Investimentos</span>
+                                    <h3>BNDES libera R$ 12 bilhões para projetos de saneamento em 2026</h3>
+                                    <p>Recursos serão direcionados para municípios com menor índice de cobertura de esgoto tratado.</p>
+                                    <div class="meta">
+                                        <span><i class="far fa-calendar"></i> 02 Fev 2026</span>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <!-- News Card 4 -->
+                            <article class="card news-card">
+                                <img src="https://placehold.co/400x250/9d174d/ffffff?text=Normas" alt="Atualização de normas ABNT">
+                                <div class="card-body">
+                                    <span class="tag tag-normas">Normas</span>
+                                    <h3>ABNT publica revisão da NBR 12.218 para sistemas de distribuição de água</h3>
+                                    <p>A nova revisão traz atualizações importantes sobre dimensionamento e materiais permitidos.</p>
+                                    <div class="meta">
+                                        <span><i class="far fa-calendar"></i> 28 Jan 2026</span>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+
+                    <!-- ============================
+                         TAB 2: Atualizações do Sistema
+                         ============================ -->
+                    <div class="tab-panel" id="panel-atualizacoes">
+
+                        <!-- Update Card - Nova Funcionalidade (Blue) -->
+                        <div class="update-card">
+                            <div class="indicator indicator-blue"></div>
+                            <div class="update-body">
+                                <span class="update-type type-feature">Nova Funcionalidade</span>
+                                <h3>Módulo de Comparação de Preços entre Tabelas</h3>
+                                <p>Agora é possível comparar composições de custos entre SINAPI, SICRO e tabelas estaduais lado a lado, com destaque automático para as maiores diferenças percentuais.</p>
+                                <span class="version-date"><i class="fas fa-code-branch"></i> v2.5 - 12/02/2026</span>
+                            </div>
+                        </div>
+
+                        <!-- Update Card - Melhoria (Green) -->
+                        <div class="update-card">
+                            <div class="indicator indicator-green"></div>
+                            <div class="update-body">
+                                <span class="update-type type-improvement">Melhoria</span>
+                                <h3>Performance da Busca de Insumos Otimizada</h3>
+                                <p>A busca por insumos e composições ficou 3x mais rápida. Implementamos cache inteligente e indexação aprimorada para resultados instantâneos.</p>
+                                <span class="version-date"><i class="fas fa-code-branch"></i> v2.5 - 10/02/2026</span>
+                            </div>
+                        </div>
+
+                        <!-- Update Card - Correção (Yellow) -->
+                        <div class="update-card">
+                            <div class="indicator indicator-yellow"></div>
+                            <div class="update-body">
+                                <span class="update-type type-fix">Correção</span>
+                                <h3>Correção no Cálculo de BDI para Obras Públicas</h3>
+                                <p>Corrigido um erro no arredondamento do BDI diferenciado que afetava orçamentos com fornecimento de materiais acima de R$ 500 mil.</p>
+                                <span class="version-date"><i class="fas fa-code-branch"></i> v2.4.3 - 05/02/2026</span>
+                            </div>
+                        </div>
+
+                        <!-- Update Card - Comunicado (Purple) -->
+                        <div class="update-card">
+                            <div class="indicator indicator-purple"></div>
+                            <div class="update-body">
+                                <span class="update-type type-announcement">Comunicado</span>
+                                <h3>Manutenção Programada — 15/02/2026</h3>
+                                <p>Informamos que no dia 15 de fevereiro realizaremos uma manutenção programada das 02h às 06h (horário de Brasília) para migração de infraestrutura.</p>
+                                <span class="version-date"><i class="fas fa-code-branch"></i> v2.5 - 01/02/2026</span>
+                            </div>
+                        </div>
+
+                        <!-- Update Card - Nova Funcionalidade (Blue) -->
+                        <div class="update-card">
+                            <div class="indicator indicator-blue"></div>
+                            <div class="update-body">
+                                <span class="update-type type-feature">Nova Funcionalidade</span>
+                                <h3>Exportação de Orçamentos em Formato XLSX</h3>
+                                <p>Além do PDF, agora é possível exportar orçamentos completos no formato XLSX com formatação profissional e fórmulas preservadas.</p>
+                                <span class="version-date"><i class="fas fa-code-branch"></i> v2.4 - 20/01/2026</span>
+                            </div>
+                        </div>
+
+                        <!-- Update Card - Melhoria (Green) -->
+                        <div class="update-card">
+                            <div class="indicator indicator-green"></div>
+                            <div class="update-body">
+                                <span class="update-type type-improvement">Melhoria</span>
+                                <h3>Novo Layout Responsivo para Dispositivos Móveis</h3>
+                                <p>Redesenhamos a experiência mobile da plataforma para facilitar consultas rápidas de campo, com navegação otimizada e carregamento mais ágil.</p>
+                                <span class="version-date"><i class="fas fa-code-branch"></i> v2.4 - 15/01/2026</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ============================
+                         TAB 3: Blog & Artigos
+                         ============================ -->
+                    <div class="tab-panel" id="panel-blog">
+
+                        <!-- Article Card 1 -->
+                        <article class="article-card">
+                            <img src="https://placehold.co/400x280/1e3a5f/ffffff?text=Artigo+01" alt="Artigo sobre BDI">
+                            <div class="article-body">
+                                <div class="tags">
+                                    <span class="tag tag-engenharia">Engenharia</span>
+                                    <span class="tag tag-legislacao">Legislação</span>
+                                </div>
+                                <h3>Guia Completo: Como Calcular o BDI para Obras Públicas em 2026</h3>
+                                <p>Entenda os componentes do BDI, os percentuais recomendados pelo TCU e como aplicar corretamente em suas propostas para licitações de obras públicas.</p>
+                                <div class="article-author">
+                                    <img src="https://placehold.co/80x80/64748b/ffffff?text=RC" alt="Avatar do autor">
+                                    <div class="author-info">
+                                        <div class="author-name">Ricardo Campos</div>
+                                        <div class="author-date">07 Fev 2026 · 12 min de leitura</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Article Card 2 -->
+                        <article class="article-card">
+                            <img src="https://placehold.co/400x280/0f172a/ffffff?text=Artigo+02" alt="Artigo sobre SINAPI vs SICRO">
+                            <div class="article-body">
+                                <div class="tags">
+                                    <span class="tag tag-infraestrutura">Infraestrutura</span>
+                                </div>
+                                <h3>SINAPI vs SICRO: Quando Usar Cada Tabela de Referência</h3>
+                                <p>Uma análise detalhada das diferenças entre as duas principais tabelas de referência de preços utilizadas em obras públicas no Brasil.</p>
+                                <div class="article-author">
+                                    <img src="https://placehold.co/80x80/64748b/ffffff?text=ML" alt="Avatar da autora">
+                                    <div class="author-info">
+                                        <div class="author-name">Mariana Lima</div>
+                                        <div class="author-date">01 Fev 2026 · 9 min de leitura</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Article Card 3 -->
+                        <article class="article-card">
+                            <img src="https://placehold.co/400x280/16a34a/ffffff?text=Artigo+03" alt="Artigo sobre sustentabilidade">
+                            <div class="article-body">
+                                <div class="tags">
+                                    <span class="tag tag-tecnologia">Tecnologia</span>
+                                    <span class="tag tag-normas">Normas</span>
+                                </div>
+                                <h3>Sustentabilidade em Projetos de Saneamento: Normas e Boas Práticas</h3>
+                                <p>Conheça as normas ambientais aplicáveis e as práticas sustentáveis que estão transformando projetos de saneamento básico no Brasil.</p>
+                                <div class="article-author">
+                                    <img src="https://placehold.co/80x80/64748b/ffffff?text=FS" alt="Avatar do autor">
+                                    <div class="author-info">
+                                        <div class="author-name">Fernando Santos</div>
+                                        <div class="author-date">25 Jan 2026 · 15 min de leitura</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Article Card 4 -->
+                        <article class="article-card">
+                            <img src="https://placehold.co/400x280/7c3aed/ffffff?text=Artigo+04" alt="Artigo sobre licitações">
+                            <div class="article-body">
+                                <div class="tags">
+                                    <span class="tag tag-opiniao">Opinião</span>
+                                    <span class="tag tag-licitacoes">Licitações</span>
+                                </div>
+                                <h3>O Futuro das Licitações Digitais: Tendências para 2026 e Além</h3>
+                                <p>Como a digitalização dos processos licitatórios está aumentando a transparência e reduzindo prazos para empresas de engenharia e construção.</p>
+                                <div class="article-author">
+                                    <img src="https://placehold.co/80x80/64748b/ffffff?text=AP" alt="Avatar da autora">
+                                    <div class="author-info">
+                                        <div class="author-name">Ana Paula Ribeiro</div>
+                                        <div class="author-date">18 Jan 2026 · 10 min de leitura</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+                </div>
+
+                <!-- ================================
+                     RIGHT COLUMN (Sidebar)
+                     ================================ -->
+                <aside class="sidebar">
+
+                    <!-- Quick Access Card -->
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-bolt" style="color: var(--accent); margin-right: 6px;"></i> Acesso Rápido</h3>
+                        <ul class="quick-links">
+                            <li>
+                                <a href="#">
+                                    <i class="fas fa-search"></i>
+                                    Buscar Licitações
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="fas fa-calculator"></i>
+                                    Calculadoras Técnicas
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="fas fa-file-alt"></i>
+                                    Normas ABNT
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="fas fa-book"></i>
+                                    Glossário
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="fas fa-headset"></i>
+                                    Fale com um Especialista
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Statistics Card -->
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-chart-bar" style="color: var(--primary); margin-right: 6px;"></i> Plataforma em Números</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <i class="fas fa-cubes"></i>
+                                <span class="stat-value">11</span>
+                                <span class="stat-label">Módulos Ativos</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-newspaper"></i>
+                                <span class="stat-value">24</span>
+                                <span class="stat-label">Artigos Técnicos</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-gift"></i>
+                                <span class="stat-value">100%</span>
+                                <span class="stat-label">Gratuito</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-code-branch"></i>
+                                <span class="stat-value">2.5</span>
+                                <span class="stat-label">Versão</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Newsletter Card -->
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-envelope" style="color: var(--primary); margin-right: 6px;"></i> Fique por Dentro</h3>
+                        <p class="newsletter-text">Receba as principais notícias e atualizações do setor diretamente no seu e-mail. Sem spam, apenas conteúdo relevante.</p>
+                        <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Inscrição realizada com sucesso!');">
+                            <input type="email" placeholder="Seu melhor e-mail" required aria-label="Endereço de e-mail">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane" style="margin-right: 6px;"></i> Inscrever
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Social Media Card -->
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-share-alt" style="color: var(--primary); margin-right: 6px;"></i> Siga-nos</h3>
+                        <div class="social-icons">
+                            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" aria-label="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+                            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+
+                </aside>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+
+                <!-- Footer Brand Column -->
+                <div class="footer-brand">
+                    <div class="logo">Constru<span>Data</span></div>
+                    <p>Plataforma completa para profissionais de engenharia, saneamento e infraestrutura. Dados, legislação e ferramentas técnicas em um só lugar.</p>
+                </div>
+
+                <!-- Footer Quick Links -->
+                <div>
+                    <h4>Links Rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Início</a></li>
+                        <li><a href="#">Soluções</a></li>
+                        <li><a href="hub.html">Hub de Notícias</a></li>
+                        <li><a href="#">Preços</a></li>
+                        <li><a href="#">Termos de Uso</a></li>
+                        <li><a href="#">Política de Privacidade</a></li>
+                    </ul>
+                </div>
+
+                <!-- Footer Contact -->
+                <div>
+                    <h4>Contato</h4>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-envelope"></i> contato@construdata.com.br</li>
+                        <li><i class="fas fa-phone"></i> (11) 4002-8922</li>
+                        <li><i class="fas fa-map-marker-alt"></i> São Paulo, SP - Brasil</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                &copy; 2026 ConstruData. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================
+         JAVASCRIPT — Tab switching & Mobile menu
+         ============================================ -->
+    <script>
+        // --- Tab Navigation Logic ---
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+
+        tabButtons.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var targetTab = this.getAttribute('data-tab');
+
+                // Deactivate all tabs
+                tabButtons.forEach(function(b) { b.classList.remove('active'); });
+                tabPanels.forEach(function(p) { p.classList.remove('active'); });
+
+                // Activate clicked tab
+                this.classList.add('active');
+                document.getElementById('panel-' + targetTab).classList.add('active');
+            });
+        });
+
+        // --- Mobile Menu Toggle ---
+        var menuToggle = document.getElementById('menuToggle');
+        var navLinks = document.getElementById('navLinks');
+
+        menuToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('open');
+            var icon = this.querySelector('i');
+            if (navLinks.classList.contains('open')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+    </script>
+</body>
+</html>
