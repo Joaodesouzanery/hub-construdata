@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import StatsBar from "@/components/StatsBar";
+import ConstruDataBanner from "@/components/ConstruDataBanner";
 import QuickToolsSection from "@/components/QuickToolsSection";
 import CalculadoraSection from "@/components/CalculadoraSection";
 import MaterialPricesSection from "@/components/MaterialPricesSection";
@@ -29,6 +30,9 @@ const Hub = () => {
       <Header />
       <HeroSection />
       <StatsBar />
+
+      {/* Banner ConstruData Software */}
+      <ConstruDataBanner />
 
       {/* Quick Tools Section - sempre visível */}
       <div id="ferramentas">
