@@ -93,12 +93,21 @@ async function buscarFonte(fonte) {
     // Mapeia cada <item> para nosso formato
     const noticias = itens
       .map((item) => ({
-        titulo: item.title?.[0] || "",
+        titulo: (item.title?.[0] || "").toString().slice(0, 300),
         link: item.link?.[0] || "",
         data_publicacao: item.pubDate?.[0] || "",
         fonte: fonte.nome,
       }))
-      .filter((n) => n.titulo && n.link); // Só inclui se tiver título e link
+      .filter((n) => {
+        // Valida título e link. Só aceita URLs http/https (previne XSS)
+        if (!n.titulo || !n.link) return false;
+        try {
+          const url = new URL(n.link);
+          return url.protocol === "http:" || url.protocol === "https:";
+        } catch {
+          return false;
+        }
+      });
 
     console.log(`[OK] ${fonte.nome}: ${noticias.length} notícias coletadas`);
     return noticias;

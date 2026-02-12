@@ -50,6 +50,19 @@ const noticiasFallback: NoticiaColetada[] = [
   },
 ];
 
+/** Valida que a URL é segura (só http/https) — previne XSS via javascript: */
+function urlSegura(url: string): string {
+  try {
+    const parsed = new URL(url, window.location.origin);
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+      return parsed.href;
+    }
+  } catch {
+    // URL inválida
+  }
+  return "#";
+}
+
 /** Formata data ISO para "10 Fev 2026" */
 function formatarData(dataStr: string): string {
   try {
@@ -123,7 +136,7 @@ const NewsSection = () => {
 
       {/* Notícia Destaque */}
       {destaque && (
-        <a href={destaque.link} target="_blank" rel="noopener noreferrer">
+        <a href={urlSegura(destaque.link)} target="_blank" rel="noopener noreferrer">
           <Card className="mb-8 overflow-hidden hover:shadow-md transition-shadow group">
             <div className="w-full h-[280px] bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
               <Newspaper className="text-primary/30" size={80} />
@@ -155,7 +168,7 @@ const NewsSection = () => {
         {restante.map((noticia, index) => (
             <a
               key={index}
-              href={noticia.link}
+              href={urlSegura(noticia.link)}
               target="_blank"
               rel="noopener noreferrer"
             >
