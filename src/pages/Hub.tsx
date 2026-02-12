@@ -1,12 +1,19 @@
 import { useState } from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
+import StatsBar from "@/components/StatsBar";
+import QuickToolsSection from "@/components/QuickToolsSection";
+import CalculadoraSection from "@/components/CalculadoraSection";
+import MaterialPricesSection from "@/components/MaterialPricesSection";
 import TabNavigation from "@/components/TabNavigation";
 import NewsSection from "@/components/NewsSection";
 import LicitacoesSection from "@/components/LicitacoesSection";
 import IndicadoresSection from "@/components/IndicadoresSection";
 import UpdatesSection from "@/components/UpdatesSection";
 import BlogSection from "@/components/BlogSection";
+import LegislacaoSection from "@/components/LegislacaoSection";
+import EventosSection from "@/components/EventosSection";
+import PartnersSection from "@/components/PartnersSection";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 
@@ -21,7 +28,30 @@ const Hub = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <HeroSection />
-      <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      <StatsBar />
+
+      {/* Quick Tools Section - sempre visível */}
+      <div id="ferramentas">
+        <QuickToolsSection />
+      </div>
+
+      {/* Calculadora BDI interativa */}
+      <div id="calculadora">
+        <CalculadoraSection />
+      </div>
+
+      {/* Preços de Materiais */}
+      <div id="materiais">
+        <MaterialPricesSection />
+      </div>
+
+      {/* Legislação & Normas */}
+      <LegislacaoSection />
+
+      {/* Conteúdo por Abas */}
+      <div id="conteudo">
+        <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
 
       {/* Main Content Area */}
       <main className="flex-1 py-10">
@@ -45,6 +75,12 @@ const Hub = () => {
           )}
         </div>
       </main>
+
+      {/* Agenda de Eventos */}
+      <EventosSection />
+
+      {/* Parceiros */}
+      <PartnersSection />
 
       <Footer />
     </div>
