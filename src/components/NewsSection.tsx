@@ -6,6 +6,9 @@ import { Calendar, ExternalLink, Newspaper, Loader2 } from "lucide-react";
 const fonteStyles: Record<string, string> = {
   "Saneamento Básico": "bg-blue-100 text-blue-800",
   "Tratamento de Água": "bg-emerald-100 text-emerald-800",
+  "ABES": "bg-violet-100 text-violet-800",
+  "CBIC": "bg-amber-100 text-amber-800",
+  "Canal Meio Ambiente": "bg-teal-100 text-teal-800",
 };
 
 // Formato da notícia vinda do coletor.js

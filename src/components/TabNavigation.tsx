@@ -4,9 +4,11 @@ interface TabNavigationProps {
 }
 
 const tabs = [
-  { id: "noticias", label: "📰 Notícias do Setor" },
-  { id: "atualizacoes", label: "🚀 Atualizações do Sistema" },
-  { id: "blog", label: "📝 Blog & Artigos" },
+  { id: "noticias", label: "Notícias do Setor" },
+  { id: "licitacoes", label: "Buscador de Licitações" },
+  { id: "indicadores", label: "Indicadores" },
+  { id: "atualizacoes", label: "Atualizações do Sistema" },
+  { id: "blog", label: "Blog & Artigos" },
 ];
 
 const TabNavigation = ({ activeTab, onTabChange }: TabNavigationProps) => {

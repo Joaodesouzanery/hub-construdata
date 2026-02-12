@@ -31,6 +31,18 @@ const FONTES = [
     url: "https://tratamentodeagua.com.br/feed/",
     nome: "Tratamento de Água",
   },
+  {
+    url: "https://abes-dn.org.br/feed/",
+    nome: "ABES",
+  },
+  {
+    url: "https://cbic.org.br/feed/",
+    nome: "CBIC",
+  },
+  {
+    url: "https://canalmeioambiente.com.br/feed/",
+    nome: "Canal Meio Ambiente",
+  },
 ];
 
 // Caminho de saída do JSON (pasta public/ do projeto)
