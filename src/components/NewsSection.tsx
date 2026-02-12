@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Calendar, ExternalLink, Newspaper, Loader2 } from "lucide-react";
+import noticiasEmbutidas, { type Noticia } from "@/data/noticias";
 
 // Estilos por fonte (cada site de notícia tem uma cor)
 const fonteStyles: Record<string, string> = {
@@ -10,48 +11,6 @@ const fonteStyles: Record<string, string> = {
   "CBIC": "bg-amber-100 text-amber-800",
   "Canal Meio Ambiente": "bg-teal-100 text-teal-800",
 };
-
-// Formato da notícia vinda do coletor.js
-interface NoticiaColetada {
-  titulo: string;
-  link: string;
-  data_publicacao: string;
-  fonte: string;
-}
-
-// Dados de demonstração (exibidos enquanto o JSON real não existe)
-const noticiasFallback: NoticiaColetada[] = [
-  {
-    titulo: "Governo Federal anuncia novo marco regulatório para saneamento básico",
-    link: "#",
-    data_publicacao: new Date().toISOString(),
-    fonte: "Saneamento Básico",
-  },
-  {
-    titulo: "Prefeituras abrem 340 novas licitações para obras de infraestrutura",
-    link: "#",
-    data_publicacao: new Date().toISOString(),
-    fonte: "Saneamento Básico",
-  },
-  {
-    titulo: "IA e drones revolucionam monitoramento de redes de água no país",
-    link: "#",
-    data_publicacao: new Date().toISOString(),
-    fonte: "Tratamento de Água",
-  },
-  {
-    titulo: "BNDES libera R$ 12 bilhões para projetos de saneamento em 2026",
-    link: "#",
-    data_publicacao: new Date().toISOString(),
-    fonte: "Saneamento Básico",
-  },
-  {
-    titulo: "ABNT publica revisão da NBR 12.218 para sistemas de distribuição de água",
-    link: "#",
-    data_publicacao: new Date().toISOString(),
-    fonte: "Tratamento de Água",
-  },
-];
 
 /** Valida que a URL é segura (só http/https) — previne XSS via javascript: */
 function urlSegura(url: string): string {
@@ -90,27 +49,26 @@ const FonteTag = ({ fonte }: { fonte: string }) => (
 );
 
 const NewsSection = () => {
-  const [noticias, setNoticias] = useState<NoticiaColetada[]>([]);
+  const [noticias, setNoticias] = useState<Noticia[]>(noticiasEmbutidas);
   const [carregando, setCarregando] = useState(true);
-  const [usandoFallback, setUsandoFallback] = useState(false);
+  const [fonteDados, setFonteDados] = useState<"embutido" | "json">("embutido");
 
   useEffect(() => {
-    fetch("/noticias.json")
+    // Tenta buscar o JSON atualizado (funciona no dev server)
+    // Se falhar (ex: file://), usa os dados embutidos no bundle
+    fetch("./noticias.json")
       .then((res) => {
         if (!res.ok) throw new Error("JSON não encontrado");
         return res.json();
       })
-      .then((dados: NoticiaColetada[]) => {
+      .then((dados: Noticia[]) => {
         if (dados.length > 0) {
           setNoticias(dados);
-        } else {
-          setNoticias(noticiasFallback);
-          setUsandoFallback(true);
+          setFonteDados("json");
         }
       })
       .catch(() => {
-        setNoticias(noticiasFallback);
-        setUsandoFallback(true);
+        // Mantém os dados embutidos — já carregados no estado inicial
       })
       .finally(() => setCarregando(false));
   }, []);
@@ -128,12 +86,12 @@ const NewsSection = () => {
 
   return (
     <div>
-      {/* Aviso quando usando dados de demonstração */}
-      {usandoFallback && (
-        <div className="mb-4 px-4 py-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
-          <strong>Dados de demonstração.</strong> Execute{" "}
-          <code className="bg-amber-100 px-1.5 py-0.5 rounded text-xs font-mono">node coletor.js</code>{" "}
-          para carregar notícias reais.
+      {/* Info da fonte de dados */}
+      {fonteDados === "embutido" && (
+        <div className="mb-4 px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+          Notícias incluídas no build. Para atualizar com dados em tempo real, execute{" "}
+          <code className="bg-blue-100 px-1.5 py-0.5 rounded text-xs font-mono">node coletor.js</code>{" "}
+          e depois <code className="bg-blue-100 px-1.5 py-0.5 rounded text-xs font-mono">npm run build</code>.
         </div>
       )}
 

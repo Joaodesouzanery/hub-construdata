@@ -45,8 +45,9 @@ const FONTES = [
   },
 ];
 
-// Caminho de saída do JSON (pasta public/ do projeto)
-const CAMINHO_SAIDA = path.join(__dirname, "public", "noticias.json");
+// Caminhos de saída
+const CAMINHO_JSON = path.join(__dirname, "public", "noticias.json");
+const CAMINHO_TS = path.join(__dirname, "src", "data", "noticias.ts");
 
 // ============================================================
 // 2. FUNÇÃO PARA BUSCAR UMA URL (retorna o conteúdo como texto)
@@ -165,18 +166,50 @@ function ordenarPorData(noticias) {
 }
 
 // ============================================================
-// 7. SALVAR EM JSON
+// 7. SALVAR EM JSON + TS EMBUTIDO
 // ============================================================
 function salvarJSON(noticias, caminho) {
-  // Garante que o diretório existe
+  const diretorio = path.dirname(caminho);
+  if (!fs.existsSync(diretorio)) {
+    fs.mkdirSync(diretorio, { recursive: true });
+  }
+  fs.writeFileSync(caminho, JSON.stringify(noticias, null, 2), "utf-8");
+  console.log(`[OK] ${noticias.length} notícias salvas em: ${caminho}`);
+}
+
+function salvarTS(noticias, caminho) {
   const diretorio = path.dirname(caminho);
   if (!fs.existsSync(diretorio)) {
     fs.mkdirSync(diretorio, { recursive: true });
   }
 
-  // Salva com formatação legível (indent de 2 espaços)
-  fs.writeFileSync(caminho, JSON.stringify(noticias, null, 2), "utf-8");
-  console.log(`[OK] ${noticias.length} notícias salvas em: ${caminho}`);
+  const itens = noticias.map((n) => {
+    const titulo = n.titulo.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+    const link = n.link.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+    return `  {\n    titulo: "${titulo}",\n    link: "${link}",\n    data_publicacao: "${n.data_publicacao}",\n    fonte: "${n.fonte}",\n  }`;
+  });
+
+  const conteudo = `/**
+ * Arquivo gerado automaticamente por coletor.js em ${new Date().toISOString()}
+ * Para atualizar: node coletor.js
+ */
+
+export interface Noticia {
+  titulo: string;
+  link: string;
+  data_publicacao: string;
+  fonte: string;
+}
+
+const noticias: Noticia[] = [
+${itens.join(",\n")}
+];
+
+export default noticias;
+`;
+
+  fs.writeFileSync(caminho, conteudo, "utf-8");
+  console.log(`[OK] TS embutido atualizado: ${caminho}`);
 }
 
 // ============================================================
@@ -208,10 +241,12 @@ async function main() {
   // Passo 5: Selecionar as 10 mais recentes
   const top10 = ordenadas.slice(0, 10);
 
-  // Passo 6: Salvar no JSON
-  salvarJSON(top10, CAMINHO_SAIDA);
+  // Passo 6: Salvar no JSON (para dev server) e TS (para build estático)
+  salvarJSON(top10, CAMINHO_JSON);
+  salvarTS(top10, CAMINHO_TS);
 
   console.log("\nConcluído com sucesso!");
+  console.log("Agora rode 'npm run build' para gerar a versão estática.");
 }
 
 // Executa
