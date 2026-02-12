@@ -23,26 +23,22 @@ const __dirname = path.dirname(__filename);
 // 1. CONFIGURAÇÃO DAS FONTES DE NOTÍCIAS (Feeds RSS)
 // ============================================================
 const FONTES = [
-  {
-    url: "https://saneamentobasico.com.br/feed/",
-    nome: "Saneamento Básico",
-  },
-  {
-    url: "https://tratamentodeagua.com.br/feed/",
-    nome: "Tratamento de Água",
-  },
-  {
-    url: "https://abes-dn.org.br/feed/",
-    nome: "ABES",
-  },
-  {
-    url: "https://cbic.org.br/feed/",
-    nome: "CBIC",
-  },
-  {
-    url: "https://canalmeioambiente.com.br/feed/",
-    nome: "Canal Meio Ambiente",
-  },
+  // --- Saneamento & Água ---
+  { url: "https://saneamentobasico.com.br/feed/", nome: "Saneamento Básico" },
+  { url: "https://tratamentodeagua.com.br/feed/", nome: "Tratamento de Água" },
+  { url: "https://abes-dn.org.br/feed/", nome: "ABES" },
+  { url: "https://trfratabrasil.org.br/feed/", nome: "Trata Brasil" },
+  // --- Construção & Infraestrutura ---
+  { url: "https://cbic.org.br/feed/", nome: "CBIC" },
+  { url: "https://sindusconsp.com.br/feed/", nome: "SindusCon-SP" },
+  // --- Meio Ambiente & Regulação ---
+  { url: "https://canalmeioambiente.com.br/feed/", nome: "Canal Meio Ambiente" },
+  { url: "https://oeco.org.br/feed/", nome: "O Eco" },
+  // --- Engenharia & Normas ---
+  { url: "https://www.confea.org.br/feed/", nome: "CONFEA" },
+  { url: "https://revistaadnormas.com.br/feed/", nome: "Revista AdNormas" },
+  // --- Governo & Dados ---
+  { url: "https://agenciabrasil.ebc.com.br/rss/ultimasnoticias/feed.xml", nome: "Agência Brasil" },
 ];
 
 // Caminhos de saída
@@ -238,12 +234,12 @@ async function main() {
   // Passo 4: Ordenar por data
   const ordenadas = ordenarPorData(unicas);
 
-  // Passo 5: Selecionar as 10 mais recentes
-  const top10 = ordenadas.slice(0, 10);
+  // Passo 5: Selecionar as 20 mais recentes
+  const top = ordenadas.slice(0, 20);
 
   // Passo 6: Salvar no JSON (para dev server) e TS (para build estático)
-  salvarJSON(top10, CAMINHO_JSON);
-  salvarTS(top10, CAMINHO_TS);
+  salvarJSON(top, CAMINHO_JSON);
+  salvarTS(top, CAMINHO_TS);
 
   console.log("\nConcluído com sucesso!");
   console.log("Agora rode 'npm run build' para gerar a versão estática.");

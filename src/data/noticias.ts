@@ -76,6 +76,66 @@ const noticias: Noticia[] = [
     data_publicacao: "2026-02-02T17:20:00.000Z",
     fonte: "Tratamento de Água",
   },
+  {
+    titulo: "Instituto Trata Brasil divulga ranking do saneamento nas 100 maiores cidades do país",
+    link: "https://trfratabrasil.org.br/ranking-saneamento-2026/",
+    data_publicacao: "2026-02-01T09:00:00.000Z",
+    fonte: "Trata Brasil",
+  },
+  {
+    titulo: "SindusCon-SP aponta alta de 12% nos custos de materiais de construção no último trimestre",
+    link: "https://sindusconsp.com.br/custos-materiais-q4-2025/",
+    data_publicacao: "2026-01-30T14:20:00.000Z",
+    fonte: "SindusCon-SP",
+  },
+  {
+    titulo: "CONFEA regulamenta uso de drones em inspeção de barragens e reservatórios",
+    link: "https://www.confea.org.br/drones-inspecao-barragens/",
+    data_publicacao: "2026-01-28T11:30:00.000Z",
+    fonte: "CONFEA",
+  },
+  {
+    titulo: "Desmatamento na Amazônia impacta ciclo hidrológico e abastecimento de água no Sudeste",
+    link: "https://oeco.org.br/desmatamento-ciclo-hidrologico-sudeste/",
+    data_publicacao: "2026-01-27T08:45:00.000Z",
+    fonte: "O Eco",
+  },
+  {
+    titulo: "Agência Brasil: Investimento privado em saneamento cresce 280% após marco regulatório",
+    link: "https://agenciabrasil.ebc.com.br/economia/investimento-saneamento-2026/",
+    data_publicacao: "2026-01-25T16:00:00.000Z",
+    fonte: "Agência Brasil",
+  },
+  {
+    titulo: "Nova norma ABNT para projetos de estações de tratamento de esgoto entra em vigor",
+    link: "https://revistaadnormas.com.br/abnt-norma-ete-2026/",
+    data_publicacao: "2026-01-23T10:15:00.000Z",
+    fonte: "Revista AdNormas",
+  },
+  {
+    titulo: "Crise hídrica no Sul: Rio Grande do Sul enfrenta menor nível de reservatórios em 10 anos",
+    link: "https://tratamentodeagua.com.br/crise-hidrica-rs-2026/",
+    data_publicacao: "2026-01-21T13:00:00.000Z",
+    fonte: "Tratamento de Água",
+  },
+  {
+    titulo: "Concessão de saneamento do Amapá recebe 4 propostas em leilão na B3",
+    link: "https://saneamentobasico.com.br/concessao-amapa-leilao-b3/",
+    data_publicacao: "2026-01-19T09:30:00.000Z",
+    fonte: "Saneamento Básico",
+  },
+  {
+    titulo: "CBIC e CNI lançam plataforma digital para monitorar obras de infraestrutura em tempo real",
+    link: "https://cbic.org.br/plataforma-digital-monitoramento-obras/",
+    data_publicacao: "2026-01-17T14:45:00.000Z",
+    fonte: "CBIC",
+  },
+  {
+    titulo: "Trata Brasil alerta: 16% das crianças internadas por diarreia vivem em áreas sem saneamento",
+    link: "https://trfratabrasil.org.br/saude-criancas-saneamento/",
+    data_publicacao: "2026-01-15T08:00:00.000Z",
+    fonte: "Trata Brasil",
+  },
 ];
 
 export default noticias;

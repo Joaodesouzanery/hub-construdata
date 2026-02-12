@@ -108,6 +108,26 @@ const fontesUteis: FonteUtil[] = [
     descricao: "Pesquisa Nacional de Saneamento Básico com dados municipais",
     url: "https://www.ibge.gov.br",
   },
+  {
+    nome: "Instituto Trata Brasil",
+    descricao: "Rankings e estudos sobre universalização do saneamento no Brasil",
+    url: "https://trfratabrasil.org.br",
+  },
+  {
+    nome: "CONFEA",
+    descricao: "Conselho Federal de Engenharia e Agronomia — regulamentação profissional",
+    url: "https://www.confea.org.br",
+  },
+  {
+    nome: "SINAPI / CAIXA",
+    descricao: "Sistema Nacional de Pesquisa de Custos — referência para orçamento de obras",
+    url: "https://www.caixa.gov.br/poder-publico/modernizacao-gestao/sinapi",
+  },
+  {
+    nome: "SindusCon-SP",
+    descricao: "Sindicato da Construção Civil de SP — CUB, custos e conjuntura do setor",
+    url: "https://sindusconsp.com.br",
+  },
 ];
 
 /** Valida que a URL é segura */
