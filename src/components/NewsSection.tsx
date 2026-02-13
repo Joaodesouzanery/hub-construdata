@@ -16,17 +16,28 @@ import noticiasEmbutidas, { type Noticia } from "@/data/noticias";
 
 // Estilos por fonte (cada site de notícia tem uma cor)
 const fonteStyles: Record<string, string> = {
+  // Engenharia (foco principal)
+  "CONFEA": "bg-rose-100 text-rose-800",
+  "CREA-SP": "bg-red-100 text-red-800",
+  "Revista AdNormas": "bg-pink-100 text-pink-800",
+  "AECweb": "bg-indigo-100 text-indigo-800",
+  "Engenharia 360": "bg-purple-100 text-purple-800",
+  "Portal Eng. Civil": "bg-fuchsia-100 text-fuchsia-800",
+  // Construção & Infraestrutura
+  "CBIC": "bg-amber-100 text-amber-800",
+  "SindusCon-SP": "bg-orange-100 text-orange-800",
+  "Buildin": "bg-yellow-100 text-yellow-800",
+  "Sienge": "bg-stone-100 text-stone-800",
+  // Saneamento
   "Saneamento Básico": "bg-blue-100 text-blue-800",
   "Tratamento de Água": "bg-emerald-100 text-emerald-800",
   "ABES": "bg-violet-100 text-violet-800",
-  "CBIC": "bg-amber-100 text-amber-800",
-  "Canal Meio Ambiente": "bg-teal-100 text-teal-800",
   "Trata Brasil": "bg-cyan-100 text-cyan-800",
-  "SindusCon-SP": "bg-orange-100 text-orange-800",
-  "CONFEA": "bg-rose-100 text-rose-800",
+  // Meio Ambiente
+  "Canal Meio Ambiente": "bg-teal-100 text-teal-800",
   "O Eco": "bg-lime-100 text-lime-800",
+  // Governo
   "Agência Brasil": "bg-sky-100 text-sky-800",
-  "Revista AdNormas": "bg-pink-100 text-pink-800",
 };
 
 // ----------- Favoritos (localStorage) -----------

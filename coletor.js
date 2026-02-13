@@ -2,7 +2,7 @@
  * coletor.js - Coletor de Dados do Hub ConstruData
  * ==================================================
  * Coleta de 3 fontes reais:
- *   1. NOTÍCIAS  — feeds RSS de saneamento/infraestrutura
+ *   1. NOTÍCIAS  — feeds RSS de engenharia, construção e infraestrutura
  *   2. ARTIGOS   — mesmos RSS, mas com excerpt/categorias
  *   3. LICITAÇÕES — API pública do PNCP (Portal Nacional de Contratações Públicas)
  *
@@ -32,20 +32,26 @@ const __dirname = path.dirname(__filename);
 // 1. CONFIGURAÇÃO DAS FONTES RSS
 // ============================================================
 const FONTES_RSS = [
-  // --- Saneamento & Água ---
-  { url: "https://saneamentobasico.com.br/feed/", nome: "Saneamento Básico", categorias: ["Saneamento", "Infraestrutura"] },
-  { url: "https://tratamentodeagua.com.br/feed/", nome: "Tratamento de Água", categorias: ["Saneamento", "Recursos Hídricos"] },
-  { url: "https://abes-dn.org.br/feed/", nome: "ABES", categorias: ["Saneamento", "Normas"] },
-  { url: "https://trfratabrasil.org.br/feed/", nome: "Trata Brasil", categorias: ["Saneamento", "Indicadores"] },
-  // --- Construção & Infraestrutura ---
+  // --- Engenharia (foco principal) ---
+  { url: "https://www.confea.org.br/feed/", nome: "CONFEA", categorias: ["Engenharia", "Regulamentação"] },
+  { url: "https://www.crea-sp.org.br/feed/", nome: "CREA-SP", categorias: ["Engenharia", "Regulamentação"] },
+  { url: "https://revistaadnormas.com.br/feed/", nome: "Revista AdNormas", categorias: ["Engenharia", "Normas Técnicas"] },
+  { url: "https://www.aecweb.com.br/rss/noticias/", nome: "AECweb", categorias: ["Engenharia", "Construção Civil"] },
+  { url: "https://engenharia360.com/feed/", nome: "Engenharia 360", categorias: ["Engenharia", "Tecnologia"] },
+  { url: "https://www.engenhariacivil.com/feed", nome: "Portal Eng. Civil", categorias: ["Engenharia Civil", "Estruturas"] },
+  // --- Construção Civil & Infraestrutura ---
   { url: "https://cbic.org.br/feed/", nome: "CBIC", categorias: ["Construção Civil", "Infraestrutura"] },
   { url: "https://sindusconsp.com.br/feed/", nome: "SindusCon-SP", categorias: ["Construção Civil", "Custos"] },
-  // --- Meio Ambiente & Regulação ---
-  { url: "https://canalmeioambiente.com.br/feed/", nome: "Canal Meio Ambiente", categorias: ["Meio Ambiente", "Sustentabilidade"] },
-  { url: "https://oeco.org.br/feed/", nome: "O Eco", categorias: ["Meio Ambiente", "Recursos Hídricos"] },
-  // --- Engenharia & Normas ---
-  { url: "https://www.confea.org.br/feed/", nome: "CONFEA", categorias: ["Engenharia", "Normas"] },
-  { url: "https://revistaadnormas.com.br/feed/", nome: "Revista AdNormas", categorias: ["Normas", "Legislação"] },
+  { url: "https://www.buildin.com.br/feed/", nome: "Buildin", categorias: ["Engenharia", "BIM"] },
+  { url: "https://www.sienge.com.br/blog/feed/", nome: "Sienge", categorias: ["Engenharia", "Gestão de Obras"] },
+  // --- Saneamento & Recursos Hídricos ---
+  { url: "https://saneamentobasico.com.br/feed/", nome: "Saneamento Básico", categorias: ["Saneamento", "Engenharia"] },
+  { url: "https://tratamentodeagua.com.br/feed/", nome: "Tratamento de Água", categorias: ["Saneamento", "Eng. Ambiental"] },
+  { url: "https://abes-dn.org.br/feed/", nome: "ABES", categorias: ["Saneamento", "Normas Técnicas"] },
+  { url: "https://trfratabrasil.org.br/feed/", nome: "Trata Brasil", categorias: ["Saneamento", "Indicadores"] },
+  // --- Meio Ambiente & Sustentabilidade ---
+  { url: "https://canalmeioambiente.com.br/feed/", nome: "Canal Meio Ambiente", categorias: ["Eng. Ambiental", "Sustentabilidade"] },
+  { url: "https://oeco.org.br/feed/", nome: "O Eco", categorias: ["Eng. Ambiental", "Recursos Hídricos"] },
   // --- Governo & Dados ---
   { url: "https://agenciabrasil.ebc.com.br/rss/ultimasnoticias/feed.xml", nome: "Agência Brasil", categorias: ["Governo", "Infraestrutura"] },
 ];
@@ -55,15 +61,27 @@ const FONTES_RSS = [
 // ============================================================
 const PNCP_BASE = "https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao";
 
-// Palavras-chave para filtrar licitações relevantes ao setor
+// Palavras-chave para filtrar licitações relevantes a engenharia
 const PNCP_PALAVRAS_CHAVE = [
+  // Engenharia geral
+  "engenharia", "projeto", "laudo", "consultoria técnica", "ART",
+  "topografia", "geotecnia", "sondagem", "fundação", "fundações",
+  "estrutura", "estrutural", "concreto", "armado", "protendido",
+  "cálculo estrutural", "BIM", "modelagem",
+  // Construção civil
+  "construção", "obra", "edificação", "reforma", "ampliação",
+  "habitação", "habitacional", "alvenaria", "acabamento",
+  // Infraestrutura
+  "infraestrutura", "pavimentação", "drenagem", "terraplanagem",
+  "ponte", "viaduto", "rodovia", "estrada", "ferrovia",
+  // Saneamento & Hídrico
   "saneamento", "esgoto", "água", "hidrico", "hídrico",
-  "drenagem", "pavimentação", "infraestrutura",
-  "construção", "obra", "engenharia",
   "barragem", "reservatório", "adutora",
   "tratamento", "ETA", "ETE",
-  "residuos", "resíduos", "aterro",
-  "habitação", "habitacional",
+  // Elétrica & Instalações
+  "elétrica", "subestação", "rede elétrica", "instalações",
+  // Ambiental
+  "residuos", "resíduos", "aterro", "ambiental", "EIA", "RIMA",
 ];
 
 // Mapa de modalidade PNCP → texto legível
@@ -86,12 +104,15 @@ const MODALIDADES_PNCP = {
 // Categorização automática por palavras-chave no título
 function categorizarLicitacao(titulo) {
   const t = titulo.toLowerCase();
+  if (t.includes("projeto") || t.includes("consultoria") || t.includes("laudo") || t.includes("topografi") || t.includes("BIM")) return "Engenharia";
+  if (t.includes("estrutur") || t.includes("fundaç") || t.includes("geotecni") || t.includes("sondagem") || t.includes("concreto")) return "Eng. Estrutural";
+  if (t.includes("elétr") || t.includes("subestação") || t.includes("instalações")) return "Eng. Elétrica";
   if (t.includes("saneamento") || t.includes("esgoto") || t.includes("água") || t.includes("eta") || t.includes("ete")) return "Saneamento";
-  if (t.includes("paviment") || t.includes("drenag") || t.includes("infraestrutura") || t.includes("ponte") || t.includes("rodovia")) return "Infraestrutura";
-  if (t.includes("construção") || t.includes("edificação") || t.includes("habitac") || t.includes("obra")) return "Construção Civil";
+  if (t.includes("paviment") || t.includes("drenag") || t.includes("infraestrutura") || t.includes("ponte") || t.includes("rodovia") || t.includes("ferrovia")) return "Infraestrutura";
+  if (t.includes("construção") || t.includes("edificação") || t.includes("habitac") || t.includes("obra") || t.includes("reforma")) return "Construção Civil";
   if (t.includes("barragem") || t.includes("reservatório") || t.includes("adut") || t.includes("hídric") || t.includes("hidric")) return "Recursos Hídricos";
-  if (t.includes("resíduo") || t.includes("aterro") || t.includes("ambiental") || t.includes("meio ambiente")) return "Meio Ambiente";
-  return "Infraestrutura";
+  if (t.includes("resíduo") || t.includes("aterro") || t.includes("ambiental") || t.includes("meio ambiente")) return "Eng. Ambiental";
+  return "Engenharia";
 }
 
 // Caminhos de saída

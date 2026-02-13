@@ -23,11 +23,14 @@ const ESTADOS = [
 
 const CATEGORIAS = [
   "Todas",
-  "Saneamento",
-  "Infraestrutura",
+  "Engenharia",
+  "Eng. Estrutural",
+  "Eng. Elétrica",
+  "Eng. Ambiental",
   "Construção Civil",
+  "Infraestrutura",
+  "Saneamento",
   "Recursos Hídricos",
-  "Meio Ambiente",
 ];
 
 const modalidadeStyles: Record<string, string> = {

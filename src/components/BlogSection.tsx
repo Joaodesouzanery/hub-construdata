@@ -3,21 +3,34 @@ import { useArtigos } from "@/hooks/useArtigos";
 import type { Artigo } from "@/types/database";
 
 const categoryStyles: Record<string, string> = {
+  // Engenharia (principal)
   "Engenharia": "bg-teal-100 text-teal-800",
-  "Legislação": "bg-amber-100 text-amber-800",
-  "Infraestrutura": "bg-indigo-100 text-indigo-800",
+  "Engenharia Civil": "bg-teal-100 text-teal-800",
+  "Eng. Estrutural": "bg-rose-100 text-rose-800",
+  "Eng. Elétrica": "bg-yellow-100 text-yellow-800",
+  "Eng. Ambiental": "bg-lime-100 text-lime-800",
+  "Estruturas": "bg-rose-100 text-rose-800",
+  "BIM": "bg-purple-100 text-purple-800",
+  "Gestão de Obras": "bg-stone-100 text-stone-800",
+  "Regulamentação": "bg-red-100 text-red-800",
+  "Normas Técnicas": "bg-pink-100 text-pink-800",
   "Tecnologia": "bg-emerald-100 text-emerald-800",
-  "Normas": "bg-pink-100 text-pink-800",
-  "Opinião": "bg-orange-100 text-orange-800",
-  "Licitações": "bg-blue-100 text-blue-800",
-  "Saneamento": "bg-cyan-100 text-cyan-800",
+  // Construção & Infraestrutura
   "Construção Civil": "bg-violet-100 text-violet-800",
-  "Meio Ambiente": "bg-lime-100 text-lime-800",
+  "Infraestrutura": "bg-indigo-100 text-indigo-800",
+  "Custos": "bg-orange-100 text-orange-800",
+  // Saneamento & Hídrico
+  "Saneamento": "bg-cyan-100 text-cyan-800",
   "Recursos Hídricos": "bg-sky-100 text-sky-800",
-  "Governo": "bg-gray-100 text-gray-700",
+  // Outros
+  "Legislação": "bg-amber-100 text-amber-800",
+  "Normas": "bg-pink-100 text-pink-800",
+  "Licitações": "bg-blue-100 text-blue-800",
   "Sustentabilidade": "bg-green-100 text-green-800",
-  "Custos": "bg-red-100 text-red-800",
+  "Governo": "bg-gray-100 text-gray-700",
   "Indicadores": "bg-yellow-100 text-yellow-800",
+  "Opinião": "bg-orange-100 text-orange-800",
+  "Meio Ambiente": "bg-lime-100 text-lime-800",
 };
 
 function urlSegura(url: string): string {
