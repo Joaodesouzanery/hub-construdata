@@ -13,6 +13,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useLicitacoes } from "@/hooks/useLicitacoes";
+import { urlSegura } from "@/lib/utils";
 import type { Licitacao } from "@/types/database";
 
 const ESTADOS = [
@@ -51,19 +52,6 @@ function formatarDataBR(dataStr: string): string {
   if (!dataStr) return "—";
   const [ano, mes, dia] = dataStr.split("-");
   return `${dia}/${mes}/${ano}`;
-}
-
-/** Valida que a URL é segura (só http/https) */
-function urlSegura(url: string): string {
-  try {
-    const parsed = new URL(url);
-    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
-      return parsed.href;
-    }
-  } catch {
-    // URL inválida
-  }
-  return "#";
 }
 
 const LicitacaoCard = ({ lic }: { lic: Licitacao }) => (

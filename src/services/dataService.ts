@@ -22,12 +22,25 @@
 
 import type { Noticia, Artigo, Licitacao } from "@/types/database";
 
+/** Valida que resposta é um array e filtra itens com campos obrigatórios */
+function validarArray<T>(data: unknown, camposObrigatorios: string[]): T[] {
+  if (!Array.isArray(data)) {
+    throw new Error("Resposta inválida: esperado array");
+  }
+  return data.filter((item) =>
+    item != null &&
+    typeof item === "object" &&
+    camposObrigatorios.every((campo) => campo in item)
+  ) as T[];
+}
+
 // ─── Notícias ────────────────────────────────────────────
 
 export async function fetchNoticias(): Promise<Noticia[]> {
   const res = await fetch("./noticias.json");
   if (!res.ok) throw new Error("Falha ao carregar notícias");
-  return res.json();
+  const data = await res.json();
+  return validarArray<Noticia>(data, ["titulo", "link", "data_publicacao", "fonte"]);
 }
 
 // ─── Artigos / Blog ──────────────────────────────────────
@@ -35,7 +48,8 @@ export async function fetchNoticias(): Promise<Noticia[]> {
 export async function fetchArtigos(): Promise<Artigo[]> {
   const res = await fetch("./artigos.json");
   if (!res.ok) throw new Error("Falha ao carregar artigos");
-  return res.json();
+  const data = await res.json();
+  return validarArray<Artigo>(data, ["titulo", "link", "resumo", "fonte"]);
 }
 
 // ─── Licitações ──────────────────────────────────────────
@@ -43,5 +57,6 @@ export async function fetchArtigos(): Promise<Artigo[]> {
 export async function fetchLicitacoes(): Promise<Licitacao[]> {
   const res = await fetch("./licitacoes.json");
   if (!res.ok) throw new Error("Falha ao carregar licitações");
-  return res.json();
+  const data = await res.json();
+  return validarArray<Licitacao>(data, ["titulo", "orgao", "link", "modalidade"]);
 }

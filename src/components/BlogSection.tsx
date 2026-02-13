@@ -1,5 +1,6 @@
 import { Calendar, ExternalLink, Newspaper, Loader2 } from "lucide-react";
 import { useArtigos } from "@/hooks/useArtigos";
+import { urlSegura } from "@/lib/utils";
 import type { Artigo } from "@/types/database";
 
 const categoryStyles: Record<string, string> = {
@@ -33,16 +34,6 @@ const categoryStyles: Record<string, string> = {
   "Meio Ambiente": "bg-lime-100 text-lime-800",
 };
 
-function urlSegura(url: string): string {
-  try {
-    const parsed = new URL(url, window.location.origin);
-    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
-      return parsed.href;
-    }
-  } catch { /* URL inválida */ }
-  return "#";
-}
-
 function formatarData(dataStr: string): string {
   try {
     const data = new Date(dataStr);
@@ -68,10 +59,10 @@ const ArtigoCard = ({ artigo }: { artigo: Artigo }) => (
     className="block"
   >
     <article className="flex flex-col md:flex-row bg-white border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow">
-      {/* Article Image */}
-      {artigo.imagem ? (
+      {/* Article Image — URL validada */}
+      {artigo.imagem && urlSegura(artigo.imagem) !== "#" ? (
         <img
-          src={artigo.imagem}
+          src={urlSegura(artigo.imagem)}
           alt={artigo.titulo}
           className="w-full md:w-[260px] h-[200px] md:h-auto object-cover flex-shrink-0"
         />

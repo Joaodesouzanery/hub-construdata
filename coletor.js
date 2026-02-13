@@ -124,16 +124,63 @@ const CAMINHO_LICITACOES_JSON = path.join(__dirname, "public", "licitacoes.json"
 const CAMINHO_LICITACOES_TS = path.join(__dirname, "src", "data", "licitacoes.ts");
 
 // ============================================================
+// SEGURANÇA: escape de strings para geração de TS
+// ============================================================
+/** Escapa string para ser segura dentro de aspas duplas em código TS gerado */
+function escaparParaTS(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, "\\n")
+    .replace(/\r/g, "\\r")
+    .replace(/\t/g, "\\t")
+    .replace(/\$/g, "\\$");
+}
+
+/** Valida que URL é http/https */
+function urlSegura(url) {
+  if (!url) return "";
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+      return parsed.href;
+    }
+  } catch { /* URL inválida */ }
+  return "";
+}
+
+// ============================================================
 // 3. FUNÇÕES HTTP
 // ============================================================
 function buscarURL(url, tentativas = 3) {
   return new Promise((resolve, reject) => {
     const cliente = url.startsWith("https") ? https : http;
 
+    // Validar URL antes de fazer request
+    let urlOriginal;
+    try {
+      urlOriginal = new URL(url);
+      if (urlOriginal.protocol !== "http:" && urlOriginal.protocol !== "https:") {
+        return reject(new Error("Protocolo inseguro"));
+      }
+    } catch {
+      return reject(new Error("URL inválida"));
+    }
+
     cliente
       .get(url, { headers: { "User-Agent": "HubConstrudata/1.0" }, timeout: 15000 }, (res) => {
         if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-          return buscarURL(res.headers.location, tentativas).then(resolve).catch(reject);
+          // Validar redirect: só seguir se for mesmo domínio ou HTTPS
+          try {
+            const redirectUrl = new URL(res.headers.location, url);
+            if (redirectUrl.protocol !== "http:" && redirectUrl.protocol !== "https:") {
+              return reject(new Error("Redirect para protocolo inseguro"));
+            }
+            return buscarURL(redirectUrl.href, tentativas).then(resolve).catch(reject);
+          } catch {
+            return reject(new Error("URL de redirect inválida"));
+          }
         }
         if (res.statusCode !== 200) {
           return reject(new Error(`Status HTTP ${res.statusCode}`));
@@ -200,12 +247,12 @@ async function buscarFonteRSS(fonte) {
           typeof c === "string" ? c : c._ || c.toString()
         ).slice(0, 4);
 
-        // Extrair imagem (media:content, enclosure)
+        // Extrair imagem (media:content, enclosure) — validar URL
         let imagem = "";
         if (item["media:content"]?.[0]?.$?.url) {
-          imagem = item["media:content"][0].$.url;
+          imagem = urlSegura(item["media:content"][0].$.url);
         } else if (item.enclosure?.[0]?.$?.url) {
-          imagem = item.enclosure[0].$.url;
+          imagem = urlSegura(item.enclosure[0].$.url);
         }
 
         return {
@@ -342,9 +389,12 @@ function salvarNoticiasTS(noticias, caminho) {
   if (!fs.existsSync(diretorio)) fs.mkdirSync(diretorio, { recursive: true });
 
   const itens = noticias.map((n) => {
-    const titulo = n.titulo.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-    const link = n.link.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-    return `  {\n    titulo: "${titulo}",\n    link: "${link}",\n    data_publicacao: "${n.data_publicacao}",\n    fonte: "${n.fonte}",\n  }`;
+    return "  {\n"
+      + '    titulo: "' + escaparParaTS(n.titulo) + '",\n'
+      + '    link: "' + escaparParaTS(n.link) + '",\n'
+      + '    data_publicacao: "' + escaparParaTS(n.data_publicacao) + '",\n'
+      + '    fonte: "' + escaparParaTS(n.fonte) + '",\n'
+      + "  }";
   });
 
   const conteudo = `/**
@@ -375,11 +425,17 @@ function salvarArtigosTS(artigos, caminho) {
   if (!fs.existsSync(diretorio)) fs.mkdirSync(diretorio, { recursive: true });
 
   const itens = artigos.map((a) => {
-    const titulo = a.titulo.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-    const link = a.link.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-    const resumo = a.resumo.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
     const cats = JSON.stringify(a.categorias);
-    return `  {\n    titulo: "${titulo}",\n    link: "${link}",\n    resumo: "${resumo}",\n    data_publicacao: "${a.data_publicacao}",\n    fonte: "${a.fonte}",\n    autor: "${a.fonte}",\n    categorias: ${cats},\n    imagem: "${a.imagem || ""}",\n  }`;
+    return "  {\n"
+      + '    titulo: "' + escaparParaTS(a.titulo) + '",\n'
+      + '    link: "' + escaparParaTS(a.link) + '",\n'
+      + '    resumo: "' + escaparParaTS(a.resumo) + '",\n'
+      + '    data_publicacao: "' + escaparParaTS(a.data_publicacao) + '",\n'
+      + '    fonte: "' + escaparParaTS(a.fonte) + '",\n'
+      + '    autor: "' + escaparParaTS(a.fonte) + '",\n'
+      + "    categorias: " + cats + ",\n"
+      + '    imagem: "' + escaparParaTS(a.imagem || "") + '",\n'
+      + "  }";
   });
 
   const conteudo = `/**
@@ -405,12 +461,18 @@ function salvarLicitacoesTS(licitacoes, caminho) {
   if (!fs.existsSync(diretorio)) fs.mkdirSync(diretorio, { recursive: true });
 
   const itens = licitacoes.map((l) => {
-    const titulo = l.titulo.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-    const orgao = l.orgao.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-    const link = l.link.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-    const modalidade = l.modalidade.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-    const vfmt = l.valor_estimado_fmt.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-    return `  {\n    titulo: "${titulo}",\n    orgao: "${orgao}",\n    estado: "${l.estado}",\n    categoria: "${l.categoria}",\n    data_abertura: "${l.data_abertura}",\n    valor_estimado: ${l.valor_estimado},\n    valor_estimado_fmt: "${vfmt}",\n    link: "${link}",\n    modalidade: "${modalidade}",\n    numero_controle: "${l.numero_controle || ""}",\n  }`;
+    return "  {\n"
+      + '    titulo: "' + escaparParaTS(l.titulo) + '",\n'
+      + '    orgao: "' + escaparParaTS(l.orgao) + '",\n'
+      + '    estado: "' + escaparParaTS(l.estado) + '",\n'
+      + '    categoria: "' + escaparParaTS(l.categoria) + '",\n'
+      + '    data_abertura: "' + escaparParaTS(l.data_abertura) + '",\n'
+      + "    valor_estimado: " + Number(l.valor_estimado) + ",\n"
+      + '    valor_estimado_fmt: "' + escaparParaTS(l.valor_estimado_fmt) + '",\n'
+      + '    link: "' + escaparParaTS(l.link) + '",\n'
+      + '    modalidade: "' + escaparParaTS(l.modalidade) + '",\n'
+      + '    numero_controle: "' + escaparParaTS(l.numero_controle || "") + '",\n'
+      + "  }";
   });
 
   const conteudo = `/**

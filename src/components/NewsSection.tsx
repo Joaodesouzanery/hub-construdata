@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import noticiasEmbutidas, { type Noticia } from "@/data/noticias";
+import { urlSegura } from "@/lib/utils";
 
 // Estilos por fonte (cada site de notícia tem uma cor)
 const fonteStyles: Record<string, string> = {
@@ -58,16 +59,6 @@ function salvarFavoritos(favs: Set<string>) {
 }
 
 // ----------- Helpers -----------
-
-function urlSegura(url: string): string {
-  try {
-    const parsed = new URL(url, window.location.origin);
-    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
-      return parsed.href;
-    }
-  } catch { /* URL inválida */ }
-  return "#";
-}
 
 function formatarData(dataStr: string): string {
   try {

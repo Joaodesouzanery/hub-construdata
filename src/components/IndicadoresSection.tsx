@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { urlSegura } from "@/lib/utils";
 import {
   Droplets,
   Waves,
@@ -129,19 +130,6 @@ const fontesUteis: FonteUtil[] = [
     url: "https://sindusconsp.com.br",
   },
 ];
-
-/** Valida que a URL é segura */
-function urlSegura(url: string): string {
-  try {
-    const parsed = new URL(url);
-    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
-      return parsed.href;
-    }
-  } catch {
-    // URL inválida
-  }
-  return "#";
-}
 
 const IndicadoresSection = () => {
   return (
