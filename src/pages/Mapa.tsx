@@ -1,4 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   MapPin,
@@ -9,68 +11,22 @@ import {
   Droplets,
   Waves,
   Info,
+  Loader2,
+  Layers,
 } from "lucide-react";
 import { dadosEmbutidosLicitacoes } from "@/data/licitacoes";
 import type { Licitacao } from "@/types/database";
 import { urlSegura } from "@/lib/utils";
 
-// ── Tile Map Layout (Cartograma do Brasil) ──
-// Cada estado posicionado em grid para aproximar a geografia real
-// row/col baseados em layout padrão de cartogramas brasileiros
-
-interface EstadoInfo {
-  uf: string;
-  nome: string;
-  row: number;
-  col: number;
-  regiao: string;
-}
-
-const estados: EstadoInfo[] = [
-  // Norte
-  { uf: "RR", nome: "Roraima", row: 0, col: 2, regiao: "Norte" },
-  { uf: "AP", nome: "Amapá", row: 0, col: 4, regiao: "Norte" },
-  { uf: "AM", nome: "Amazonas", row: 1, col: 1, regiao: "Norte" },
-  { uf: "PA", nome: "Pará", row: 1, col: 3, regiao: "Norte" },
-  { uf: "AC", nome: "Acre", row: 2, col: 0, regiao: "Norte" },
-  { uf: "RO", nome: "Rondônia", row: 2, col: 1, regiao: "Norte" },
-  { uf: "TO", nome: "Tocantins", row: 2, col: 3, regiao: "Norte" },
-  // Nordeste
-  { uf: "MA", nome: "Maranhão", row: 1, col: 4, regiao: "Nordeste" },
-  { uf: "PI", nome: "Piauí", row: 1, col: 5, regiao: "Nordeste" },
-  { uf: "CE", nome: "Ceará", row: 1, col: 6, regiao: "Nordeste" },
-  { uf: "RN", nome: "R. G. do Norte", row: 1, col: 7, regiao: "Nordeste" },
-  { uf: "PB", nome: "Paraíba", row: 2, col: 7, regiao: "Nordeste" },
-  { uf: "PE", nome: "Pernambuco", row: 2, col: 6, regiao: "Nordeste" },
-  { uf: "AL", nome: "Alagoas", row: 2, col: 8, regiao: "Nordeste" },
-  { uf: "SE", nome: "Sergipe", row: 3, col: 7, regiao: "Nordeste" },
-  { uf: "BA", nome: "Bahia", row: 2, col: 5, regiao: "Nordeste" },
-  // Centro-Oeste
-  { uf: "MT", nome: "Mato Grosso", row: 3, col: 2, regiao: "Centro-Oeste" },
-  { uf: "DF", nome: "Distrito Federal", row: 3, col: 4, regiao: "Centro-Oeste" },
-  { uf: "GO", nome: "Goiás", row: 3, col: 3, regiao: "Centro-Oeste" },
-  { uf: "MS", nome: "Mato G. do Sul", row: 4, col: 2, regiao: "Centro-Oeste" },
-  // Sudeste
-  { uf: "MG", nome: "Minas Gerais", row: 3, col: 5, regiao: "Sudeste" },
-  { uf: "ES", nome: "Espírito Santo", row: 3, col: 6, regiao: "Sudeste" },
-  { uf: "RJ", nome: "Rio de Janeiro", row: 4, col: 6, regiao: "Sudeste" },
-  { uf: "SP", nome: "São Paulo", row: 4, col: 4, regiao: "Sudeste" },
-  // Sul
-  { uf: "PR", nome: "Paraná", row: 4, col: 3, regiao: "Sul" },
-  { uf: "SC", nome: "Santa Catarina", row: 5, col: 3, regiao: "Sul" },
-  { uf: "RS", nome: "Rio G. do Sul", row: 5, col: 2, regiao: "Sul" },
-];
-
-const regiaoColors: Record<string, { bg: string; text: string; hover: string }> = {
-  Norte: { bg: "bg-emerald-100", text: "text-emerald-800", hover: "hover:bg-emerald-200" },
-  Nordeste: { bg: "bg-amber-100", text: "text-amber-800", hover: "hover:bg-amber-200" },
-  "Centro-Oeste": { bg: "bg-orange-100", text: "text-orange-800", hover: "hover:bg-orange-200" },
-  Sudeste: { bg: "bg-blue-100", text: "text-blue-800", hover: "hover:bg-blue-200" },
-  Sul: { bg: "bg-violet-100", text: "text-violet-800", hover: "hover:bg-violet-200" },
-};
+// ── GeoJSON source for Brazil states ──
+const GEOJSON_URL =
+  "https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson";
 
 // ── Indicadores por estado (dados SNIS simplificados) ──
-const indicadoresPorEstado: Record<string, { agua: number; esgoto: number; investimento: string }> = {
+const indicadoresPorEstado: Record<
+  string,
+  { agua: number; esgoto: number; investimento: string }
+> = {
   AC: { agua: 55.7, esgoto: 19.8, investimento: "R$ 180M" },
   AL: { agua: 79.4, esgoto: 28.4, investimento: "R$ 420M" },
   AM: { agua: 68.2, esgoto: 15.3, investimento: "R$ 350M" },
@@ -100,19 +56,37 @@ const indicadoresPorEstado: Record<string, { agua: number; esgoto: number; inves
   TO: { agua: 79.5, esgoto: 30.1, investimento: "R$ 160M" },
 };
 
-function getIntensidade(qtd: number, max: number): string {
-  if (max === 0) return "opacity-30";
-  const ratio = qtd / max;
-  if (ratio > 0.6) return "opacity-100 ring-2 ring-primary/30";
-  if (ratio > 0.3) return "opacity-80";
-  if (ratio > 0) return "opacity-60";
-  return "opacity-30";
+// ── Region colors ──
+const regiaoColors: Record<string, string> = {
+  Norte: "#10b981",
+  Nordeste: "#f59e0b",
+  "Centro-Oeste": "#f97316",
+  Sudeste: "#3b82f6",
+  Sul: "#8b5cf6",
+};
+
+const ufToRegiao: Record<string, string> = {
+  AC: "Norte", AM: "Norte", AP: "Norte", PA: "Norte", RO: "Norte", RR: "Norte", TO: "Norte",
+  AL: "Nordeste", BA: "Nordeste", CE: "Nordeste", MA: "Nordeste", PB: "Nordeste",
+  PE: "Nordeste", PI: "Nordeste", RN: "Nordeste", SE: "Nordeste",
+  DF: "Centro-Oeste", GO: "Centro-Oeste", MS: "Centro-Oeste", MT: "Centro-Oeste",
+  ES: "Sudeste", MG: "Sudeste", RJ: "Sudeste", SP: "Sudeste",
+  PR: "Sul", RS: "Sul", SC: "Sul",
+};
+
+function formatarValor(v: number): string {
+  if (v >= 1e9) return `R$ ${(v / 1e9).toFixed(1)}B`;
+  if (v >= 1e6) return `R$ ${(v / 1e6).toFixed(0)}M`;
+  return `R$ ${v.toLocaleString("pt-BR")}`;
 }
 
 const Mapa = () => {
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<maplibregl.Map | null>(null);
   const [licitacoes, setLicitacoes] = useState<Licitacao[]>(dadosEmbutidosLicitacoes);
   const [estadoSelecionado, setEstadoSelecionado] = useState<string | null>(null);
-  const [hoveredEstado, setHoveredEstado] = useState<string | null>(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const [geoLoaded, setGeoLoaded] = useState(false);
 
   useEffect(() => {
     fetch("./licitacoes.json")
@@ -123,7 +97,6 @@ const Mapa = () => {
       .catch(() => {});
   }, []);
 
-  // Agrupar licitações por estado
   const porEstado = useMemo(() => {
     const map: Record<string, Licitacao[]> = {};
     for (const lic of licitacoes) {
@@ -134,160 +107,326 @@ const Mapa = () => {
     return map;
   }, [licitacoes]);
 
-  const maxLicitacoes = useMemo(() => {
-    return Math.max(1, ...Object.values(porEstado).map((arr) => arr.length));
-  }, [porEstado]);
+  const maxLicitacoes = useMemo(
+    () => Math.max(1, ...Object.values(porEstado).map((arr) => arr.length)),
+    [porEstado]
+  );
 
-  const estadoAtivo = estadoSelecionado || hoveredEstado;
-  const licEstado = estadoAtivo ? (porEstado[estadoAtivo] || []) : [];
-  const indEstado = estadoAtivo ? indicadoresPorEstado[estadoAtivo] : null;
-  const infoEstado = estadoAtivo
-    ? estados.find((e) => e.uf === estadoAtivo)
-    : null;
+  const valorPorEstado = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const lic of licitacoes) {
+      map[lic.estado] = (map[lic.estado] || 0) + (lic.valor_estimado || 0);
+    }
+    return map;
+  }, [licitacoes]);
+
+  // Initialize MapLibre
+  useEffect(() => {
+    if (!mapContainer.current || mapRef.current) return;
+
+    const map = new maplibregl.Map({
+      container: mapContainer.current,
+      style: {
+        version: 8,
+        sources: {
+          "carto-light": {
+            type: "raster",
+            tiles: ["https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"],
+            tileSize: 256,
+            attribution: '&copy; <a href="https://carto.com">CARTO</a>',
+          },
+        },
+        layers: [
+          {
+            id: "carto-light-layer",
+            type: "raster",
+            source: "carto-light",
+            minzoom: 0,
+            maxzoom: 19,
+          },
+        ],
+      },
+      center: [-52, -14],
+      zoom: 3.5,
+      minZoom: 3,
+      maxZoom: 10,
+    });
+
+    map.addControl(new maplibregl.NavigationControl(), "top-left");
+
+    map.on("load", () => {
+      mapRef.current = map;
+      setMapLoaded(true);
+    });
+
+    return () => {
+      map.remove();
+      mapRef.current = null;
+    };
+  }, []);
+
+  // Load GeoJSON and add layers
+  useEffect(() => {
+    if (!mapLoaded || !mapRef.current || geoLoaded) return;
+    const map = mapRef.current;
+
+    fetch(GEOJSON_URL)
+      .then((r) => r.json())
+      .then((geojson: GeoJSON.FeatureCollection) => {
+        // Enrich features with data
+        for (const feature of geojson.features) {
+          const props = feature.properties!;
+          const sigla: string = props.sigla;
+          const qtd = (porEstado[sigla] || []).length;
+          const regiao = ufToRegiao[sigla] || "Norte";
+          props.licitacoes_count = qtd;
+          props.regiao = regiao;
+          props.regiao_color = regiaoColors[regiao];
+          props.fill_opacity = qtd > 0 ? 0.3 + (qtd / maxLicitacoes) * 0.5 : 0.15;
+        }
+
+        map.addSource("brazil-states", { type: "geojson", data: geojson });
+
+        // Fill
+        map.addLayer({
+          id: "states-fill",
+          type: "fill",
+          source: "brazil-states",
+          paint: {
+            "fill-color": ["get", "regiao_color"],
+            "fill-opacity": [
+              "case",
+              ["boolean", ["feature-state", "hover"], false],
+              0.7,
+              ["get", "fill_opacity"],
+            ],
+          },
+        });
+
+        // Borders
+        map.addLayer({
+          id: "states-border",
+          type: "line",
+          source: "brazil-states",
+          paint: {
+            "line-color": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              "#1e40af",
+              "#ffffff",
+            ],
+            "line-width": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              3,
+              1.5,
+            ],
+          },
+        });
+
+        // Labels
+        map.addLayer({
+          id: "states-labels",
+          type: "symbol",
+          source: "brazil-states",
+          layout: {
+            "text-field": ["get", "sigla"],
+            "text-size": 11,
+            "text-allow-overlap": false,
+          },
+          paint: {
+            "text-color": "#1e293b",
+            "text-halo-color": "#ffffff",
+            "text-halo-width": 1.5,
+          },
+        });
+
+        // Hover
+        let hoveredId: number | string | null = null;
+
+        map.on("mousemove", "states-fill", (e) => {
+          if (e.features && e.features.length > 0) {
+            map.getCanvas().style.cursor = "pointer";
+            if (hoveredId !== null) {
+              map.setFeatureState({ source: "brazil-states", id: hoveredId }, { hover: false });
+            }
+            hoveredId = e.features[0].id ?? e.features[0].properties?.id;
+            if (hoveredId !== null) {
+              map.setFeatureState({ source: "brazil-states", id: hoveredId }, { hover: true });
+            }
+
+            // Tooltip
+            const props = e.features[0].properties!;
+            const sigla = props.sigla;
+            const qtd = porEstado[sigla]?.length ?? 0;
+            const valor = valorPorEstado[sigla] ?? 0;
+            const tooltip = document.getElementById("map-tooltip");
+            if (tooltip) {
+              tooltip.innerHTML = `<strong>${sigla}</strong> · ${qtd} licitações${valor > 0 ? ` · ${formatarValor(valor)}` : ""}`;
+              tooltip.style.display = "block";
+              tooltip.style.left = e.point.x + 12 + "px";
+              tooltip.style.top = e.point.y - 12 + "px";
+            }
+          }
+        });
+
+        map.on("mouseleave", "states-fill", () => {
+          map.getCanvas().style.cursor = "";
+          if (hoveredId !== null) {
+            map.setFeatureState({ source: "brazil-states", id: hoveredId }, { hover: false });
+            hoveredId = null;
+          }
+          const tooltip = document.getElementById("map-tooltip");
+          if (tooltip) tooltip.style.display = "none";
+        });
+
+        // Click
+        map.on("click", "states-fill", (e) => {
+          if (e.features && e.features.length > 0) {
+            const sigla = e.features[0].properties!.sigla;
+            setEstadoSelecionado((prev) => (prev === sigla ? null : sigla));
+          }
+        });
+
+        setGeoLoaded(true);
+      })
+      .catch(console.error);
+  }, [mapLoaded, geoLoaded, porEstado, maxLicitacoes, valorPorEstado]);
+
+  // Selected state highlight
+  const updateSelectedState = useCallback((sigla: string | null) => {
+    if (!mapRef.current || !geoLoaded) return;
+    const map = mapRef.current;
+    try {
+      const features = map.querySourceFeatures("brazil-states");
+      for (const f of features) {
+        const fId = f.id ?? f.properties?.id;
+        if (fId != null) {
+          map.setFeatureState(
+            { source: "brazil-states", id: fId },
+            { selected: f.properties?.sigla === sigla }
+          );
+        }
+      }
+    } catch { /* ignore */ }
+  }, [geoLoaded]);
+
+  useEffect(() => {
+    updateSelectedState(estadoSelecionado);
+  }, [estadoSelecionado, updateSelectedState]);
+
+  const licEstado = estadoSelecionado ? (porEstado[estadoSelecionado] || []) : [];
+  const indEstado = estadoSelecionado ? indicadoresPorEstado[estadoSelecionado] : null;
 
   return (
-    <div className="p-6 lg:p-8 space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight flex items-center gap-3">
-          <MapPin size={28} className="text-primary" />
-          Mapa do Brasil
-        </h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Visualize licitações e indicadores de saneamento por estado
-        </p>
+    <div className="p-4 lg:p-6 space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+        <div>
+          <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight flex items-center gap-3">
+            <MapPin size={28} className="text-primary" />
+            Mapa do Brasil
+          </h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Visualize licitações e indicadores de saneamento por estado
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Layers size={14} className="text-muted-foreground" />
+          <span className="text-xs text-muted-foreground">MapLibre GL</span>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-6">
-        {/* Mapa (Tile/Cartograma) */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-bold">
-              Cartograma — Licitações por Estado
-            </CardTitle>
-            <p className="text-xs text-muted-foreground">
-              Clique em um estado para ver detalhes. Intensidade = volume de licitações.
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-9 gap-1 max-w-[600px] mx-auto">
-              {Array.from({ length: 6 * 9 }, (_, i) => {
-                const row = Math.floor(i / 9);
-                const col = i % 9;
-                const estado = estados.find((e) => e.row === row && e.col === col);
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-4">
+        {/* Map Container */}
+        <Card className="border-0 shadow-sm overflow-hidden">
+          <div className="relative">
+            <div ref={mapContainer} className="w-full h-[500px] lg:h-[600px]" />
+            {!mapLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center bg-muted/50">
+                <Loader2 className="animate-spin mr-2" size={20} />
+                <span className="text-muted-foreground">Carregando mapa...</span>
+              </div>
+            )}
 
-                if (!estado) {
-                  return <div key={i} className="aspect-square" />;
-                }
+            {/* Floating tooltip */}
+            <div
+              id="map-tooltip"
+              className="absolute hidden pointer-events-none bg-[#0f172a] text-white text-xs px-3 py-1.5 rounded-lg shadow-lg z-10"
+              style={{ display: "none" }}
+            />
 
-                const qtd = (porEstado[estado.uf] || []).length;
-                const cores = regiaoColors[estado.regiao];
-                const isActive = estadoAtivo === estado.uf;
-
-                return (
-                  <button
-                    key={estado.uf}
-                    onClick={() =>
-                      setEstadoSelecionado(
-                        estadoSelecionado === estado.uf ? null : estado.uf
-                      )
-                    }
-                    onMouseEnter={() => setHoveredEstado(estado.uf)}
-                    onMouseLeave={() => setHoveredEstado(null)}
-                    className={`aspect-square rounded-lg flex flex-col items-center justify-center transition-all cursor-pointer ${
-                      cores.bg
-                    } ${cores.hover} ${getIntensidade(qtd, maxLicitacoes)} ${
-                      isActive ? "ring-2 ring-primary scale-110 z-10 shadow-lg" : ""
-                    }`}
-                    title={`${estado.nome}: ${qtd} licitação(ões)`}
-                  >
-                    <span className={`text-xs font-bold ${cores.text}`}>
-                      {estado.uf}
-                    </span>
-                    {qtd > 0 && (
-                      <span className="text-[0.55rem] font-semibold text-muted-foreground mt-0.5">
-                        {qtd}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
+            {/* Legend */}
+            <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-md text-xs">
+              <p className="font-semibold mb-1.5 text-[0.65rem] uppercase tracking-wide text-muted-foreground">
+                Regiões
+              </p>
+              <div className="space-y-1">
+                {Object.entries(regiaoColors).map(([regiao, cor]) => (
+                  <div key={regiao} className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: cor }} />
+                    <span>{regiao}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-
-            {/* Legenda de regiões */}
-            <div className="flex flex-wrap justify-center gap-3 mt-6 pt-4 border-t border-border">
-              {Object.entries(regiaoColors).map(([regiao, cores]) => (
-                <span
-                  key={regiao}
-                  className={`text-[0.65rem] font-semibold px-2.5 py-1 rounded-full ${cores.bg} ${cores.text}`}
-                >
-                  {regiao}
-                </span>
-              ))}
-            </div>
-          </CardContent>
+          </div>
         </Card>
 
-        {/* Painel de Detalhes */}
+        {/* Side Panel */}
         <div className="space-y-4">
-          {estadoAtivo && infoEstado ? (
+          {estadoSelecionado && indEstado ? (
             <>
-              {/* Info do Estado */}
-              <Card>
+              <Card className="border-0 shadow-sm">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base font-bold flex items-center gap-2">
                     <MapPin size={18} className="text-primary" />
-                    {infoEstado.nome} ({infoEstado.uf})
+                    {estadoSelecionado}
                   </CardTitle>
                   <span
-                    className={`inline-block text-[0.65rem] font-semibold px-2 py-0.5 rounded-full w-fit ${
-                      regiaoColors[infoEstado.regiao].bg
-                    } ${regiaoColors[infoEstado.regiao].text}`}
+                    className="inline-block text-[0.65rem] font-semibold px-2 py-0.5 rounded-full w-fit text-white"
+                    style={{ backgroundColor: regiaoColors[ufToRegiao[estadoSelecionado]] || "#94a3b8" }}
                   >
-                    {infoEstado.regiao}
+                    {ufToRegiao[estadoSelecionado]}
                   </span>
                 </CardHeader>
                 <CardContent>
-                  {indEstado && (
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-500/10 rounded-lg">
-                          <Droplets size={16} className="text-blue-500" />
-                        </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground">Cobertura de Água</p>
-                          <p className="text-lg font-extrabold">{indEstado.agua}%</p>
-                        </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-500/10 rounded-lg">
+                        <Droplets size={16} className="text-blue-500" />
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-emerald-500/10 rounded-lg">
-                          <Waves size={16} className="text-emerald-500" />
-                        </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground">Coleta de Esgoto</p>
-                          <p className="text-lg font-extrabold">{indEstado.esgoto}%</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-amber-500/10 rounded-lg">
-                          <DollarSign size={16} className="text-amber-500" />
-                        </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground">Investimento Previsto</p>
-                          <p className="text-lg font-extrabold">{indEstado.investimento}</p>
-                        </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Cobertura de Água</p>
+                        <p className="text-lg font-extrabold">{indEstado.agua}%</p>
                       </div>
                     </div>
-                  )}
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-emerald-500/10 rounded-lg">
+                        <Waves size={16} className="text-emerald-500" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Coleta de Esgoto</p>
+                        <p className="text-lg font-extrabold">{indEstado.esgoto}%</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-amber-500/10 rounded-lg">
+                        <DollarSign size={16} className="text-amber-500" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Investimento Previsto</p>
+                        <p className="text-lg font-extrabold">{indEstado.investimento}</p>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
-              {/* Licitações do Estado */}
-              <Card>
+              <Card className="border-0 shadow-sm">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-bold flex items-center gap-2">
                     <FileSearch size={16} className="text-primary" />
-                    Licitações em {infoEstado.uf}
+                    Licitações em {estadoSelecionado}
                     <span className="ml-auto text-xs font-normal text-muted-foreground">
                       {licEstado.length} resultado(s)
                     </span>
@@ -296,10 +435,10 @@ const Mapa = () => {
                 <CardContent>
                   {licEstado.length === 0 ? (
                     <p className="text-sm text-muted-foreground text-center py-4">
-                      Nenhuma licitação encontrada para este estado.
+                      Nenhuma licitação encontrada.
                     </p>
                   ) : (
-                    <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1">
+                    <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
                       {licEstado.map((lic, i) => (
                         <a
                           key={i}
@@ -313,15 +452,11 @@ const Mapa = () => {
                               {lic.titulo}
                             </p>
                             <div className="flex items-center gap-2 mt-2 text-[0.65rem] text-muted-foreground">
-                              <span className="flex items-center gap-0.5">
-                                <Building2 size={10} />
-                                {lic.orgao}
-                              </span>
+                              <Building2 size={10} />
+                              <span className="truncate">{lic.orgao}</span>
                             </div>
                             <div className="flex items-center justify-between mt-1.5">
-                              <span className="text-xs font-bold text-primary">
-                                {lic.valor_estimado_fmt}
-                              </span>
+                              <span className="text-xs font-bold text-primary">{lic.valor_estimado_fmt}</span>
                               <span className="text-[0.6rem] text-muted-foreground flex items-center gap-0.5">
                                 <ExternalLink size={9} /> Ver edital
                               </span>
@@ -335,12 +470,10 @@ const Mapa = () => {
               </Card>
             </>
           ) : (
-            <Card className="bg-muted/30">
+            <Card className="bg-muted/30 border-0">
               <CardContent className="p-8 text-center">
                 <Info size={32} className="mx-auto text-muted-foreground/40 mb-3" />
-                <p className="text-sm font-semibold text-muted-foreground">
-                  Selecione um estado
-                </p>
+                <p className="text-sm font-semibold text-muted-foreground">Selecione um estado</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   Clique em qualquer estado no mapa para ver indicadores e licitações.
                 </p>
@@ -348,8 +481,7 @@ const Mapa = () => {
             </Card>
           )}
 
-          {/* Resumo Geral */}
-          <Card>
+          <Card className="border-0 shadow-sm">
             <CardContent className="p-4">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
                 Resumo Nacional
@@ -364,9 +496,9 @@ const Mapa = () => {
                   <span className="font-bold">{Object.keys(porEstado).length}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Maior concentração</span>
-                  <span className="font-bold">
-                    {Object.entries(porEstado).sort((a, b) => b[1].length - a[1].length)[0]?.[0] || "—"}
+                  <span className="text-muted-foreground">Volume total</span>
+                  <span className="font-bold text-primary">
+                    {formatarValor(licitacoes.reduce((a, l) => a + (l.valor_estimado || 0), 0))}
                   </span>
                 </div>
               </div>

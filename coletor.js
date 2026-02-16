@@ -61,6 +61,15 @@ const FONTES_RSS = [
 // ============================================================
 const PNCP_BASE = "https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao";
 
+// Modalidades relevantes para engenharia e construção
+// A API exige codigoModalidadeContratacao como parâmetro obrigatório
+const MODALIDADES_RELEVANTES = [
+  4, // Concorrência Eletrônica
+  5, // Concorrência Presencial
+  6, // Pregão Eletrônico
+  8, // Dispensa de Licitação
+];
+
 // Palavras-chave para filtrar licitações relevantes a engenharia
 const PNCP_PALAVRAS_CHAVE = [
   // Engenharia geral
@@ -169,7 +178,7 @@ function buscarURL(url, tentativas = 3) {
     }
 
     cliente
-      .get(url, { headers: { "User-Agent": "HubConstrudata/1.0" }, timeout: 15000 }, (res) => {
+      .get(url, { headers: { "User-Agent": "HubConstrudata/2.0" }, timeout: 15000 }, (res) => {
         if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
           // Validar redirect: só seguir se for mesmo domínio ou HTTPS
           try {
@@ -286,36 +295,103 @@ async function buscarFonteRSS(fonte) {
 // ============================================================
 // 6. PNCP — BUSCAR LICITAÇÕES REAIS
 // ============================================================
+
+/**
+ * Formata data para o formato esperado pelo PNCP: AAAAMMDD
+ */
+function formatarDataPNCP(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}${m}${d}`;
+}
+
+/**
+ * Busca licitações de uma modalidade específica com paginação.
+ */
+async function buscarPNCPModalidade(modalidade, dataInicial, dataFinal) {
+  const resultados = [];
+  let pagina = 1;
+  const maxPaginas = 5; // Limitar para evitar requests excessivos
+
+  while (pagina <= maxPaginas) {
+    const url = `${PNCP_BASE}?dataInicial=${dataInicial}&dataFinal=${dataFinal}&codigoModalidadeContratacao=${modalidade}&tamanhoPagina=50&pagina=${pagina}`;
+
+    try {
+      const dados = await buscarJSON(url);
+      const itens = dados?.data || [];
+
+      if (itens.length === 0) break;
+
+      resultados.push(...itens);
+
+      // Verificar se há mais páginas
+      const paginasRestantes = dados?.paginasRestantes ?? 0;
+      if (paginasRestantes === 0) break;
+
+      pagina++;
+
+      // Rate limiting: esperar 500ms entre requests
+      await new Promise((r) => setTimeout(r, 500));
+    } catch (err) {
+      console.log(`    [AVISO] Modalidade ${modalidade} pág ${pagina}: ${err.message}`);
+      break;
+    }
+  }
+
+  return resultados;
+}
+
 async function buscarLicitacoesPNCP() {
   console.log("\n  PNCP: Buscando licitações...");
 
   try {
-    // Buscar últimos 30 dias
+    // Buscar últimos 7 dias (períodos curtos para melhor resultado)
     const hoje = new Date();
     const inicio = new Date(hoje);
-    inicio.setDate(inicio.getDate() - 30);
+    inicio.setDate(inicio.getDate() - 7);
 
-    const dataInicial = inicio.toISOString().split("T")[0] + "T00:00:00";
-    const dataFinal = hoje.toISOString().split("T")[0] + "T23:59:59";
+    const dataInicial = formatarDataPNCP(inicio);
+    const dataFinal = formatarDataPNCP(hoje);
 
-    const url = `${PNCP_BASE}?dataInicial=${encodeURIComponent(dataInicial)}&dataFinal=${encodeURIComponent(dataFinal)}&pagina=1&tamanhoPagina=100`;
+    console.log(`  Período: ${dataInicial} a ${dataFinal}`);
 
-    const dados = await buscarJSON(url);
+    // Buscar cada modalidade relevante em paralelo
+    const promises = MODALIDADES_RELEVANTES.map(async (mod) => {
+      console.log(`  Modalidade ${mod} (${MODALIDADES_PNCP[mod]})...`);
+      const itens = await buscarPNCPModalidade(mod, dataInicial, dataFinal);
+      console.log(`    -> ${itens.length} itens`);
+      return itens;
+    });
 
-    // A API retorna array direto ou { data: [...] }
-    const itens = Array.isArray(dados) ? dados : (dados.data || []);
+    // Executar sequencialmente para evitar rate limiting
+    let todosItens = [];
+    for (const promise of promises) {
+      const itens = await promise;
+      todosItens.push(...itens);
+      // Rate limiting entre modalidades
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+
+    console.log(`  Total bruto: ${todosItens.length} licitações`);
 
     // Filtrar por palavras-chave relevantes ao setor
-    const relevantes = itens.filter((item) => {
+    const relevantes = todosItens.filter((item) => {
       const texto = (item.objetoCompra || "").toLowerCase();
-      return PNCP_PALAVRAS_CHAVE.some((kw) => texto.includes(kw));
+      return PNCP_PALAVRAS_CHAVE.some((kw) => texto.includes(kw.toLowerCase()));
     });
+
+    console.log(`  Filtradas por relevância: ${relevantes.length} licitações`);
 
     const licitacoes = relevantes.map((item) => {
       const orgao = item.orgaoEntidade || {};
+      const unidade = item.unidadeOrgao || {};
       const titulo = (item.objetoCompra || "").slice(0, 500);
       const valor = item.valorTotalEstimado || 0;
       const modalidadeId = item.modalidadeId || item.codigoModalidadeContratacao;
+
+      // UF: tentar unidade.ufSigla, depois orgao.uf
+      const uf = unidade.ufSigla || orgao.uf || "BR";
 
       // Construir link para o PNCP
       const cnpj = orgao.cnpj || "";
@@ -328,7 +404,7 @@ async function buscarLicitacoesPNCP() {
       return {
         titulo,
         orgao: orgao.razaoSocial || "Órgão não informado",
-        estado: orgao.uf || item.uf || "BR",
+        estado: uf,
         categoria: categorizarLicitacao(titulo),
         data_abertura: (item.dataPublicacaoPncp || item.dataAberturaProposta || "").split("T")[0],
         valor_estimado: valor,
@@ -341,7 +417,7 @@ async function buscarLicitacoesPNCP() {
       };
     });
 
-    console.log(`  [OK] PNCP: ${licitacoes.length} licitações relevantes de ${itens.length} total`);
+    console.log(`  [OK] PNCP: ${licitacoes.length} licitações relevantes`);
     return licitacoes;
   } catch (erro) {
     console.log(`  [ERRO] PNCP: ${erro.message}`);
@@ -460,8 +536,9 @@ function salvarLicitacoesTS(licitacoes, caminho) {
   const diretorio = path.dirname(caminho);
   if (!fs.existsSync(diretorio)) fs.mkdirSync(diretorio, { recursive: true });
 
-  const itens = licitacoes.map((l) => {
+  const itens = licitacoes.map((l, idx) => {
     return "  {\n"
+      + '    id: "' + (idx + 1) + '",\n'
       + '    titulo: "' + escaparParaTS(l.titulo) + '",\n'
       + '    orgao: "' + escaparParaTS(l.orgao) + '",\n'
       + '    estado: "' + escaparParaTS(l.estado) + '",\n'
@@ -476,16 +553,18 @@ function salvarLicitacoesTS(licitacoes, caminho) {
   });
 
   const conteudo = `/**
- * Arquivo gerado automaticamente por coletor.js em ${new Date().toISOString()}
+ * Licitações embutidas — dados reais do PNCP.
+ * Gerado automaticamente por coletor.js em ${new Date().toISOString()}
  * Para atualizar: node coletor.js
  */
 
 import type { Licitacao } from "@/types/database";
 
-const licitacoes: Licitacao[] = [
+export const dadosEmbutidosLicitacoes: Licitacao[] = [
 ${itens.join(",\n")}
 ];
 
+const licitacoes = dadosEmbutidosLicitacoes;
 export default licitacoes;
 `;
 
@@ -498,7 +577,7 @@ export default licitacoes;
 // ============================================================
 async function main() {
   console.log("==================================================");
-  console.log("  Hub ConstruData - Coletor de Dados");
+  console.log("  Hub ConstruData - Coletor de Dados v2.0");
   console.log("==================================================\n");
 
   // ─── FASE 1: RSS (Notícias + Artigos) ───
@@ -516,17 +595,16 @@ async function main() {
       data_publicacao: item.data_publicacao,
       fonte: item.fonte,
     })));
-    const noticiasOrdenadas = ordenarPorData(noticias).slice(0, 20);
+    const noticiasOrdenadas = ordenarPorData(noticias).slice(0, 50);
 
     console.log("\n  Salvando noticias...");
     salvarJSON(noticiasOrdenadas, CAMINHO_NOTICIAS_JSON);
     salvarNoticiasTS(noticiasOrdenadas, CAMINHO_NOTICIAS_TS);
 
     // --- Artigos (com descrição, categorias, imagem) ---
-    // Filtrar apenas itens que têm descrição significativa (> 50 chars)
     const artigosComDescricao = todosItensRSS.filter((item) => item.descricao && item.descricao.length > 50);
     const artigosUnicos = removerDuplicatas(artigosComDescricao);
-    const artigosOrdenados = ordenarPorData(artigosUnicos).slice(0, 15);
+    const artigosOrdenados = ordenarPorData(artigosUnicos).slice(0, 30);
 
     // Formatar para o tipo Artigo
     const artigosFormatados = artigosOrdenados.map((item) => ({
@@ -554,15 +632,14 @@ async function main() {
 
   if (licitacoes.length > 0) {
     const licitacoesUnicas = removerDuplicatas(licitacoes, "numero_controle");
-    const licitacoesOrdenadas = ordenarPorData(licitacoesUnicas, "data_abertura").slice(0, 20);
+    const licitacoesOrdenadas = ordenarPorData(licitacoesUnicas, "data_abertura").slice(0, 100);
 
     console.log("\n  Salvando licitacoes...");
     salvarJSON(licitacoesOrdenadas, CAMINHO_LICITACOES_JSON);
     salvarLicitacoesTS(licitacoesOrdenadas, CAMINHO_LICITACOES_TS);
   } else {
     console.log("  [AVISO] Nenhuma licitacao coletada do PNCP.");
-    // Salvar array vazio para que o fetch não falhe
-    salvarJSON([], CAMINHO_LICITACOES_JSON);
+    console.log("  [INFO] Mantendo dados embutidos existentes.");
   }
 
   // ─── RESUMO ───
