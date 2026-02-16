@@ -110,10 +110,10 @@ CREATE POLICY "Indicadores are viewable by everyone" ON indicadores FOR SELECT U
 CREATE POLICY "Updates are viewable by everyone" ON updates FOR SELECT USING (true);
 CREATE POLICY "Fontes are viewable by everyone" ON fontes_uteis FOR SELECT USING (true);
 
--- Políticas de escrita (service_role via coletor ou Edge Function)
-CREATE POLICY "Service can insert noticias" ON noticias FOR INSERT WITH CHECK (true);
-CREATE POLICY "Service can insert artigos" ON artigos FOR INSERT WITH CHECK (true);
-CREATE POLICY "Service can insert licitacoes" ON licitacoes FOR INSERT WITH CHECK (true);
-CREATE POLICY "Service can insert indicadores" ON indicadores FOR INSERT WITH CHECK (true);
-CREATE POLICY "Service can insert updates" ON updates FOR INSERT WITH CHECK (true);
-CREATE POLICY "Service can insert fontes" ON fontes_uteis FOR INSERT WITH CHECK (true);
+-- Políticas de escrita (SOMENTE service_role — protege contra inserção via anon key)
+CREATE POLICY "Service can insert noticias" ON noticias FOR INSERT TO service_role WITH CHECK (true);
+CREATE POLICY "Service can insert artigos" ON artigos FOR INSERT TO service_role WITH CHECK (true);
+CREATE POLICY "Service can insert licitacoes" ON licitacoes FOR INSERT TO service_role WITH CHECK (true);
+CREATE POLICY "Service can insert indicadores" ON indicadores FOR INSERT TO service_role WITH CHECK (true);
+CREATE POLICY "Service can insert updates" ON updates FOR INSERT TO service_role WITH CHECK (true);
+CREATE POLICY "Service can insert fontes" ON fontes_uteis FOR INSERT TO service_role WITH CHECK (true);

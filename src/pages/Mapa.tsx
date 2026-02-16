@@ -18,9 +18,9 @@ import { dadosEmbutidosLicitacoes } from "@/data/licitacoes";
 import type { Licitacao } from "@/types/database";
 import { urlSegura } from "@/lib/utils";
 
-// ── GeoJSON source for Brazil states ──
+// ── GeoJSON source for Brazil states (pinned to specific commit for security) ──
 const GEOJSON_URL =
-  "https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson";
+  "https://raw.githubusercontent.com/codeforamerica/click_that_hood/6f0e4bf05c53a349e14a3c52c5601e24e2d58982/public/data/brazil-states.geojson";
 
 // ── Indicadores por estado (dados SNIS simplificados) ──
 const indicadoresPorEstado: Record<
@@ -262,7 +262,7 @@ const Mapa = () => {
             const valor = valorPorEstado[sigla] ?? 0;
             const tooltip = document.getElementById("map-tooltip");
             if (tooltip) {
-              tooltip.innerHTML = `<strong>${sigla}</strong> · ${qtd} licitações${valor > 0 ? ` · ${formatarValor(valor)}` : ""}`;
+              tooltip.textContent = `${sigla} · ${qtd} licitações${valor > 0 ? ` · ${formatarValor(valor)}` : ""}`;
               tooltip.style.display = "block";
               tooltip.style.left = e.point.x + 12 + "px";
               tooltip.style.top = e.point.y - 12 + "px";

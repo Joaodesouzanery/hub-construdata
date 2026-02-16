@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Search, Newspaper, FileSearch, X, ArrowRight } from "lucide-react";
 import noticiasEmbutidas from "@/data/noticias";
 import { dadosEmbutidosLicitacoes } from "@/data/licitacoes";
+import { urlSegura } from "@/lib/utils";
 
 interface SearchResult {
   type: "noticia" | "licitacao";
@@ -79,7 +80,7 @@ const GlobalSearch = () => {
     setOpen(false);
     setQuery("");
     if (r.link) {
-      window.open(r.link, "_blank", "noopener,noreferrer");
+      window.open(urlSegura(r.link), "_blank", "noopener,noreferrer");
     } else if (r.rota) {
       navigate(r.rota);
     }

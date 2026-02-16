@@ -40,6 +40,7 @@ import {
 import noticiasEmbutidas, { type Noticia } from "@/data/noticias";
 import { dadosEmbutidosLicitacoes } from "@/data/licitacoes";
 import type { Licitacao } from "@/types/database";
+import { urlSegura } from "@/lib/utils";
 
 // ── Indicadores do setor ──
 const indicadores = [
@@ -398,7 +399,7 @@ const Dashboard = () => {
             {noticias.slice(0, 5).map((n, i) => (
               <a
                 key={i}
-                href={n.link}
+                href={urlSegura(n.link)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block group"
