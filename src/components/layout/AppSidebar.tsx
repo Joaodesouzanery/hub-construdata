@@ -4,7 +4,7 @@ import {
   Newspaper,
   FileSearch,
   Map,
-  Bell,
+  BellRing,
   BarChart3,
   Scale,
   Wrench,
@@ -13,19 +13,25 @@ import {
   ChevronLeft,
   ChevronRight,
   Building2,
+  User,
+  TrendingUp,
+  Download,
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navItems = [
-  { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/noticias", icon: Newspaper, label: "Notícias" },
-  { to: "/licitacoes", icon: FileSearch, label: "Licitações" },
-  { to: "/mapa", icon: Map, label: "Mapa do Brasil" },
-  { to: "/alertas", icon: Bell, label: "Alertas" },
-  { to: "/indicadores", icon: BarChart3, label: "Indicadores" },
-  { to: "/legislacao", icon: Scale, label: "Legislação" },
-  { to: "/ferramentas", icon: Wrench, label: "Ferramentas" },
-  { to: "/eventos", icon: CalendarDays, label: "Eventos" },
-  { to: "/contato", icon: Mail, label: "Contato" },
+  { to: "/", icon: LayoutDashboard, label: "Dashboard", group: "principal" },
+  { to: "/noticias", icon: Newspaper, label: "Notícias", group: "principal" },
+  { to: "/licitacoes", icon: FileSearch, label: "Licitações", group: "principal" },
+  { to: "/mapa", icon: Map, label: "Mapa do Brasil", group: "principal" },
+  { to: "/alertas", icon: BellRing, label: "Alertas", group: "principal" },
+  { to: "/analitico", icon: TrendingUp, label: "Análises", badge: "Novo", group: "fase2" },
+  { to: "/relatorios", icon: Download, label: "Relatórios", badge: "Novo", group: "fase2" },
+  { to: "/indicadores", icon: BarChart3, label: "Indicadores", group: "dados" },
+  { to: "/legislacao", icon: Scale, label: "Legislação", group: "dados" },
+  { to: "/ferramentas", icon: Wrench, label: "Ferramentas", group: "dados" },
+  { to: "/eventos", icon: CalendarDays, label: "Eventos", group: "dados" },
+  { to: "/contato", icon: Mail, label: "Contato", group: "dados" },
 ];
 
 interface AppSidebarProps {
@@ -35,6 +41,7 @@ interface AppSidebarProps {
 
 const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
   const location = useLocation();
+  const { isAuthenticated, user } = useAuth();
 
   return (
     <aside
@@ -60,15 +67,22 @@ const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 py-4 overflow-y-auto">
-        <ul className="space-y-1 px-2">
-          {navItems.map((item) => {
+      <nav className="flex-1 py-3 overflow-y-auto">
+        <ul className="space-y-0.5 px-2">
+          {navItems.map((item, index) => {
             const isActive =
               location.pathname === item.to ||
               (item.to === "/" && location.pathname === "/dashboard");
 
+            // Add separator before "fase2" group
+            const prevItem = navItems[index - 1];
+            const showSeparator = prevItem && prevItem.group !== item.group;
+
             return (
               <li key={item.to}>
+                {showSeparator && (
+                  <div className="border-t border-white/10 my-2 mx-1" />
+                )}
                 <NavLink
                   to={item.to}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
@@ -79,13 +93,47 @@ const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
                   title={collapsed ? item.label : undefined}
                 >
                   <item.icon size={20} className="flex-shrink-0" />
-                  {!collapsed && <span>{item.label}</span>}
+                  {!collapsed && (
+                    <span className="flex-1">{item.label}</span>
+                  )}
+                  {!collapsed && item.badge && (
+                    <span className="text-[0.55rem] font-bold bg-emerald-500 text-white px-1.5 py-0.5 rounded-full">
+                      {item.badge}
+                    </span>
+                  )}
                 </NavLink>
               </li>
             );
           })}
         </ul>
       </nav>
+
+      {/* User profile button */}
+      <NavLink
+        to="/perfil"
+        className={`flex items-center gap-3 mx-2 mb-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+          location.pathname === "/perfil"
+            ? "bg-primary text-white shadow-lg shadow-primary/20"
+            : "text-white/60 hover:text-white hover:bg-white/10"
+        } ${collapsed ? "justify-center" : ""}`}
+        title={collapsed ? "Perfil" : undefined}
+      >
+        <div className="w-7 h-7 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+          <User size={14} />
+        </div>
+        {!collapsed && (
+          <div className="overflow-hidden flex-1">
+            <span className="block text-sm font-medium truncate">
+              {isAuthenticated ? user?.nome : "Entrar"}
+            </span>
+            {isAuthenticated && (
+              <span className="block text-[0.6rem] text-white/40 truncate">
+                {user?.email}
+              </span>
+            )}
+          </div>
+        )}
+      </NavLink>
 
       {/* Collapse Toggle */}
       <button

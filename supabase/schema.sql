@@ -117,3 +117,87 @@ CREATE POLICY "Service can insert licitacoes" ON licitacoes FOR INSERT TO servic
 CREATE POLICY "Service can insert indicadores" ON indicadores FOR INSERT TO service_role WITH CHECK (true);
 CREATE POLICY "Service can insert updates" ON updates FOR INSERT TO service_role WITH CHECK (true);
 CREATE POLICY "Service can insert fontes" ON fontes_uteis FOR INSERT TO service_role WITH CHECK (true);
+
+-- ==============================================================
+-- FASE 2 — Autenticação, Perfis e Alertas
+-- ==============================================================
+
+-- ─── Perfis de Usuário ────────────────────────────────────
+-- Estende auth.users do Supabase Auth
+CREATE TABLE IF NOT EXISTS profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  nome TEXT NOT NULL,
+  email TEXT NOT NULL,
+  empresa TEXT,
+  cargo TEXT,
+  avatar_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX idx_profiles_email ON profiles (email);
+
+-- ─── Filtros Salvos ───────────────────────────────────────
+CREATE TABLE IF NOT EXISTS filtros_salvos (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  nome TEXT NOT NULL,
+  tipo TEXT NOT NULL CHECK (tipo IN ('licitacoes', 'noticias', 'alertas')),
+  filtros JSONB NOT NULL DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX idx_filtros_user ON filtros_salvos (user_id);
+
+-- ─── Configuração de Alertas ──────────────────────────────
+CREATE TABLE IF NOT EXISTS alertas_config (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL UNIQUE REFERENCES profiles(id) ON DELETE CASCADE,
+  email_ativo BOOLEAN DEFAULT false,
+  palavras_chave TEXT[] DEFAULT '{}',
+  estados TEXT[] DEFAULT '{}',
+  categorias TEXT[] DEFAULT '{}',
+  valor_minimo NUMERIC(15,2) DEFAULT 0,
+  limiar_sinapi NUMERIC(5,2) DEFAULT 5.0,
+  frequencia TEXT DEFAULT 'diario' CHECK (frequencia IN ('tempo_real', 'diario', 'semanal')),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- ─── Histórico de Preços SINAPI ───────────────────────────
+CREATE TABLE IF NOT EXISTS historico_precos (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  insumo TEXT NOT NULL,
+  preco NUMERIC(15,2) NOT NULL,
+  unidade TEXT NOT NULL,
+  referencia TEXT NOT NULL, -- ex: "Fev/2026 - SP"
+  data_referencia DATE NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX idx_historico_insumo ON historico_precos (insumo, data_referencia DESC);
+
+-- ─── RLS Fase 2 ──────────────────────────────────────────
+
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE filtros_salvos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE alertas_config ENABLE ROW LEVEL SECURITY;
+ALTER TABLE historico_precos ENABLE ROW LEVEL SECURITY;
+
+-- Profiles: usuário lê/edita apenas o próprio
+CREATE POLICY "Users can view own profile" ON profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
+CREATE POLICY "Users can insert own profile" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
+
+-- Filtros: usuário lê/edita apenas os próprios
+CREATE POLICY "Users can view own filters" ON filtros_salvos FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can insert own filters" ON filtros_salvos FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can delete own filters" ON filtros_salvos FOR DELETE USING (auth.uid() = user_id);
+
+-- Alertas config: usuário lê/edita apenas o próprio
+CREATE POLICY "Users can view own alert config" ON alertas_config FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can upsert own alert config" ON alertas_config FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can update own alert config" ON alertas_config FOR UPDATE USING (auth.uid() = user_id);
+
+-- Histórico de preços: público para leitura
+CREATE POLICY "Historico precos viewable by everyone" ON historico_precos FOR SELECT USING (true);
+CREATE POLICY "Service can insert historico" ON historico_precos FOR INSERT TO service_role WITH CHECK (true);
