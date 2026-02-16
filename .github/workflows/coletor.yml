@@ -1,0 +1,51 @@
+name: Coletor de Dados ConstruData
+
+on:
+  # Roda automaticamente 2x por dia (6h e 18h UTC = 3h e 15h BRT)
+  schedule:
+    - cron: "0 6 * * *"
+    - cron: "0 18 * * *"
+
+  # Permite rodar manualmente pelo GitHub
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repositório
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Executar coletor
+        run: node coletor.js
+        env:
+          NODE_ENV: production
+
+      - name: Verificar se houve alterações
+        id: check_changes
+        run: |
+          git diff --quiet public/ src/data/ || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit e push dos dados atualizados
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/noticias.json public/artigos.json public/licitacoes.json
+          git add src/data/noticias.ts src/data/artigos.ts src/data/licitacoes.ts
+          git commit -m "chore(data): atualizar dados via coletor automático [skip ci]"
+          git push
