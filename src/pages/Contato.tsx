@@ -24,10 +24,22 @@ const Contato = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // Sanitização básica: trim nos campos
     const nomeClean = nome.trim();
     const emailClean = email.trim();
-    if (!nomeClean || !emailClean) return;
+    const mensagemClean = mensagem.trim();
+
+    if (!nomeClean || nomeClean.length < 2) {
+      toast.error("Nome deve ter pelo menos 2 caracteres.");
+      return;
+    }
+    if (!emailClean || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailClean)) {
+      toast.error("E-mail inválido.");
+      return;
+    }
+    if (!mensagemClean || mensagemClean.length < 10) {
+      toast.error("Mensagem deve ter pelo menos 10 caracteres.");
+      return;
+    }
 
     toast.success("Mensagem enviada com sucesso! Retornaremos em breve.");
     setNome("");

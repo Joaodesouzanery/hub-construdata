@@ -63,28 +63,61 @@ const STORAGE_KEY = "hub_construdata_user";
 const FILTERS_KEY = "hub_construdata_filters";
 const ALERTS_KEY = "hub_construdata_alerts";
 
+/** Valida estrutura do UserProfile contra dados corrompidos/maliciosos */
+function isValidUserProfile(obj: unknown): obj is UserProfile {
+  if (!obj || typeof obj !== "object") return false;
+  const o = obj as Record<string, unknown>;
+  return (
+    typeof o.id === "string" && o.id.length > 0 && o.id.length < 200 &&
+    typeof o.email === "string" && o.email.length > 0 && o.email.length < 255 &&
+    typeof o.nome === "string" && o.nome.length < 200 &&
+    typeof o.created_at === "string"
+  );
+}
+
+/** Valida estrutura de SavedFilter */
+function isValidFilter(obj: unknown): obj is SavedFilter {
+  if (!obj || typeof obj !== "object") return false;
+  const o = obj as Record<string, unknown>;
+  return (
+    typeof o.id === "string" &&
+    typeof o.nome === "string" && o.nome.length < 200 &&
+    typeof o.tipo === "string" &&
+    ["licitacoes", "noticias", "alertas"].includes(o.tipo as string)
+  );
+}
+
 function loadLocalUser(): UserProfile | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw || raw.length > 50_000) return null;
+    const parsed = JSON.parse(raw);
+    return isValidUserProfile(parsed) ? parsed : null;
   } catch {
+    localStorage.removeItem(STORAGE_KEY);
     return null;
   }
 }
 
 function saveLocalUser(user: UserProfile | null) {
-  if (user) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-  } else {
-    localStorage.removeItem(STORAGE_KEY);
-  }
+  try {
+    if (user && isValidUserProfile(user)) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  } catch { /* localStorage cheio ou indisponível */ }
 }
 
 function loadLocalFilters(): SavedFilter[] {
   try {
     const raw = localStorage.getItem(FILTERS_KEY);
-    return raw ? JSON.parse(raw) : [];
+    if (!raw || raw.length > 100_000) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(isValidFilter).slice(0, 100);
   } catch {
+    localStorage.removeItem(FILTERS_KEY);
     return [];
   }
 }
@@ -92,8 +125,20 @@ function loadLocalFilters(): SavedFilter[] {
 function loadLocalAlertConfig(): AlertConfig {
   try {
     const raw = localStorage.getItem(ALERTS_KEY);
-    return raw ? { ...defaultAlertConfig, ...JSON.parse(raw) } : defaultAlertConfig;
+    if (!raw || raw.length > 10_000) return defaultAlertConfig;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return defaultAlertConfig;
+    return {
+      email_ativo: typeof parsed.email_ativo === "boolean" ? parsed.email_ativo : defaultAlertConfig.email_ativo,
+      palavras_chave: Array.isArray(parsed.palavras_chave) ? parsed.palavras_chave.filter((p: unknown) => typeof p === "string").slice(0, 50) : defaultAlertConfig.palavras_chave,
+      estados: Array.isArray(parsed.estados) ? parsed.estados.filter((e: unknown) => typeof e === "string" && (e as string).length === 2).slice(0, 27) : defaultAlertConfig.estados,
+      categorias: Array.isArray(parsed.categorias) ? parsed.categorias.filter((c: unknown) => typeof c === "string").slice(0, 20) : defaultAlertConfig.categorias,
+      valor_minimo: typeof parsed.valor_minimo === "number" && parsed.valor_minimo >= 0 ? parsed.valor_minimo : defaultAlertConfig.valor_minimo,
+      limiar_sinapi: typeof parsed.limiar_sinapi === "number" && parsed.limiar_sinapi >= 0 ? parsed.limiar_sinapi : defaultAlertConfig.limiar_sinapi,
+      frequencia: ["tempo_real", "diario", "semanal"].includes(parsed.frequencia) ? parsed.frequencia : defaultAlertConfig.frequencia,
+    };
   } catch {
+    localStorage.removeItem(ALERTS_KEY);
     return defaultAlertConfig;
   }
 }

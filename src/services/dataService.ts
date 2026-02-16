@@ -23,15 +23,50 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 const useSupabase = !!(SUPABASE_URL && SUPABASE_KEY);
 
+/** Limite máximo de tamanho de resposta (5MB) */
+const MAX_RESPONSE_SIZE = 5 * 1024 * 1024;
+
+/** Timeout padrão para requests (15s) */
+const REQUEST_TIMEOUT_MS = 15_000;
+
+/** Fetch com timeout usando AbortController */
+async function fetchComTimeout(
+  url: string,
+  options?: RequestInit,
+  timeoutMs = REQUEST_TIMEOUT_MS
+): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { ...options, signal: controller.signal });
+    // Validar tamanho da resposta via Content-Length quando disponível
+    const contentLength = res.headers.get("content-length");
+    if (contentLength && parseInt(contentLength, 10) > MAX_RESPONSE_SIZE) {
+      throw new Error("Resposta excede limite de tamanho");
+    }
+    return res;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/** Whitelist de nomes de tabela válidos para Supabase */
+const TABELAS_VALIDAS = new Set(["noticias", "artigos", "licitacoes"]);
+
 async function supabaseQuery<T>(
   table: string,
   orderBy: string,
   limit: number
 ): Promise<T[]> {
   if (!SUPABASE_URL || !SUPABASE_KEY) throw new Error("Supabase not configured");
+  if (!TABELAS_VALIDAS.has(table)) throw new Error("Tabela inválida");
 
-  const url = `${SUPABASE_URL}/rest/v1/${table}?select=*&order=${orderBy}.desc&limit=${limit}`;
-  const res = await fetch(url, {
+  // Sanitizar parâmetros de query (prevenir injection no REST API)
+  const safeOrderBy = orderBy.replace(/[^a-zA-Z0-9_]/g, "");
+  const safeLimit = Math.min(Math.max(1, limit), 500);
+
+  const url = `${SUPABASE_URL}/rest/v1/${table}?select=*&order=${safeOrderBy}.desc&limit=${safeLimit}`;
+  const res = await fetchComTimeout(url, {
     headers: {
       apikey: SUPABASE_KEY,
       Authorization: `Bearer ${SUPABASE_KEY}`,
@@ -59,7 +94,7 @@ export async function fetchNoticias(): Promise<Noticia[]> {
   if (useSupabase) {
     return supabaseQuery<Noticia>("noticias", "data_publicacao", 50);
   }
-  const res = await fetch("./noticias.json");
+  const res = await fetchComTimeout("./noticias.json");
   if (!res.ok) throw new Error("Falha ao carregar notícias");
   const data = await res.json();
   return validarArray<Noticia>(data, ["titulo", "link", "data_publicacao", "fonte"]);
@@ -71,7 +106,7 @@ export async function fetchArtigos(): Promise<Artigo[]> {
   if (useSupabase) {
     return supabaseQuery<Artigo>("artigos", "data_publicacao", 30);
   }
-  const res = await fetch("./artigos.json");
+  const res = await fetchComTimeout("./artigos.json");
   if (!res.ok) throw new Error("Falha ao carregar artigos");
   const data = await res.json();
   return validarArray<Artigo>(data, ["titulo", "link", "resumo", "fonte"]);
@@ -83,7 +118,7 @@ export async function fetchLicitacoes(): Promise<Licitacao[]> {
   if (useSupabase) {
     return supabaseQuery<Licitacao>("licitacoes", "data_abertura", 200);
   }
-  const res = await fetch("./licitacoes.json");
+  const res = await fetchComTimeout("./licitacoes.json");
   if (!res.ok) throw new Error("Falha ao carregar licitações");
   const data = await res.json();
   return validarArray<Licitacao>(data, ["titulo", "orgao", "link", "modalidade"]);
