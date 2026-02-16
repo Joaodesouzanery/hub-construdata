@@ -9,6 +9,7 @@
 
 import type { Licitacao } from "@/types/database";
 
-const licitacoes: Licitacao[] = [];
+export const dadosEmbutidosLicitacoes: Licitacao[] = [];
 
+const licitacoes = dadosEmbutidosLicitacoes;
 export default licitacoes;
