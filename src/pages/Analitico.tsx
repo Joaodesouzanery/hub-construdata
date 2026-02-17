@@ -35,8 +35,13 @@ import {
   Award,
   AlertTriangle,
   Activity,
+  Users,
+  Trophy,
+  Building2,
 } from "lucide-react";
 import { dadosEmbutidosLicitacoes } from "@/data/licitacoes";
+import { empresas } from "@/data/empresas";
+import { projetos } from "@/data/projetos";
 import type { Licitacao } from "@/types/database";
 
 // ── Dados SINAPI vs SICRO ──
@@ -89,7 +94,7 @@ const radarData = [
 
 const CORES = ["#3b82f6", "#8b5cf6", "#f59e0b", "#10b981", "#f97316", "#ec4899"];
 
-type TabAnalitico = "tendencias" | "comparacao" | "scoring";
+type TabAnalitico = "tendencias" | "comparacao" | "scoring" | "concorrencia";
 
 function formatarValor(valor: number): string {
   if (valor >= 1e9) return `R$ ${(valor / 1e9).toFixed(1)}B`;
@@ -174,8 +179,82 @@ const Analitico = () => {
     };
   }, [licitacoes]);
 
+  // ── Dados de concorrência entre empresas ──
+  const dadosConcorrencia = useMemo(() => {
+    // Ranking por volume
+    const rankingVolume = empresas
+      .map((e) => ({
+        nome: e.nome_fantasia,
+        volume: e.volume_total_contratos,
+        vitorias: e.licitacoes_vencidas,
+        participacoes: e.licitacoes_participadas,
+        taxa: e.taxa_vitoria,
+        score: e.nota_score,
+        porte: e.porte,
+      }))
+      .sort((a, b) => b.volume - a.volume);
+
+    // Market share (pie)
+    const totalVolume = empresas.reduce((s, e) => s + e.volume_total_contratos, 0);
+    const marketShare = empresas
+      .map((e, i) => ({
+        nome: e.nome_fantasia,
+        valor: e.volume_total_contratos,
+        pct: totalVolume > 0 ? ((e.volume_total_contratos / totalVolume) * 100) : 0,
+        cor: CORES[i % CORES.length],
+      }))
+      .sort((a, b) => b.valor - a.valor);
+
+    // Concorrência por segmento — quem atua em cada segmento
+    const segmentos: Record<string, { empresas: string[]; projetos: number; volume: number }> = {};
+    empresas.forEach((e) => {
+      e.segmentos.forEach((seg) => {
+        if (!segmentos[seg]) segmentos[seg] = { empresas: [], projetos: 0, volume: 0 };
+        segmentos[seg].empresas.push(e.nome_fantasia);
+      });
+    });
+    projetos.forEach((p) => {
+      if (segmentos[p.categoria]) {
+        segmentos[p.categoria].projetos++;
+        segmentos[p.categoria].volume += p.valor_contrato;
+      }
+    });
+    const segmentosData = Object.entries(segmentos)
+      .map(([nome, data]) => ({ nome, ...data }))
+      .sort((a, b) => b.volume - a.volume);
+
+    // Head-to-head: empresas que competem nos mesmos projetos
+    const encontros: Record<string, { rivais: Record<string, number> }> = {};
+    projetos.forEach((p) => {
+      const ids = p.participantes.map((part) => part.empresa_id);
+      ids.forEach((id1) => {
+        if (!encontros[id1]) encontros[id1] = { rivais: {} };
+        ids.forEach((id2) => {
+          if (id1 !== id2) {
+            encontros[id1].rivais[id2] = (encontros[id1].rivais[id2] || 0) + 1;
+          }
+        });
+      });
+    });
+
+    const rivalidades = Object.entries(encontros)
+      .flatMap(([empId, data]) =>
+        Object.entries(data.rivais).map(([rivalId, count]) => ({
+          empresa1: empresas.find((e) => e.id === empId)?.nome_fantasia || empId,
+          empresa2: empresas.find((e) => e.id === rivalId)?.nome_fantasia || rivalId,
+          encontros: count,
+          key: [empId, rivalId].sort().join("-"),
+        }))
+      )
+      .filter((r, i, arr) => arr.findIndex((x) => x.key === r.key) === i)
+      .sort((a, b) => b.encontros - a.encontros);
+
+    return { rankingVolume, marketShare, segmentosData, rivalidades, totalVolume };
+  }, []);
+
   const tabs: { key: TabAnalitico; label: string; icon: typeof BarChart3 }[] = [
     { key: "tendencias", label: "Tendências", icon: TrendingUp },
+    { key: "concorrencia", label: "Concorrência", icon: Users },
     { key: "comparacao", label: "SINAPI vs SICRO", icon: BarChart3 },
     { key: "scoring", label: "Scoring", icon: Target },
   ];
@@ -526,6 +605,283 @@ const Analitico = () => {
               </div>
             </CardContent>
           </Card>
+        </div>
+      )}
+
+      {/* ── Tab: Concorrência ── */}
+      {tab === "concorrencia" && (
+        <div className="space-y-5">
+          {/* Market Share Pie + Ranking Bars */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {/* Market Share */}
+            <Card className="border-0 shadow-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-bold flex items-center gap-2">
+                  <DollarSign size={16} className="text-primary" />
+                  Market Share por Volume de Contratos
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-4">
+                  <ResponsiveContainer width="50%" height={250}>
+                    <PieChart>
+                      <Pie
+                        data={dadosConcorrencia.marketShare.slice(0, 6)}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={45}
+                        outerRadius={90}
+                        paddingAngle={2}
+                        dataKey="valor"
+                      >
+                        {dadosConcorrencia.marketShare.slice(0, 6).map((entry, i) => (
+                          <Cell key={i} fill={entry.cor} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{ fontSize: 12, borderRadius: 8, border: "none" }}
+                        formatter={(v) => [formatarValor(Number(v)), ""]}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="space-y-2 flex-1">
+                    {dadosConcorrencia.marketShare.slice(0, 6).map((emp) => (
+                      <div key={emp.nome} className="flex items-center gap-2 text-xs">
+                        <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ backgroundColor: emp.cor }} />
+                        <span className="text-muted-foreground truncate flex-1">{emp.nome}</span>
+                        <span className="font-bold">{emp.pct.toFixed(1)}%</span>
+                      </div>
+                    ))}
+                    {dadosConcorrencia.marketShare.length > 6 && (
+                      <p className="text-[0.6rem] text-muted-foreground">
+                        + {dadosConcorrencia.marketShare.length - 6} empresas
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Ranking por Taxa de Vitória */}
+            <Card className="border-0 shadow-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-bold flex items-center gap-2">
+                  <Trophy size={16} className="text-amber-500" />
+                  Ranking — Taxa de Vitória em Licitações
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={280}>
+                  <BarChart
+                    data={dadosConcorrencia.rankingVolume
+                      .sort((a, b) => b.taxa - a.taxa)
+                      .slice(0, 8)
+                      .map((e) => ({ ...e, nome: e.nome.length > 18 ? e.nome.slice(0, 16) + "..." : e.nome }))}
+                    layout="vertical"
+                  >
+                    <XAxis type="number" tick={{ fontSize: 10 }} domain={[0, 50]} unit="%" />
+                    <YAxis dataKey="nome" type="category" tick={{ fontSize: 10 }} width={130} />
+                    <Tooltip
+                      contentStyle={{ fontSize: 12, borderRadius: 8, border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+                      formatter={(v) => [`${Number(v).toFixed(1)}%`, "Taxa de Vitória"]}
+                    />
+                    <Bar dataKey="taxa" fill="#f59e0b" radius={[0, 4, 4, 0]} barSize={16} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Ranking Geral — Tabela */}
+          <Card className="border-0 shadow-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <Building2 size={16} className="text-primary" />
+                Ranking Geral de Empresas
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b bg-muted/40 text-xs">
+                      <th className="text-center px-3 py-2.5 font-semibold w-10">#</th>
+                      <th className="text-left px-3 py-2.5 font-semibold">Empresa</th>
+                      <th className="text-center px-3 py-2.5 font-semibold">Porte</th>
+                      <th className="text-center px-3 py-2.5 font-semibold">Score</th>
+                      <th className="text-center px-3 py-2.5 font-semibold">Participações</th>
+                      <th className="text-center px-3 py-2.5 font-semibold">Vitórias</th>
+                      <th className="text-center px-3 py-2.5 font-semibold">Taxa</th>
+                      <th className="text-right px-3 py-2.5 font-semibold">Volume</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dadosConcorrencia.rankingVolume.map((emp, i) => (
+                      <tr key={emp.nome} className="border-b last:border-0 hover:bg-muted/30">
+                        <td className="text-center px-3 py-2.5 font-bold text-muted-foreground">{i + 1}</td>
+                        <td className="px-3 py-2.5 font-semibold">{emp.nome}</td>
+                        <td className="text-center px-3 py-2.5">
+                          <span className="text-[0.6rem] font-semibold uppercase px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                            {emp.porte}
+                          </span>
+                        </td>
+                        <td className="text-center px-3 py-2.5">
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                            emp.score >= 85 ? "bg-emerald-50 text-emerald-700" :
+                            emp.score >= 70 ? "bg-blue-50 text-blue-700" :
+                            emp.score >= 50 ? "bg-amber-50 text-amber-700" :
+                            "bg-red-50 text-red-700"
+                          }`}>
+                            {emp.score}
+                          </span>
+                        </td>
+                        <td className="text-center px-3 py-2.5 tabular-nums">{emp.participacoes}</td>
+                        <td className="text-center px-3 py-2.5 tabular-nums font-semibold text-emerald-600">{emp.vitorias}</td>
+                        <td className="text-center px-3 py-2.5">
+                          <span className={`text-xs font-bold ${emp.taxa >= 40 ? "text-emerald-600" : emp.taxa >= 30 ? "text-blue-600" : "text-amber-600"}`}>
+                            {emp.taxa.toFixed(1)}%
+                          </span>
+                        </td>
+                        <td className="text-right px-3 py-2.5 font-bold text-primary tabular-nums">
+                          {formatarValor(emp.volume)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Concorrência por Segmento + Rivalidades */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {/* Concorrência por Segmento */}
+            <Card className="border-0 shadow-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-bold flex items-center gap-2">
+                  <Target size={16} className="text-primary" />
+                  Densidade Competitiva por Segmento
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {dadosConcorrencia.segmentosData.map((seg) => (
+                    <div key={seg.nome}>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm font-semibold">{seg.nome}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {seg.empresas.length} empresas · {seg.projetos} projetos
+                        </span>
+                      </div>
+                      <div className="h-3 bg-gray-100 rounded-full overflow-hidden mb-2">
+                        <div
+                          className="h-full bg-primary rounded-full"
+                          style={{ width: `${Math.min((seg.empresas.length / empresas.length) * 100, 100)}%` }}
+                        />
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {seg.empresas.slice(0, 5).map((nome) => (
+                          <span key={nome} className="text-[0.55rem] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                            {nome}
+                          </span>
+                        ))}
+                        {seg.empresas.length > 5 && (
+                          <span className="text-[0.55rem] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                            +{seg.empresas.length - 5}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Rivalidades (Head-to-Head) */}
+            <Card className="border-0 shadow-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-bold flex items-center gap-2">
+                  <Users size={16} className="text-primary" />
+                  Encontros em Projetos (Head-to-Head)
+                </CardTitle>
+                <p className="text-[0.65rem] text-muted-foreground mt-1">
+                  Empresas que atuam juntas ou competem nos mesmos projetos
+                </p>
+              </CardHeader>
+              <CardContent>
+                {dadosConcorrencia.rivalidades.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-8">Nenhum encontro registrado.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {dadosConcorrencia.rivalidades.map((r) => (
+                      <div key={r.key} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-semibold">{r.empresa1}</span>
+                            <span className="text-xs text-muted-foreground">vs</span>
+                            <span className="text-sm font-semibold">{r.empresa2}</span>
+                          </div>
+                        </div>
+                        <span className="text-xs font-bold px-3 py-1 rounded-full bg-primary/10 text-primary">
+                          {r.encontros} projeto{r.encontros > 1 ? "s" : ""}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Insights de Concorrência */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <Card className="border-0 shadow-sm border-l-4 border-l-violet-500">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <Award size={20} className="text-violet-500 mt-0.5" />
+                  <div>
+                    <h4 className="text-sm font-bold">Líder de Mercado</h4>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {dadosConcorrencia.rankingVolume[0]?.nome} lidera com{" "}
+                      {formatarValor(dadosConcorrencia.rankingVolume[0]?.volume || 0)} em contratos,
+                      representando{" "}
+                      {dadosConcorrencia.marketShare[0]?.pct.toFixed(1)}% do mercado mapeado.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-sm border-l-4 border-l-amber-500">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <Trophy size={20} className="text-amber-500 mt-0.5" />
+                  <div>
+                    <h4 className="text-sm font-bold">Melhor Taxa de Vitória</h4>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {[...dadosConcorrencia.rankingVolume].sort((a, b) => b.taxa - a.taxa)[0]?.nome} tem a
+                      maior taxa ({[...dadosConcorrencia.rankingVolume].sort((a, b) => b.taxa - a.taxa)[0]?.taxa.toFixed(1)}%),
+                      indicando alta competitividade em processos licitatórios.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-sm border-l-4 border-l-blue-500">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <Zap size={20} className="text-blue-500 mt-0.5" />
+                  <div>
+                    <h4 className="text-sm font-bold">Segmento Mais Disputado</h4>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {dadosConcorrencia.segmentosData[0]?.nome} concentra{" "}
+                      {dadosConcorrencia.segmentosData[0]?.empresas.length} empresas competindo,
+                      com {formatarValor(dadosConcorrencia.segmentosData[0]?.volume || 0)} em projetos.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       )}
 

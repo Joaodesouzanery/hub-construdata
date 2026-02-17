@@ -12,19 +12,26 @@ import {
   DollarSign,
   Loader2,
   TrendingUp,
+  Building2,
+  Briefcase,
 } from "lucide-react";
 import { toast } from "sonner";
 import { dadosEmbutidosLicitacoes } from "@/data/licitacoes";
+import { empresas } from "@/data/empresas";
+import { projetos } from "@/data/projetos";
 import type { Licitacao } from "@/types/database";
 import {
   exportarLicitacoesPDF,
   exportarLicitacoesXLSX,
   exportarRelatorioPDF,
   exportarComparativoXLSX,
+  exportarDossieEmpresaPDF,
+  exportarDossieProjetoPDF,
+  exportarPortfolioPDF,
 } from "@/lib/exportar";
 
 type FormatoExport = "pdf" | "xlsx";
-type TipoRelatorio = "licitacoes" | "mercado" | "comparativo";
+type TipoRelatorio = "licitacoes" | "mercado" | "comparativo" | "dossie-empresa" | "dossie-projeto" | "portfolio";
 
 function formatarValor(valor: number): string {
   if (valor >= 1e9) return `R$ ${(valor / 1e9).toFixed(1)}B`;
@@ -39,6 +46,10 @@ const Relatorios = () => {
   // Filtros
   const [estadoFiltro, setEstadoFiltro] = useState<string>("todos");
   const [categoriaFiltro, setCategoriaFiltro] = useState<string>("todos");
+
+  // Selecao para dossie
+  const [empresaSelecionada, setEmpresaSelecionada] = useState<string>(empresas[0]?.id || "");
+  const [projetoSelecionado, setProjetoSelecionado] = useState<string>(projetos[0]?.id || "");
 
   useEffect(() => {
     fetch("./licitacoes.json")
@@ -131,6 +142,20 @@ const Relatorios = () => {
           { insumo: "Telha Fibroc. 6mm (un)", sinapi: 38.9, sicro: 40.2, diferenca: 3.3 },
         ];
         await exportarComparativoXLSX(dados);
+      } else if (tipo === "dossie-empresa") {
+        const emp = empresas.find((e) => e.id === empresaSelecionada);
+        if (!emp) { toast.error("Selecione uma empresa."); return; }
+        const projs = projetos.filter(
+          (p) => p.empresa_responsavel_id === emp.id || p.participantes.some((pt) => pt.empresa_id === emp.id)
+        );
+        await exportarDossieEmpresaPDF(emp, projs);
+      } else if (tipo === "dossie-projeto") {
+        const proj = projetos.find((p) => p.id === projetoSelecionado);
+        if (!proj) { toast.error("Selecione um projeto."); return; }
+        const empResp = empresas.find((e) => e.id === proj.empresa_responsavel_id) || null;
+        await exportarDossieProjetoPDF(proj, empResp);
+      } else if (tipo === "portfolio") {
+        await exportarPortfolioPDF(empresas, projetos);
       }
       toast.success("Arquivo exportado com sucesso!");
     } catch (err) {
@@ -152,7 +177,7 @@ const Relatorios = () => {
           Exportação & Relatórios
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Exporte licitações, análises de mercado e comparativos em PDF ou Excel
+          Exporte licitações, dossiês de empresas/projetos e análises em PDF ou Excel
         </p>
       </div>
 
@@ -208,7 +233,7 @@ const Relatorios = () => {
         </CardContent>
       </Card>
 
-      {/* Export Cards */}
+      {/* Export Cards - Row 1 (Licitações, Mercado, Comparativo) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Relatório de Licitações */}
         <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
@@ -341,6 +366,179 @@ const Relatorios = () => {
                 <FileSpreadsheet size={14} />
               )}
               Exportar Excel
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Export Cards - Row 2 (Dossiês — Fase 4B) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {/* Dossiê de Empresa */}
+        <Card className="border-0 shadow-sm hover:shadow-md transition-shadow border-t-2 border-t-primary">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base font-bold flex items-center gap-2">
+                <Building2 size={20} className="text-primary" />
+                Dossiê de Empresa
+              </CardTitle>
+              <span className="text-[0.55rem] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full">Fase 4</span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              PDF completo com dados cadastrais, performance, especialidades e projetos vinculados.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div>
+              <label className="text-[0.65rem] font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">
+                Selecione a empresa
+              </label>
+              <select
+                value={empresaSelecionada}
+                onChange={(e) => setEmpresaSelecionada(e.target.value)}
+                className="w-full text-sm border border-border rounded-lg px-2.5 py-2 bg-white"
+              >
+                {empresas.map((emp) => (
+                  <option key={emp.id} value={emp.id}>
+                    {emp.nome_fantasia} — Score {emp.nota_score}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                <CheckCircle2 size={14} className="text-primary" />
+                <span>Dados cadastrais e contato</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                <CheckCircle2 size={14} className="text-primary" />
+                <span>Performance e taxa de vitória</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                <CheckCircle2 size={14} className="text-primary" />
+                <span>Projetos vinculados com status</span>
+              </div>
+            </div>
+            <Button
+              className="w-full gap-1.5"
+              onClick={() => handleExport("dossie-empresa", "pdf")}
+              disabled={!!exportando}
+            >
+              {isExporting("dossie-empresa-pdf") ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <FileText size={14} />
+              )}
+              Exportar Dossiê PDF
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Dossiê de Projeto */}
+        <Card className="border-0 shadow-sm hover:shadow-md transition-shadow border-t-2 border-t-primary">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base font-bold flex items-center gap-2">
+                <Briefcase size={20} className="text-primary" />
+                Dossiê de Projeto
+              </CardTitle>
+              <span className="text-[0.55rem] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full">Fase 4</span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              PDF com dados do contrato, timeline de marcos, participantes e empresa responsável.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div>
+              <label className="text-[0.65rem] font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">
+                Selecione o projeto
+              </label>
+              <select
+                value={projetoSelecionado}
+                onChange={(e) => setProjetoSelecionado(e.target.value)}
+                className="w-full text-sm border border-border rounded-lg px-2.5 py-2 bg-white"
+              >
+                {projetos.map((proj) => (
+                  <option key={proj.id} value={proj.id}>
+                    {proj.titulo.slice(0, 60)}{proj.titulo.length > 60 ? "..." : ""} — {proj.status}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                <CheckCircle2 size={14} className="text-primary" />
+                <span>Dados contratuais completos</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                <CheckCircle2 size={14} className="text-primary" />
+                <span>Timeline visual de marcos</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                <CheckCircle2 size={14} className="text-primary" />
+                <span>Participantes e empresa responsável</span>
+              </div>
+            </div>
+            <Button
+              className="w-full gap-1.5"
+              onClick={() => handleExport("dossie-projeto", "pdf")}
+              disabled={!!exportando}
+            >
+              {isExporting("dossie-projeto-pdf") ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <FileText size={14} />
+              )}
+              Exportar Dossiê PDF
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Relatório de Portfolio Completo */}
+        <Card className="border-0 shadow-sm hover:shadow-md transition-shadow border-t-2 border-t-primary">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base font-bold flex items-center gap-2">
+                <Download size={20} className="text-primary" />
+                Portfolio Completo
+              </CardTitle>
+              <span className="text-[0.55rem] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full">Fase 4</span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              PDF consolidado com todas as empresas e projetos cadastrados na plataforma.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="p-2.5 bg-muted/50 rounded-lg">
+                <span className="text-muted-foreground">Empresas</span>
+                <p className="font-bold text-lg">{empresas.length}</p>
+              </div>
+              <div className="p-2.5 bg-muted/50 rounded-lg">
+                <span className="text-muted-foreground">Projetos</span>
+                <p className="font-bold text-lg">{projetos.length}</p>
+              </div>
+            </div>
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                <CheckCircle2 size={14} className="text-primary" />
+                <span>Ranking de todas as empresas</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                <CheckCircle2 size={14} className="text-primary" />
+                <span>Lista completa de projetos</span>
+              </div>
+            </div>
+            <Button
+              className="w-full gap-1.5"
+              onClick={() => handleExport("portfolio", "pdf")}
+              disabled={!!exportando}
+            >
+              {isExporting("portfolio-pdf") ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <FileText size={14} />
+              )}
+              Exportar Portfolio PDF
             </Button>
           </CardContent>
         </Card>
