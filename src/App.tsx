@@ -14,6 +14,9 @@ import Contato from "./pages/Contato";
 import Perfil from "./pages/Perfil";
 import Analitico from "./pages/Analitico";
 import Relatorios from "./pages/Relatorios";
+import EmpresasPage from "./pages/EmpresasPage";
+import DossieEmpresa from "./pages/DossieEmpresa";
+import DossieProjeto from "./pages/DossieProjeto";
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -35,6 +38,9 @@ const App = () => (
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/analitico" element={<Analitico />} />
         <Route path="/relatorios" element={<Relatorios />} />
+        <Route path="/empresas" element={<EmpresasPage />} />
+        <Route path="/empresas/:id" element={<DossieEmpresa />} />
+        <Route path="/projetos/:id" element={<DossieProjeto />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

@@ -88,3 +88,76 @@ export interface FonteUtil {
   url: string;
   created_at?: string;
 }
+
+// ─── Empresas (Fase 4A — Dossiês) ───────────────────────
+// Tabela: empresas
+export type PorteEmpresa = "MEI" | "ME" | "EPP" | "Media" | "Grande";
+export type StatusEmpresa = "Ativa" | "Inativa" | "Suspensa";
+
+export interface Empresa {
+  id: string;
+  cnpj: string;
+  razao_social: string;
+  nome_fantasia: string;
+  segmentos: string[];
+  porte: PorteEmpresa;
+  estado_sede: string;
+  cidade_sede: string;
+  ano_fundacao: number;
+  licitacoes_participadas: number;
+  licitacoes_vencidas: number;
+  taxa_vitoria: number;              // percentual 0-100
+  volume_total_contratos: number;    // valor em reais
+  volume_total_fmt: string;
+  especialidades: string[];
+  telefone?: string;
+  email?: string;
+  site?: string;
+  status: StatusEmpresa;
+  nota_score: number;                // score de 0-100
+  created_at?: string;
+}
+
+// ─── Projetos (Fase 4A — Dossiês) ───────────────────────
+// Tabela: projetos
+export type StatusProjeto =
+  | "Em Andamento"
+  | "Concluido"
+  | "Atrasado"
+  | "Planejado"
+  | "Paralisado";
+
+export interface MarcoProjeto {
+  data: string;
+  descricao: string;
+  status: "concluido" | "em_andamento" | "pendente";
+}
+
+export interface ParticipanteProjeto {
+  empresa_id: string;
+  nome: string;
+  cnpj: string;
+  papel: string;                     // ex: "Executora", "Subcontratada", "Fiscalizadora"
+}
+
+export interface Projeto {
+  id: string;
+  titulo: string;
+  descricao: string;
+  empresa_responsavel_id: string;
+  empresa_responsavel_nome: string;
+  orgao_contratante: string;
+  estado: string;
+  cidade: string;
+  categoria: string;
+  valor_contrato: number;
+  valor_contrato_fmt: string;
+  data_inicio: string;
+  data_previsao_termino: string;
+  status: StatusProjeto;
+  percentual_execucao: number;       // 0-100
+  licitacao_origem_id?: string;
+  participantes: ParticipanteProjeto[];
+  marcos: MarcoProjeto[];
+  created_at?: string;
+}

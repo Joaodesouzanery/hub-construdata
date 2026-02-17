@@ -16,6 +16,7 @@ import {
   User,
   TrendingUp,
   Download,
+  Briefcase,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -25,6 +26,7 @@ const navItems = [
   { to: "/licitacoes", icon: FileSearch, label: "Licitações", group: "principal" },
   { to: "/mapa", icon: Map, label: "Mapa do Brasil", group: "principal" },
   { to: "/alertas", icon: BellRing, label: "Alertas", group: "principal" },
+  { to: "/empresas", icon: Briefcase, label: "Dossiês", badge: "Fase 4", group: "fase2" },
   { to: "/analitico", icon: TrendingUp, label: "Análises", badge: "Novo", group: "fase2" },
   { to: "/relatorios", icon: Download, label: "Relatórios", badge: "Novo", group: "fase2" },
   { to: "/indicadores", icon: BarChart3, label: "Indicadores", group: "dados" },
