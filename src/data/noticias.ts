@@ -43,7 +43,7 @@ const noticias: Noticia[] = [
     link: "https://saneamentobasico.com.br/sabesp-licitacao-baixada-santista/",
     data_publicacao: "2026-02-08T09:20:00.000Z",
     fonte: "Saneamento Básico",
-    imagem: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=300&fit=crop&auto=format",
+    imagem: "https://images.pexels.com/photos/10274179/pexels-photo-10274179.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1",
   },
   {
     titulo: "Estudo da ANA aponta que 35 milhões de brasileiros ainda não têm acesso à água tratada",
@@ -92,7 +92,7 @@ const noticias: Noticia[] = [
     link: "https://trfratabrasil.org.br/ranking-saneamento-2026/",
     data_publicacao: "2026-02-01T09:00:00.000Z",
     fonte: "Trata Brasil",
-    imagem: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&h=300&fit=crop&auto=format",
+    imagem: "https://images.pexels.com/photos/19517566/pexels-photo-19517566.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1",
   },
   {
     titulo: "SindusCon-SP aponta alta de 12% nos custos de materiais de construção no último trimestre",
@@ -120,7 +120,7 @@ const noticias: Noticia[] = [
     link: "https://agenciabrasil.ebc.com.br/economia/investimento-saneamento-2026/",
     data_publicacao: "2026-01-25T16:00:00.000Z",
     fonte: "Agência Brasil",
-    imagem: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=300&fit=crop&auto=format",
+    imagem: "https://images.pexels.com/photos/681347/pexels-photo-681347.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1",
   },
   {
     titulo: "Nova norma ABNT para projetos de estações de tratamento de esgoto entra em vigor",
@@ -141,14 +141,14 @@ const noticias: Noticia[] = [
     link: "https://saneamentobasico.com.br/concessao-amapa-leilao-b3/",
     data_publicacao: "2026-01-19T09:30:00.000Z",
     fonte: "Saneamento Básico",
-    imagem: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=300&fit=crop&auto=format",
+    imagem: "https://images.pexels.com/photos/10634138/pexels-photo-10634138.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1",
   },
   {
     titulo: "CBIC e CNI lançam plataforma digital para monitorar obras de infraestrutura em tempo real",
     link: "https://cbic.org.br/plataforma-digital-monitoramento-obras/",
     data_publicacao: "2026-01-17T14:45:00.000Z",
     fonte: "CBIC",
-    imagem: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=300&fit=crop&auto=format",
+    imagem: "https://images.pexels.com/photos/3862628/pexels-photo-3862628.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1",
   },
   {
     titulo: "Trata Brasil alerta: 16% das crianças internadas por diarreia vivem em áreas sem saneamento",

@@ -41,7 +41,7 @@ const artigos: Artigo[] = [
     fonte: "Saneamento Basico",
     autor: "Juliana Tavares",
     categorias: ["Saneamento", "Legislacao", "Governo"],
-    imagem: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=300&fit=crop&auto=format",
+    imagem: "https://images.pexels.com/photos/1579356/pexels-photo-1579356.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1",
   },
   {
     titulo: "Machine Learning aplicado a previsao de demanda hidrica em regioes metropolitanas",
@@ -140,7 +140,7 @@ const artigos: Artigo[] = [
     fonte: "CBIC",
     autor: "Equipe CBIC",
     categorias: ["Licitacoes", "Saneamento", "Indicadores"],
-    imagem: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=300&fit=crop&auto=format",
+    imagem: "https://images.pexels.com/photos/10274179/pexels-photo-10274179.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1",
   },
   {
     titulo: "Gemeos digitais em redes de distribuicao: a experiencia da COPASA em MG",
@@ -162,7 +162,7 @@ const artigos: Artigo[] = [
     fonte: "Buildin",
     autor: "Adv. Camila Rocha",
     categorias: ["Licitacoes", "Gestao de Obras", "Construcao Civil"],
-    imagem: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=300&fit=crop&auto=format",
+    imagem: "https://images.pexels.com/photos/4160237/pexels-photo-4160237.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1",
   },
   {
     titulo: "Reuso de agua na industria da construcao: normas, custos e retorno sobre investimento",
@@ -184,7 +184,7 @@ const artigos: Artigo[] = [
     fonte: "Agencia Brasil",
     autor: "Redacao Agencia Brasil",
     categorias: ["Tecnologia", "Governo", "Gestao de Obras"],
-    imagem: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=300&fit=crop&auto=format",
+    imagem: "https://images.pexels.com/photos/15641049/pexels-photo-15641049.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1",
   },
   {
     titulo: "CREA-SP atualiza tabela de honorarios para projetos de engenharia em 2026",
