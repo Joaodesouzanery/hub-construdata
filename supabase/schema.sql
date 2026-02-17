@@ -1,26 +1,32 @@
 -- ==============================================================
--- Hub ConstruData — Schema Supabase (Completo e Idempotente)
+-- Hub ConstruData — Schema Supabase COMPLETO
 -- ==============================================================
--- Execute este SQL no Supabase SQL Editor para criar TODAS as tabelas.
--- PODE ser executado MULTIPLAS vezes sem erro (totalmente idempotente).
---
--- Passo a passo:
---   1. Crie um projeto em https://supabase.com/dashboard
---   2. Va em SQL Editor > New Query > cole este arquivo inteiro > Run
---   3. Va em Settings > API > copie a "Project URL" e a "anon public" key
---   4. Crie um arquivo .env na raiz do projeto (veja .env.example)
---   5. Rode `npm run dev` — os servicos conectam automaticamente
---
--- SEGURANCA:
---   - Todas as tabelas tem RLS (Row Level Security) ativado
---   - Tabelas publicas: qualquer um pode LER, somente service_role pode ESCREVER
---   - Tabelas de usuario: cada usuario so acessa seus proprios dados
---   - NUNCA exponha a service_role key no frontend
+-- GARANTIDO: funciona ao clicar "Run" no SQL Editor do Supabase,
+-- mesmo que tenha sido executado antes. Totalmente idempotente.
 -- ==============================================================
 
 
 -- ╔══════════════════════════════════════════════════════════════╗
--- ║  FASE 1 — Dados Publicos (Noticias, Licitacoes, etc.)      ║
+-- ║  PASSO 0 — Limpar TODAS as policies existentes              ║
+-- ╚══════════════════════════════════════════════════════════════╝
+-- Remove automaticamente todas as policies em tabelas publicas.
+-- Isso garante que nenhuma policy duplicada cause erro.
+
+DO $$ DECLARE
+  _rec RECORD;
+BEGIN
+  FOR _rec IN
+    SELECT policyname, tablename
+    FROM pg_policies
+    WHERE schemaname = 'public'
+  LOOP
+    EXECUTE format('DROP POLICY IF EXISTS %I ON public.%I', _rec.policyname, _rec.tablename);
+  END LOOP;
+END $$;
+
+
+-- ╔══════════════════════════════════════════════════════════════╗
+-- ║  PASSO 1 — Criar tabelas (IF NOT EXISTS)                    ║
 -- ╚══════════════════════════════════════════════════════════════╝
 
 -- ─── Noticias ────────────────────────────────────────────────
@@ -33,11 +39,6 @@ CREATE TABLE IF NOT EXISTS noticias (
   imagem TEXT,
   created_at TIMESTAMPTZ DEFAULT now()
 );
-
-DROP INDEX IF EXISTS idx_noticias_data;
-CREATE INDEX idx_noticias_data ON noticias (data_publicacao DESC);
-DROP INDEX IF EXISTS idx_noticias_fonte;
-CREATE INDEX idx_noticias_fonte ON noticias (fonte);
 
 -- ─── Artigos / Blog ─────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS artigos (
@@ -52,9 +53,6 @@ CREATE TABLE IF NOT EXISTS artigos (
   imagem TEXT,
   created_at TIMESTAMPTZ DEFAULT now()
 );
-
-DROP INDEX IF EXISTS idx_artigos_data;
-CREATE INDEX idx_artigos_data ON artigos (data_publicacao DESC);
 
 -- ─── Licitacoes ─────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS licitacoes (
@@ -71,15 +69,6 @@ CREATE TABLE IF NOT EXISTS licitacoes (
   numero_controle TEXT UNIQUE,
   created_at TIMESTAMPTZ DEFAULT now()
 );
-
-DROP INDEX IF EXISTS idx_licitacoes_estado;
-CREATE INDEX idx_licitacoes_estado ON licitacoes (estado);
-DROP INDEX IF EXISTS idx_licitacoes_categoria;
-CREATE INDEX idx_licitacoes_categoria ON licitacoes (categoria);
-DROP INDEX IF EXISTS idx_licitacoes_data;
-CREATE INDEX idx_licitacoes_data ON licitacoes (data_abertura DESC);
-DROP INDEX IF EXISTS idx_licitacoes_valor;
-CREATE INDEX idx_licitacoes_valor ON licitacoes (valor_estimado DESC);
 
 -- ─── Indicadores ────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS indicadores (
@@ -114,11 +103,6 @@ CREATE TABLE IF NOT EXISTS fontes_uteis (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
-
--- ╔══════════════════════════════════════════════════════════════╗
--- ║  FASE 2 — Autenticacao, Perfis e Alertas                   ║
--- ╚══════════════════════════════════════════════════════════════╝
-
 -- ─── Perfis de Usuario ──────────────────────────────────────
 CREATE TABLE IF NOT EXISTS profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -131,9 +115,6 @@ CREATE TABLE IF NOT EXISTS profiles (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
-DROP INDEX IF EXISTS idx_profiles_email;
-CREATE INDEX idx_profiles_email ON profiles (email);
-
 -- ─── Filtros Salvos ─────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS filtros_salvos (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -143,9 +124,6 @@ CREATE TABLE IF NOT EXISTS filtros_salvos (
   filtros JSONB NOT NULL DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT now()
 );
-
-DROP INDEX IF EXISTS idx_filtros_user;
-CREATE INDEX idx_filtros_user ON filtros_salvos (user_id);
 
 -- ─── Configuracao de Alertas ────────────────────────────────
 CREATE TABLE IF NOT EXISTS alertas_config (
@@ -172,14 +150,6 @@ CREATE TABLE IF NOT EXISTS historico_precos (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
-DROP INDEX IF EXISTS idx_historico_insumo;
-CREATE INDEX idx_historico_insumo ON historico_precos (insumo, data_referencia DESC);
-
-
--- ╔══════════════════════════════════════════════════════════════╗
--- ║  FASE 4 — Dossies de Empresas e Projetos                   ║
--- ╚══════════════════════════════════════════════════════════════╝
-
 -- ─── Empresas ───────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS empresas (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -205,15 +175,6 @@ CREATE TABLE IF NOT EXISTS empresas (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
-DROP INDEX IF EXISTS idx_empresas_cnpj;
-CREATE INDEX idx_empresas_cnpj ON empresas (cnpj);
-DROP INDEX IF EXISTS idx_empresas_estado;
-CREATE INDEX idx_empresas_estado ON empresas (estado_sede);
-DROP INDEX IF EXISTS idx_empresas_porte;
-CREATE INDEX idx_empresas_porte ON empresas (porte);
-DROP INDEX IF EXISTS idx_empresas_score;
-CREATE INDEX idx_empresas_score ON empresas (nota_score DESC);
-
 -- ─── Projetos ───────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS projetos (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -235,13 +196,6 @@ CREATE TABLE IF NOT EXISTS projetos (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
-DROP INDEX IF EXISTS idx_projetos_empresa;
-CREATE INDEX idx_projetos_empresa ON projetos (empresa_responsavel_id);
-DROP INDEX IF EXISTS idx_projetos_status;
-CREATE INDEX idx_projetos_status ON projetos (status);
-DROP INDEX IF EXISTS idx_projetos_estado;
-CREATE INDEX idx_projetos_estado ON projetos (estado);
-
 -- ─── Participantes de Projeto ───────────────────────────────
 CREATE TABLE IF NOT EXISTS participantes_projeto (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -252,9 +206,6 @@ CREATE TABLE IF NOT EXISTS participantes_projeto (
   papel TEXT NOT NULL
 );
 
-DROP INDEX IF EXISTS idx_participantes_projeto;
-CREATE INDEX idx_participantes_projeto ON participantes_projeto (projeto_id);
-
 -- ─── Marcos de Projeto ──────────────────────────────────────
 CREATE TABLE IF NOT EXISTS marcos_projeto (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -264,15 +215,229 @@ CREATE TABLE IF NOT EXISTS marcos_projeto (
   status TEXT NOT NULL CHECK (status IN ('concluido', 'em_andamento', 'pendente'))
 );
 
+
+-- ╔══════════════════════════════════════════════════════════════╗
+-- ║  PASSO 1B — Adicionar colunas que podem estar faltando      ║
+-- ╚══════════════════════════════════════════════════════════════╝
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='noticias' AND column_name='imagem') THEN
+    ALTER TABLE noticias ADD COLUMN imagem TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='artigos' AND column_name='imagem') THEN
+    ALTER TABLE artigos ADD COLUMN imagem TEXT;
+  END IF;
+END $$;
+
+
+-- ╔══════════════════════════════════════════════════════════════╗
+-- ║  PASSO 2 — Full-Text Search (tsvector)                      ║
+-- ╚══════════════════════════════════════════════════════════════╝
+
+-- Coluna de busca em noticias
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='noticias' AND column_name='search_vector') THEN
+    ALTER TABLE noticias ADD COLUMN search_vector tsvector;
+  END IF;
+END $$;
+
+-- Coluna de busca em artigos
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='artigos' AND column_name='search_vector') THEN
+    ALTER TABLE artigos ADD COLUMN search_vector tsvector;
+  END IF;
+END $$;
+
+-- Coluna de busca em licitacoes
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='licitacoes' AND column_name='search_vector') THEN
+    ALTER TABLE licitacoes ADD COLUMN search_vector tsvector;
+  END IF;
+END $$;
+
+-- Coluna de busca em empresas
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='empresas' AND column_name='search_vector') THEN
+    ALTER TABLE empresas ADD COLUMN search_vector tsvector;
+  END IF;
+END $$;
+
+-- Funcao para atualizar search_vector de noticias
+CREATE OR REPLACE FUNCTION update_noticias_search() RETURNS TRIGGER AS $$
+BEGIN
+  NEW.search_vector := to_tsvector('portuguese', COALESCE(NEW.titulo, '') || ' ' || COALESCE(NEW.fonte, ''));
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_noticias_search ON noticias;
+CREATE TRIGGER trg_noticias_search BEFORE INSERT OR UPDATE ON noticias
+  FOR EACH ROW EXECUTE FUNCTION update_noticias_search();
+
+-- Funcao para atualizar search_vector de artigos
+CREATE OR REPLACE FUNCTION update_artigos_search() RETURNS TRIGGER AS $$
+BEGIN
+  NEW.search_vector := to_tsvector('portuguese',
+    COALESCE(NEW.titulo, '') || ' ' || COALESCE(NEW.resumo, '') || ' ' ||
+    COALESCE(NEW.autor, '') || ' ' || COALESCE(NEW.fonte, '')
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_artigos_search ON artigos;
+CREATE TRIGGER trg_artigos_search BEFORE INSERT OR UPDATE ON artigos
+  FOR EACH ROW EXECUTE FUNCTION update_artigos_search();
+
+-- Funcao para atualizar search_vector de licitacoes
+CREATE OR REPLACE FUNCTION update_licitacoes_search() RETURNS TRIGGER AS $$
+BEGIN
+  NEW.search_vector := to_tsvector('portuguese',
+    COALESCE(NEW.titulo, '') || ' ' || COALESCE(NEW.orgao, '') || ' ' ||
+    COALESCE(NEW.categoria, '') || ' ' || COALESCE(NEW.modalidade, '')
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_licitacoes_search ON licitacoes;
+CREATE TRIGGER trg_licitacoes_search BEFORE INSERT OR UPDATE ON licitacoes
+  FOR EACH ROW EXECUTE FUNCTION update_licitacoes_search();
+
+-- Funcao para atualizar search_vector de empresas
+CREATE OR REPLACE FUNCTION update_empresas_search() RETURNS TRIGGER AS $$
+BEGIN
+  NEW.search_vector := to_tsvector('portuguese',
+    COALESCE(NEW.razao_social, '') || ' ' || COALESCE(NEW.nome_fantasia, '') || ' ' ||
+    COALESCE(NEW.cnpj, '') || ' ' || COALESCE(NEW.cidade_sede, '')
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_empresas_search ON empresas;
+CREATE TRIGGER trg_empresas_search BEFORE INSERT OR UPDATE ON empresas
+  FOR EACH ROW EXECUTE FUNCTION update_empresas_search();
+
+-- Funcao RPC de busca global (chamada pelo frontend)
+CREATE OR REPLACE FUNCTION busca_global(termo TEXT, limite INT DEFAULT 20)
+RETURNS TABLE(
+  tipo TEXT,
+  id UUID,
+  titulo TEXT,
+  subtitulo TEXT,
+  data_pub TIMESTAMPTZ,
+  relevancia REAL
+) AS $$
+BEGIN
+  RETURN QUERY
+  (
+    SELECT 'noticia'::TEXT, n.id, n.titulo, n.fonte, n.data_publicacao,
+           ts_rank(n.search_vector, plainto_tsquery('portuguese', termo))
+    FROM noticias n
+    WHERE n.search_vector @@ plainto_tsquery('portuguese', termo)
+    ORDER BY ts_rank(n.search_vector, plainto_tsquery('portuguese', termo)) DESC
+    LIMIT limite
+  )
+  UNION ALL
+  (
+    SELECT 'artigo'::TEXT, a.id, a.titulo, a.autor, a.data_publicacao,
+           ts_rank(a.search_vector, plainto_tsquery('portuguese', termo))
+    FROM artigos a
+    WHERE a.search_vector @@ plainto_tsquery('portuguese', termo)
+    ORDER BY ts_rank(a.search_vector, plainto_tsquery('portuguese', termo)) DESC
+    LIMIT limite
+  )
+  UNION ALL
+  (
+    SELECT 'licitacao'::TEXT, l.id, l.titulo, l.orgao, l.data_abertura::TIMESTAMPTZ,
+           ts_rank(l.search_vector, plainto_tsquery('portuguese', termo))
+    FROM licitacoes l
+    WHERE l.search_vector @@ plainto_tsquery('portuguese', termo)
+    ORDER BY ts_rank(l.search_vector, plainto_tsquery('portuguese', termo)) DESC
+    LIMIT limite
+  )
+  UNION ALL
+  (
+    SELECT 'empresa'::TEXT, e.id, e.nome_fantasia, e.cidade_sede || '/' || e.estado_sede, e.created_at,
+           ts_rank(e.search_vector, plainto_tsquery('portuguese', termo))
+    FROM empresas e
+    WHERE e.search_vector @@ plainto_tsquery('portuguese', termo)
+    ORDER BY ts_rank(e.search_vector, plainto_tsquery('portuguese', termo)) DESC
+    LIMIT limite
+  )
+  ORDER BY relevancia DESC
+  LIMIT limite;
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+
+-- ╔══════════════════════════════════════════════════════════════╗
+-- ║  PASSO 3 — Indexes (DROP + CREATE para evitar duplicatas)   ║
+-- ╚══════════════════════════════════════════════════════════════╝
+
+DROP INDEX IF EXISTS idx_noticias_data;
+CREATE INDEX idx_noticias_data ON noticias (data_publicacao DESC);
+DROP INDEX IF EXISTS idx_noticias_fonte;
+CREATE INDEX idx_noticias_fonte ON noticias (fonte);
+DROP INDEX IF EXISTS idx_noticias_search;
+CREATE INDEX idx_noticias_search ON noticias USING gin(search_vector);
+
+DROP INDEX IF EXISTS idx_artigos_data;
+CREATE INDEX idx_artigos_data ON artigos (data_publicacao DESC);
+DROP INDEX IF EXISTS idx_artigos_search;
+CREATE INDEX idx_artigos_search ON artigos USING gin(search_vector);
+
+DROP INDEX IF EXISTS idx_licitacoes_estado;
+CREATE INDEX idx_licitacoes_estado ON licitacoes (estado);
+DROP INDEX IF EXISTS idx_licitacoes_categoria;
+CREATE INDEX idx_licitacoes_categoria ON licitacoes (categoria);
+DROP INDEX IF EXISTS idx_licitacoes_data;
+CREATE INDEX idx_licitacoes_data ON licitacoes (data_abertura DESC);
+DROP INDEX IF EXISTS idx_licitacoes_valor;
+CREATE INDEX idx_licitacoes_valor ON licitacoes (valor_estimado DESC);
+DROP INDEX IF EXISTS idx_licitacoes_search;
+CREATE INDEX idx_licitacoes_search ON licitacoes USING gin(search_vector);
+
+DROP INDEX IF EXISTS idx_profiles_email;
+CREATE INDEX idx_profiles_email ON profiles (email);
+
+DROP INDEX IF EXISTS idx_filtros_user;
+CREATE INDEX idx_filtros_user ON filtros_salvos (user_id);
+
+DROP INDEX IF EXISTS idx_historico_insumo;
+CREATE INDEX idx_historico_insumo ON historico_precos (insumo, data_referencia DESC);
+
+DROP INDEX IF EXISTS idx_empresas_cnpj;
+CREATE INDEX idx_empresas_cnpj ON empresas (cnpj);
+DROP INDEX IF EXISTS idx_empresas_estado;
+CREATE INDEX idx_empresas_estado ON empresas (estado_sede);
+DROP INDEX IF EXISTS idx_empresas_porte;
+CREATE INDEX idx_empresas_porte ON empresas (porte);
+DROP INDEX IF EXISTS idx_empresas_score;
+CREATE INDEX idx_empresas_score ON empresas (nota_score DESC);
+DROP INDEX IF EXISTS idx_empresas_search;
+CREATE INDEX idx_empresas_search ON empresas USING gin(search_vector);
+
+DROP INDEX IF EXISTS idx_projetos_empresa;
+CREATE INDEX idx_projetos_empresa ON projetos (empresa_responsavel_id);
+DROP INDEX IF EXISTS idx_projetos_status;
+CREATE INDEX idx_projetos_status ON projetos (status);
+DROP INDEX IF EXISTS idx_projetos_estado;
+CREATE INDEX idx_projetos_estado ON projetos (estado);
+
+DROP INDEX IF EXISTS idx_participantes_projeto;
+CREATE INDEX idx_participantes_projeto ON participantes_projeto (projeto_id);
+
 DROP INDEX IF EXISTS idx_marcos_projeto;
 CREATE INDEX idx_marcos_projeto ON marcos_projeto (projeto_id, data);
 
 
 -- ╔══════════════════════════════════════════════════════════════╗
--- ║  RLS — Row Level Security (TODAS as tabelas)                ║
+-- ║  PASSO 4 — Row Level Security                               ║
 -- ╚══════════════════════════════════════════════════════════════╝
 
--- Ativar RLS em todas as tabelas
+-- Ativar RLS (idempotente, nao da erro se ja ativo)
 ALTER TABLE noticias ENABLE ROW LEVEL SECURITY;
 ALTER TABLE artigos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE licitacoes ENABLE ROW LEVEL SECURITY;
@@ -288,126 +453,86 @@ ALTER TABLE projetos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE participantes_projeto ENABLE ROW LEVEL SECURITY;
 ALTER TABLE marcos_projeto ENABLE ROW LEVEL SECURITY;
 
--- ─── Politicas: Tabelas publicas (leitura publica, escrita service_role) ───
+-- ─── Politicas: Tabelas publicas ────────────────────────────
+-- Leitura publica, escrita apenas service_role
 
 -- Noticias
-DROP POLICY IF EXISTS "Noticias are viewable by everyone" ON noticias;
 CREATE POLICY "Noticias are viewable by everyone" ON noticias FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Service can insert noticias" ON noticias;
 CREATE POLICY "Service can insert noticias" ON noticias FOR INSERT TO service_role WITH CHECK (true);
-DROP POLICY IF EXISTS "Service can update noticias" ON noticias;
 CREATE POLICY "Service can update noticias" ON noticias FOR UPDATE TO service_role USING (true);
-DROP POLICY IF EXISTS "Service can delete noticias" ON noticias;
 CREATE POLICY "Service can delete noticias" ON noticias FOR DELETE TO service_role USING (true);
 
 -- Artigos
-DROP POLICY IF EXISTS "Artigos are viewable by everyone" ON artigos;
 CREATE POLICY "Artigos are viewable by everyone" ON artigos FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Service can insert artigos" ON artigos;
 CREATE POLICY "Service can insert artigos" ON artigos FOR INSERT TO service_role WITH CHECK (true);
-DROP POLICY IF EXISTS "Service can update artigos" ON artigos;
 CREATE POLICY "Service can update artigos" ON artigos FOR UPDATE TO service_role USING (true);
-DROP POLICY IF EXISTS "Service can delete artigos" ON artigos;
 CREATE POLICY "Service can delete artigos" ON artigos FOR DELETE TO service_role USING (true);
 
 -- Licitacoes
-DROP POLICY IF EXISTS "Licitacoes are viewable by everyone" ON licitacoes;
 CREATE POLICY "Licitacoes are viewable by everyone" ON licitacoes FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Service can insert licitacoes" ON licitacoes;
 CREATE POLICY "Service can insert licitacoes" ON licitacoes FOR INSERT TO service_role WITH CHECK (true);
-DROP POLICY IF EXISTS "Service can update licitacoes" ON licitacoes;
 CREATE POLICY "Service can update licitacoes" ON licitacoes FOR UPDATE TO service_role USING (true);
-DROP POLICY IF EXISTS "Service can delete licitacoes" ON licitacoes;
 CREATE POLICY "Service can delete licitacoes" ON licitacoes FOR DELETE TO service_role USING (true);
 
 -- Indicadores
-DROP POLICY IF EXISTS "Indicadores are viewable by everyone" ON indicadores;
 CREATE POLICY "Indicadores are viewable by everyone" ON indicadores FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Service can insert indicadores" ON indicadores;
 CREATE POLICY "Service can insert indicadores" ON indicadores FOR INSERT TO service_role WITH CHECK (true);
 
 -- Updates
-DROP POLICY IF EXISTS "Updates are viewable by everyone" ON updates;
 CREATE POLICY "Updates are viewable by everyone" ON updates FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Service can insert updates" ON updates;
 CREATE POLICY "Service can insert updates" ON updates FOR INSERT TO service_role WITH CHECK (true);
 
 -- Fontes uteis
-DROP POLICY IF EXISTS "Fontes are viewable by everyone" ON fontes_uteis;
 CREATE POLICY "Fontes are viewable by everyone" ON fontes_uteis FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Service can insert fontes" ON fontes_uteis;
 CREATE POLICY "Service can insert fontes" ON fontes_uteis FOR INSERT TO service_role WITH CHECK (true);
 
 -- Empresas
-DROP POLICY IF EXISTS "Empresas are viewable by everyone" ON empresas;
 CREATE POLICY "Empresas are viewable by everyone" ON empresas FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Service can insert empresas" ON empresas;
 CREATE POLICY "Service can insert empresas" ON empresas FOR INSERT TO service_role WITH CHECK (true);
-DROP POLICY IF EXISTS "Service can update empresas" ON empresas;
 CREATE POLICY "Service can update empresas" ON empresas FOR UPDATE TO service_role USING (true);
-DROP POLICY IF EXISTS "Service can delete empresas" ON empresas;
 CREATE POLICY "Service can delete empresas" ON empresas FOR DELETE TO service_role USING (true);
 
 -- Projetos
-DROP POLICY IF EXISTS "Projetos are viewable by everyone" ON projetos;
 CREATE POLICY "Projetos are viewable by everyone" ON projetos FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Service can insert projetos" ON projetos;
 CREATE POLICY "Service can insert projetos" ON projetos FOR INSERT TO service_role WITH CHECK (true);
-DROP POLICY IF EXISTS "Service can update projetos" ON projetos;
 CREATE POLICY "Service can update projetos" ON projetos FOR UPDATE TO service_role USING (true);
-DROP POLICY IF EXISTS "Service can delete projetos" ON projetos;
 CREATE POLICY "Service can delete projetos" ON projetos FOR DELETE TO service_role USING (true);
 
 -- Participantes
-DROP POLICY IF EXISTS "Participantes are viewable by everyone" ON participantes_projeto;
 CREATE POLICY "Participantes are viewable by everyone" ON participantes_projeto FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Service can insert participantes" ON participantes_projeto;
 CREATE POLICY "Service can insert participantes" ON participantes_projeto FOR INSERT TO service_role WITH CHECK (true);
 
 -- Marcos
-DROP POLICY IF EXISTS "Marcos are viewable by everyone" ON marcos_projeto;
 CREATE POLICY "Marcos are viewable by everyone" ON marcos_projeto FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Service can insert marcos" ON marcos_projeto;
 CREATE POLICY "Service can insert marcos" ON marcos_projeto FOR INSERT TO service_role WITH CHECK (true);
 
 -- Historico precos
-DROP POLICY IF EXISTS "Historico precos viewable by everyone" ON historico_precos;
 CREATE POLICY "Historico precos viewable by everyone" ON historico_precos FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Service can insert historico" ON historico_precos;
 CREATE POLICY "Service can insert historico" ON historico_precos FOR INSERT TO service_role WITH CHECK (true);
 
--- ─── Politicas: Tabelas de usuario (privadas) ──────────────
+-- ─── Politicas: Tabelas de usuario (privadas) ───────────────
 
--- Profiles: usuario le/edita apenas o proprio
-DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
+-- Profiles
 CREATE POLICY "Users can view own profile" ON profiles FOR SELECT USING (auth.uid() = id);
-DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
-DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
 CREATE POLICY "Users can insert own profile" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
 
--- Filtros: usuario le/edita apenas os proprios
-DROP POLICY IF EXISTS "Users can view own filters" ON filtros_salvos;
+-- Filtros salvos
 CREATE POLICY "Users can view own filters" ON filtros_salvos FOR SELECT USING (auth.uid() = user_id);
-DROP POLICY IF EXISTS "Users can insert own filters" ON filtros_salvos;
 CREATE POLICY "Users can insert own filters" ON filtros_salvos FOR INSERT WITH CHECK (auth.uid() = user_id);
-DROP POLICY IF EXISTS "Users can delete own filters" ON filtros_salvos;
 CREATE POLICY "Users can delete own filters" ON filtros_salvos FOR DELETE USING (auth.uid() = user_id);
 
--- Alertas config: usuario le/edita apenas o proprio
-DROP POLICY IF EXISTS "Users can view own alert config" ON alertas_config;
+-- Alertas config
 CREATE POLICY "Users can view own alert config" ON alertas_config FOR SELECT USING (auth.uid() = user_id);
-DROP POLICY IF EXISTS "Users can upsert own alert config" ON alertas_config;
 CREATE POLICY "Users can upsert own alert config" ON alertas_config FOR INSERT WITH CHECK (auth.uid() = user_id);
-DROP POLICY IF EXISTS "Users can update own alert config" ON alertas_config;
 CREATE POLICY "Users can update own alert config" ON alertas_config FOR UPDATE USING (auth.uid() = user_id);
 
 
 -- ╔══════════════════════════════════════════════════════════════╗
--- ║  FUNCOES AUXILIARES                                         ║
+-- ║  PASSO 5 — Funcoes auxiliares                                ║
 -- ╚══════════════════════════════════════════════════════════════╝
 
--- Funcao para criar profile automaticamente apos registro
+-- Auto-criar perfil quando usuario se registra
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -421,9 +546,57 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger: cria profile automaticamente quando usuario se registra
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW
   EXECUTE FUNCTION handle_new_user();
+
+
+-- ╔══════════════════════════════════════════════════════════════╗
+-- ║  PASSO 6 — Habilitar Realtime nas tabelas publicas          ║
+-- ╚══════════════════════════════════════════════════════════════╝
+
+DO $$ BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE noticias;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+
+DO $$ BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE licitacoes;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+
+DO $$ BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE artigos;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+
+DO $$ BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE indicadores;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+
+
+-- ╔══════════════════════════════════════════════════════════════╗
+-- ║  PASSO 7 — Atualizar search_vector dos dados existentes     ║
+-- ╚══════════════════════════════════════════════════════════════╝
+
+UPDATE noticias SET search_vector = to_tsvector('portuguese', COALESCE(titulo, '') || ' ' || COALESCE(fonte, ''))
+WHERE search_vector IS NULL;
+
+UPDATE artigos SET search_vector = to_tsvector('portuguese', COALESCE(titulo, '') || ' ' || COALESCE(resumo, '') || ' ' || COALESCE(autor, '') || ' ' || COALESCE(fonte, ''))
+WHERE search_vector IS NULL;
+
+UPDATE licitacoes SET search_vector = to_tsvector('portuguese', COALESCE(titulo, '') || ' ' || COALESCE(orgao, '') || ' ' || COALESCE(categoria, '') || ' ' || COALESCE(modalidade, ''))
+WHERE search_vector IS NULL;
+
+UPDATE empresas SET search_vector = to_tsvector('portuguese', COALESCE(razao_social, '') || ' ' || COALESCE(nome_fantasia, '') || ' ' || COALESCE(cnpj, '') || ' ' || COALESCE(cidade_sede, ''))
+WHERE search_vector IS NULL;
+
+
+-- ==============================================================
+-- PRONTO! Schema completo com:
+--   14 tabelas, RLS em todas, Full-Text Search, Realtime,
+--   auto-profile trigger, busca global RPC
+-- ==============================================================

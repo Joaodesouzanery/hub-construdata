@@ -13,6 +13,7 @@ import EventosPage from "./pages/EventosPage";
 import Contato from "./pages/Contato";
 import Perfil from "./pages/Perfil";
 import Analitico from "./pages/Analitico";
+import InsightsIA from "./pages/InsightsIA";
 import Relatorios from "./pages/Relatorios";
 import EmpresasPage from "./pages/EmpresasPage";
 import DossieEmpresa from "./pages/DossieEmpresa";
@@ -37,6 +38,7 @@ const App = () => (
         <Route path="/contato" element={<Contato />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/analitico" element={<Analitico />} />
+        <Route path="/insights-ia" element={<InsightsIA />} />
         <Route path="/relatorios" element={<Relatorios />} />
         <Route path="/empresas" element={<EmpresasPage />} />
         <Route path="/empresas/:id" element={<DossieEmpresa />} />

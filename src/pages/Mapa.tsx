@@ -22,6 +22,7 @@ import {
   Gauge,
   Wrench,
   Radio,
+  Flame,
 } from "lucide-react";
 import { dadosEmbutidosLicitacoes } from "@/data/licitacoes";
 import { baciasToGeoJSON, baciasLabelsGeoJSON, baciasHidrograficas } from "@/data/baciasHidrograficas";
@@ -93,6 +94,17 @@ function formatarValor(v: number): string {
   return `R$ ${v.toLocaleString("pt-BR")}`;
 }
 
+// ── Estado centroids (used by project markers and heatmap) ──
+const estadoCentroids: Record<string, [number, number]> = {
+  AC: [-70.5, -9.0], AL: [-36.6, -9.6], AM: [-64.0, -3.4], AP: [-51.1, 1.0],
+  BA: [-41.7, -12.6], CE: [-39.3, -5.1], DF: [-47.9, -15.8], ES: [-40.3, -19.2],
+  GO: [-49.6, -15.9], MA: [-45.3, -5.4], MG: [-44.4, -18.5], MS: [-54.8, -20.8],
+  MT: [-55.9, -12.7], PA: [-52.3, -3.8], PB: [-36.6, -7.1], PE: [-37.3, -8.3],
+  PI: [-42.8, -7.7], PR: [-51.5, -24.6], RJ: [-43.2, -22.6], RN: [-36.5, -5.8],
+  RO: [-63.6, -10.9], RR: [-61.4, 2.1], RS: [-53.2, -29.8], SC: [-49.4, -27.2],
+  SE: [-37.1, -10.6], SP: [-48.5, -22.3], TO: [-48.4, -10.2],
+};
+
 // ── Layer visibility state type ──
 interface LayerVisibility {
   estados: boolean;
@@ -101,6 +113,7 @@ interface LayerVisibility {
   projetos: boolean;
   alertas: boolean;
   estacoesANA: boolean;
+  heatmap: boolean;
 }
 
 // ── Collapsible panel sections ──
@@ -129,6 +142,7 @@ const Mapa = () => {
     projetos: true,
     alertas: true,
     estacoesANA: false,
+    heatmap: false,
   });
 
   const [panels, setPanels] = useState<PanelSections>({
@@ -312,17 +326,6 @@ const Mapa = () => {
 
   // Add project markers (from licitações with geolocation)
   const addProjectMarkers = useCallback((map: maplibregl.Map) => {
-    // Use state centroids as project locations
-    const estadoCentroids: Record<string, [number, number]> = {
-      AC: [-70.5, -9.0], AL: [-36.6, -9.6], AM: [-64.0, -3.4], AP: [-51.1, 1.0],
-      BA: [-41.7, -12.6], CE: [-39.3, -5.1], DF: [-47.9, -15.8], ES: [-40.3, -19.2],
-      GO: [-49.6, -15.9], MA: [-45.3, -5.4], MG: [-44.4, -18.5], MS: [-54.8, -20.8],
-      MT: [-55.9, -12.7], PA: [-52.3, -3.8], PB: [-36.6, -7.1], PE: [-37.3, -8.3],
-      PI: [-42.8, -7.7], PR: [-51.5, -24.6], RJ: [-43.2, -22.6], RN: [-36.5, -5.8],
-      RO: [-63.6, -10.9], RR: [-61.4, 2.1], RS: [-53.2, -29.8], SC: [-49.4, -27.2],
-      SE: [-37.1, -10.6], SP: [-48.5, -22.3], TO: [-48.4, -10.2],
-    };
-
     Object.entries(porEstado).forEach(([uf, lics]) => {
       const centroid = estadoCentroids[uf];
       if (!centroid || lics.length === 0) return;
@@ -496,6 +499,56 @@ const Mapa = () => {
 
         map.addSource("brazil-states", { type: "geojson", data: geojson });
 
+        // ── Heatmap de investimento ──
+        const heatmapPoints: GeoJSON.FeatureCollection = {
+          type: "FeatureCollection",
+          features: Object.entries(porEstado).flatMap(([uf, lics]) => {
+            const centroid = estadoCentroids[uf];
+            if (!centroid) return [];
+            return lics.map((lic) => ({
+              type: "Feature" as const,
+              properties: {
+                valor: lic.valor_estimado || 500000,
+              },
+              geometry: {
+                type: "Point" as const,
+                coordinates: [
+                  centroid[0] + (Math.random() - 0.5) * 3,
+                  centroid[1] + (Math.random() - 0.5) * 3,
+                ],
+              },
+            }));
+          }),
+        };
+
+        map.addSource("investimento-heat", { type: "geojson", data: heatmapPoints });
+
+        map.addLayer({
+          id: "investimento-heatmap",
+          type: "heatmap",
+          source: "investimento-heat",
+          layout: { visibility: "none" },
+          paint: {
+            "heatmap-weight": [
+              "interpolate", ["linear"], ["get", "valor"],
+              0, 0,
+              50000000, 1,
+            ],
+            "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 3, 0.8, 9, 2],
+            "heatmap-color": [
+              "interpolate", ["linear"], ["heatmap-density"],
+              0, "rgba(0,0,0,0)",
+              0.1, "rgba(59,130,246,0.2)",
+              0.3, "rgba(16,185,129,0.4)",
+              0.5, "rgba(245,158,11,0.5)",
+              0.7, "rgba(239,68,68,0.6)",
+              1, "rgba(139,92,246,0.8)",
+            ],
+            "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 3, 30, 9, 50],
+            "heatmap-opacity": 0.7,
+          },
+        });
+
         // States fill
         map.addLayer({
           id: "states-fill",
@@ -651,6 +704,7 @@ const Mapa = () => {
     setVis("bacias-fill", layers.bacias);
     setVis("bacias-border", layers.bacias);
     setVis("bacias-labels", layers.bacias);
+    setVis("investimento-heatmap", layers.heatmap);
   }, [layers, geoLoaded]);
 
   // Selected state highlight
@@ -756,6 +810,7 @@ const Mapa = () => {
                       { key: "etasEtes" as const, label: "ETAs / ETEs", icon: Droplets, color: "#10b981" },
                       { key: "projetos" as const, label: "Projetos / Obras", icon: Wrench, color: "#6366f1" },
                       { key: "alertas" as const, label: "Alertas INMET/CEMADEN", icon: AlertTriangle, color: "#ef4444" },
+                      { key: "heatmap" as const, label: "Mapa de Calor", icon: Flame, color: "#d946ef" },
                       { key: "estacoesANA" as const, label: "Estações ANA", icon: Gauge, color: "#0284c7" },
                     ]).map(({ key, label, icon: Icon, color }) => (
                       <button
@@ -812,6 +867,18 @@ const Mapa = () => {
                         <span className="capitalize">{nivel}</span>
                       </div>
                     ))}
+                  </div>
+                </>
+              )}
+              {layers.heatmap && (
+                <>
+                  <p className="font-semibold mb-1.5 text-[0.65rem] uppercase tracking-wide text-muted-foreground">
+                    Calor de Investimento
+                  </p>
+                  <div className="flex items-center gap-1 mb-2">
+                    <span className="text-[0.6rem]">Baixo</span>
+                    <div className="flex-1 h-2 rounded-full" style={{ background: "linear-gradient(to right, rgba(59,130,246,0.3), rgba(16,185,129,0.5), rgba(245,158,11,0.6), rgba(239,68,68,0.7), rgba(139,92,246,0.9))" }} />
+                    <span className="text-[0.6rem]">Alto</span>
                   </div>
                 </>
               )}

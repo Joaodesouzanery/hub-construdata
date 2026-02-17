@@ -17,6 +17,7 @@ import {
   TrendingUp,
   Download,
   Briefcase,
+  Brain,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -28,6 +29,7 @@ const navItems = [
   { to: "/alertas", icon: BellRing, label: "Alertas", group: "principal" },
   { to: "/empresas", icon: Briefcase, label: "Dossiês", badge: "Fase 4", group: "fase2" },
   { to: "/analitico", icon: TrendingUp, label: "Análises", badge: "Novo", group: "fase2" },
+  { to: "/insights-ia", icon: Brain, label: "Insights IA", badge: "IA", group: "fase2" },
   { to: "/relatorios", icon: Download, label: "Relatórios", badge: "Novo", group: "fase2" },
   { to: "/indicadores", icon: BarChart3, label: "Indicadores", group: "dados" },
   { to: "/legislacao", icon: Scale, label: "Legislação", group: "dados" },
