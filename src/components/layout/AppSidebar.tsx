@@ -22,7 +22,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard", group: "principal" },
-  { to: "/noticias", icon: Newspaper, label: "Notícias", group: "principal" },
+  { to: "/noticias", icon: Newspaper, label: "Notícias", badge: "Fase 5", group: "principal" },
   { to: "/licitacoes", icon: FileSearch, label: "Licitações", group: "principal" },
   { to: "/mapa", icon: Map, label: "Mapa do Brasil", group: "principal" },
   { to: "/alertas", icon: BellRing, label: "Alertas", group: "principal" },
