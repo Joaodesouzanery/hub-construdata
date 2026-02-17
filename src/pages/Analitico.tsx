@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BarChart,
@@ -39,10 +39,9 @@ import {
   Trophy,
   Building2,
 } from "lucide-react";
-import { dadosEmbutidosLicitacoes } from "@/data/licitacoes";
-import { empresas } from "@/data/empresas";
+import { useLicitacoes } from "@/hooks/useLicitacoes";
+import { useEmpresas } from "@/hooks/useEmpresas";
 import { projetos } from "@/data/projetos";
-import type { Licitacao } from "@/types/database";
 
 // ── Dados SINAPI vs SICRO ──
 const comparacaoTabelas = [
@@ -105,16 +104,8 @@ function formatarValor(valor: number): string {
 
 const Analitico = () => {
   const [tab, setTab] = useState<TabAnalitico>("tendencias");
-  const [licitacoes, setLicitacoes] = useState<Licitacao[]>(dadosEmbutidosLicitacoes);
-
-  useEffect(() => {
-    fetch("./licitacoes.json")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) setLicitacoes(data);
-      })
-      .catch(() => {});
-  }, []);
+  const { dados: licitacoes } = useLicitacoes();
+  const { dados: empresas } = useEmpresas();
 
   // ── Métricas computadas ──
   const metricas = useMemo(() => {
@@ -721,7 +712,7 @@ const Analitico = () => {
                         <td className="text-center px-3 py-2.5 font-bold text-muted-foreground">{i + 1}</td>
                         <td className="px-3 py-2.5 font-semibold">{emp.nome}</td>
                         <td className="text-center px-3 py-2.5">
-                          <span className="text-[0.6rem] font-semibold uppercase px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                          <span className="text-[0.6rem] font-semibold uppercase px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
                             {emp.porte}
                           </span>
                         </td>

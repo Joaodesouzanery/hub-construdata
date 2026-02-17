@@ -113,7 +113,7 @@ const GlobalSearch = () => {
       </div>
 
       {open && results.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-xl border border-border z-50 max-h-[400px] overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-card rounded-lg shadow-xl border border-border z-50 max-h-[400px] overflow-y-auto">
           {results.some((r) => r.type === "noticia") && (
             <div>
               <div className="px-3 py-2 text-[0.65rem] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5 border-b">
@@ -162,7 +162,7 @@ const GlobalSearch = () => {
       )}
 
       {open && query.length >= 2 && results.length === 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-xl border border-border z-50 p-6 text-center">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-card rounded-lg shadow-xl border border-border z-50 p-6 text-center">
           <Search size={24} className="mx-auto text-muted-foreground/40 mb-2" />
           <p className="text-sm text-muted-foreground">Nenhum resultado para "{query}"</p>
         </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,10 +16,9 @@ import {
   Briefcase,
 } from "lucide-react";
 import { toast } from "sonner";
-import { dadosEmbutidosLicitacoes } from "@/data/licitacoes";
-import { empresas } from "@/data/empresas";
+import { useLicitacoes } from "@/hooks/useLicitacoes";
+import { useEmpresas } from "@/hooks/useEmpresas";
 import { projetos } from "@/data/projetos";
-import type { Licitacao } from "@/types/database";
 import {
   exportarLicitacoesPDF,
   exportarLicitacoesXLSX,
@@ -40,7 +39,8 @@ function formatarValor(valor: number): string {
 }
 
 const Relatorios = () => {
-  const [licitacoes, setLicitacoes] = useState<Licitacao[]>(dadosEmbutidosLicitacoes);
+  const { dados: licitacoes } = useLicitacoes();
+  const { dados: empresas } = useEmpresas();
   const [exportando, setExportando] = useState<string | null>(null);
 
   // Filtros
@@ -48,17 +48,8 @@ const Relatorios = () => {
   const [categoriaFiltro, setCategoriaFiltro] = useState<string>("todos");
 
   // Selecao para dossie
-  const [empresaSelecionada, setEmpresaSelecionada] = useState<string>(empresas[0]?.id || "");
-  const [projetoSelecionado, setProjetoSelecionado] = useState<string>(projetos[0]?.id || "");
-
-  useEffect(() => {
-    fetch("./licitacoes.json")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) setLicitacoes(data);
-      })
-      .catch(() => {});
-  }, []);
+  const [empresaSelecionada, setEmpresaSelecionada] = useState<string>("");
+  const [projetoSelecionado, setProjetoSelecionado] = useState<string>("");
 
   const estados = useMemo(
     () => [...new Set(licitacoes.map((l) => l.estado))].sort(),

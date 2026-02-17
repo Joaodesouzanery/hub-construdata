@@ -2,14 +2,16 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import AppSidebar from "./AppSidebar";
 import GlobalSearch from "../GlobalSearch";
-import { Menu } from "lucide-react";
+import { Menu, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <AppSidebar
@@ -20,12 +22,12 @@ const AppLayout = () => {
 
       {/* Mobile Sidebar Overlay */}
       {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-40">
+        <div className="lg:hidden fixed inset-0 z-40 animate-fade-in">
           <div
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="relative z-50">
+          <div className="relative z-50 animate-slide-in-left">
             <AppSidebar
               collapsed={false}
               onToggle={() => setMobileOpen(false)}
@@ -41,11 +43,11 @@ const AppLayout = () => {
         }`}
       >
         {/* Top Bar */}
-        <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-border h-14 flex items-center px-4 lg:px-6 gap-3">
+        <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b border-border h-14 flex items-center px-4 lg:px-6 gap-3 transition-colors">
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen(true)}
-            className="lg:hidden p-2 -ml-2 text-foreground"
+            className="lg:hidden p-2 -ml-2 text-foreground hover:bg-muted rounded-lg transition-colors"
             aria-label="Abrir menu"
           >
             <Menu size={22} />
@@ -59,24 +61,36 @@ const AppLayout = () => {
             <GlobalSearch />
           </div>
 
-          {/* Right side - date */}
-          <div className="hidden md:block text-xs text-muted-foreground ml-auto whitespace-nowrap">
-            {new Date().toLocaleDateString("pt-BR", {
-              weekday: "long",
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
+          {/* Right side */}
+          <div className="flex items-center gap-2 ml-auto">
+            {/* Dark mode toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+              aria-label={theme === "dark" ? "Modo claro" : "Modo escuro"}
+              title={theme === "dark" ? "Modo claro" : "Modo escuro"}
+            >
+              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            {/* Date */}
+            <span className="hidden md:block text-xs text-muted-foreground whitespace-nowrap">
+              {new Date().toLocaleDateString("pt-BR", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </span>
           </div>
         </header>
 
         {/* Mobile Search */}
-        <div className="sm:hidden px-4 py-2 border-b border-border bg-white">
+        <div className="sm:hidden px-4 py-2 border-b border-border bg-background transition-colors">
           <GlobalSearch />
         </div>
 
         {/* Page Content */}
-        <main>
+        <main className="animate-fade-in">
           <Outlet />
         </main>
       </div>

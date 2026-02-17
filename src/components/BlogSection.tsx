@@ -28,7 +28,7 @@ const categoryStyles: Record<string, string> = {
   "Normas": "bg-pink-100 text-pink-800",
   "Licitações": "bg-blue-100 text-blue-800",
   "Sustentabilidade": "bg-green-100 text-green-800",
-  "Governo": "bg-gray-100 text-gray-700",
+  "Governo": "bg-muted text-muted-foreground",
   "Indicadores": "bg-yellow-100 text-yellow-800",
   "Opinião": "bg-orange-100 text-orange-800",
   "Meio Ambiente": "bg-lime-100 text-lime-800",
@@ -80,7 +80,7 @@ const ArtigoCard = ({ artigo }: { artigo: Artigo }) => (
             <span
               key={cat}
               className={`inline-block text-[0.65rem] font-semibold tracking-wide uppercase px-2 py-0.5 rounded-full ${
-                categoryStyles[cat] || "bg-gray-100 text-gray-700"
+                categoryStyles[cat] || "bg-muted text-muted-foreground"
               }`}
             >
               {cat}

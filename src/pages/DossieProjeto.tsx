@@ -27,9 +27,9 @@ function statusStyle(status: string): string {
     case "Em Andamento": return "bg-blue-100 text-blue-800 border-blue-200";
     case "Concluido": return "bg-emerald-100 text-emerald-800 border-emerald-200";
     case "Atrasado": return "bg-red-100 text-red-800 border-red-200";
-    case "Planejado": return "bg-gray-100 text-gray-700 border-gray-200";
+    case "Planejado": return "bg-muted text-muted-foreground border-gray-200";
     case "Paralisado": return "bg-amber-100 text-amber-800 border-amber-200";
-    default: return "bg-gray-100 text-gray-600";
+    default: return "bg-muted text-muted-foreground";
   }
 }
 
@@ -257,7 +257,7 @@ const DossieProjeto = () => {
                 <span className="font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
                   {licitacaoOrigem.modalidade}
                 </span>
-                <span className="font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                <span className="font-semibold px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
                   {licitacaoOrigem.numero_controle}
                 </span>
               </div>

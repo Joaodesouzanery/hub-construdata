@@ -24,7 +24,7 @@ import {
   Radio,
   Flame,
 } from "lucide-react";
-import { dadosEmbutidosLicitacoes } from "@/data/licitacoes";
+import { useLicitacoes } from "@/hooks/useLicitacoes";
 import { baciasToGeoJSON, baciasLabelsGeoJSON, baciasHidrograficas } from "@/data/baciasHidrograficas";
 import { estacoesTratamento } from "@/data/etasEtes";
 import { alertasMeteorologicos, alertaCores } from "@/data/alertas";
@@ -129,7 +129,7 @@ const Mapa = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
-  const [licitacoes, setLicitacoes] = useState<Licitacao[]>(dadosEmbutidosLicitacoes);
+  const { dados: licitacoes } = useLicitacoes();
   const [estadoSelecionado, setEstadoSelecionado] = useState<string | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [geoLoaded, setGeoLoaded] = useState(false);
@@ -152,15 +152,6 @@ const Mapa = () => {
     alertas: true,
     estacoes: false,
   });
-
-  useEffect(() => {
-    fetch("./licitacoes.json")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) setLicitacoes(data);
-      })
-      .catch(() => {});
-  }, []);
 
   const porEstado = useMemo(() => {
     const map: Record<string, Licitacao[]> = {};
@@ -790,7 +781,7 @@ const Mapa = () => {
 
             {/* ── Layer Control Panel ── */}
             <div className="absolute top-3 right-3 z-10">
-              <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-border/50 overflow-hidden" style={{ minWidth: 200 }}>
+              <div className="bg-card/95 backdrop-blur-sm rounded-lg shadow-lg border border-border/50 overflow-hidden" style={{ minWidth: 200 }}>
                 <button
                   onClick={() => setLayerControlOpen(!layerControlOpen)}
                   className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:bg-muted/50 transition-colors"
@@ -839,7 +830,7 @@ const Mapa = () => {
             </div>
 
             {/* ── Legend ── */}
-            <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-md text-xs max-w-[200px]">
+            <div className="absolute bottom-3 left-3 bg-card/90 backdrop-blur-sm rounded-lg p-3 shadow-md text-xs max-w-[200px]">
               {layers.estados && (
                 <>
                   <p className="font-semibold mb-1.5 text-[0.65rem] uppercase tracking-wide text-muted-foreground">

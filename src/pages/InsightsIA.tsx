@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Line, BarChart, Bar, RadarChart, Radar,
@@ -11,8 +11,7 @@ import {
   Target, Zap, ArrowUpRight, ArrowDownRight,
   BarChart3, Activity, Shield, Droplets, Building2,
 } from "lucide-react";
-import { dadosEmbutidosLicitacoes } from "@/data/licitacoes";
-import type { Licitacao } from "@/types/database";
+import { useLicitacoes } from "@/hooks/useLicitacoes";
 
 // ── Dados simulados para previsões ML ──
 
@@ -164,15 +163,8 @@ const previsaoDemanda = [
 const sevCores = { alta: "#ef4444", media: "#f59e0b", baixa: "#3b82f6" };
 const priCores = { alta: "#ef4444", media: "#f59e0b", baixa: "#10b981" };
 const InsightsIA = () => {
-  const [licitacoes, setLicitacoes] = useState<Licitacao[]>(dadosEmbutidosLicitacoes);
+  const { dados: licitacoes } = useLicitacoes();
   const [tab, setTab] = useState<"previsoes" | "anomalias" | "recomendacoes" | "mercado">("previsoes");
-
-  useEffect(() => {
-    fetch("./licitacoes.json")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => { if (Array.isArray(data) && data.length > 0) setLicitacoes(data); })
-      .catch(() => {});
-  }, []);
 
   // KPIs calculados
   const kpis = useMemo(() => {

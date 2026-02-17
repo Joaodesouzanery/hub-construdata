@@ -34,10 +34,10 @@ import {
   AreaChart,
   Area,
 } from "recharts";
-import noticiasEmbutidas from "@/data/noticias";
-import artigos from "@/data/artigos";
+import { useNoticias } from "@/hooks/useNoticias";
+import { useArtigos } from "@/hooks/useArtigos";
 import { urlSegura } from "@/lib/utils";
-import type { Artigo } from "@/types/database";
+import type { Artigo, Noticia } from "@/types/database";
 
 // ─── Constantes ────────────────────────────────────────
 type TabHub = "noticias" | "artigos" | "panorama";
@@ -79,7 +79,7 @@ const categoryStyles: Record<string, string> = {
   "Construcao Civil": "bg-violet-100 text-violet-800",
   "Engenharia": "bg-teal-100 text-teal-800",
   "Regulamentacao": "bg-red-100 text-red-800",
-  "Governo": "bg-gray-100 text-gray-700",
+  "Governo": "bg-muted text-muted-foreground",
   "Estruturas": "bg-rose-100 text-rose-800",
   "Indicadores": "bg-yellow-100 text-yellow-800",
   "Licitacoes": "bg-blue-100 text-blue-800",
@@ -134,7 +134,7 @@ function iniciais(nome: string): string {
 }
 
 // ─── Tab: Noticias ─────────────────────────────────────
-const TabNoticias = () => {
+const TabNoticias = ({ noticias }: { noticias: Noticia[] }) => {
   const [busca, setBusca] = useState("");
   const [fonteAtiva, setFonteAtiva] = useState("Todas");
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
@@ -152,12 +152,12 @@ const TabNoticias = () => {
   }, []);
 
   const fontesDisponiveis = useMemo(() => {
-    const set = new Set(noticiasEmbutidas.map((n) => n.fonte));
+    const set = new Set(noticias.map((n) => n.fonte));
     return ["Todas", ...Array.from(set).sort()];
-  }, []);
+  }, [noticias]);
 
   const noticiasFiltradas = useMemo(() => {
-    return noticiasEmbutidas.filter((n) => {
+    return noticias.filter((n) => {
       if (busca) {
         const q = busca.toLowerCase();
         if (!n.titulo.toLowerCase().includes(q) && !n.fonte.toLowerCase().includes(q)) return false;
@@ -166,7 +166,7 @@ const TabNoticias = () => {
       if (apenasFavoritos && !favoritos.has(n.link)) return false;
       return true;
     });
-  }, [busca, fonteAtiva, apenasFavoritos, favoritos]);
+  }, [noticias, busca, fonteAtiva, apenasFavoritos, favoritos]);
 
   const temFiltro = busca || fonteAtiva !== "Todas" || apenasFavoritos;
 
@@ -221,7 +221,7 @@ const TabNoticias = () => {
                   className={`text-[0.65rem] font-semibold px-2.5 py-1 rounded-full transition-all ${
                     fonteAtiva === f
                       ? "bg-primary text-white"
-                      : fonteStyles[f] || "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      : fonteStyles[f] || "bg-muted text-muted-foreground hover:bg-gray-200"
                   }`}
                 >
                   {f}
@@ -235,7 +235,7 @@ const TabNoticias = () => {
       {/* Count */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-muted-foreground">
-          <span className="font-bold text-foreground">{noticiasFiltradas.length}</span> de {noticiasEmbutidas.length} noticia(s)
+          <span className="font-bold text-foreground">{noticiasFiltradas.length}</span> de {noticias.length} noticia(s)
         </p>
         {temFiltro && (
           <button
@@ -273,7 +273,7 @@ const TabNoticias = () => {
                   </div>
                   <div className="p-5">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className={`text-[0.6rem] font-bold uppercase px-2 py-0.5 rounded-full ${fonteStyles[destaque.fonte] || "bg-gray-100 text-gray-700"}`}>
+                      <span className={`text-[0.6rem] font-bold uppercase px-2 py-0.5 rounded-full ${fonteStyles[destaque.fonte] || "bg-muted text-muted-foreground"}`}>
                         {destaque.fonte}
                       </span>
                       <span className="text-[0.6rem] text-muted-foreground">{diasAtras(destaque.data_publicacao)}</span>
@@ -290,7 +290,7 @@ const TabNoticias = () => {
               </Card>
               <button
                 onClick={() => toggleFavorito(destaque.link)}
-                className="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white shadow transition-colors"
+                className="absolute top-3 right-3 p-2 rounded-full bg-card/80 hover:bg-card shadow transition-colors"
               >
                 <Star size={16} className={favoritos.has(destaque.link) ? "text-amber-500 fill-amber-500" : "text-gray-400"} />
               </button>
@@ -316,7 +316,7 @@ const TabNoticias = () => {
                     </div>
                     <div className="p-4">
                       <div className="flex items-center gap-2 mb-1.5">
-                        <span className={`text-[0.55rem] font-bold uppercase px-2 py-0.5 rounded-full ${fonteStyles[noticia.fonte] || "bg-gray-100 text-gray-700"}`}>
+                        <span className={`text-[0.55rem] font-bold uppercase px-2 py-0.5 rounded-full ${fonteStyles[noticia.fonte] || "bg-muted text-muted-foreground"}`}>
                           {noticia.fonte}
                         </span>
                         <span className="text-[0.55rem] text-muted-foreground">{diasAtras(noticia.data_publicacao)}</span>
@@ -329,7 +329,7 @@ const TabNoticias = () => {
                 </a>
                 <button
                   onClick={() => toggleFavorito(noticia.link)}
-                  className="absolute top-2 right-2 p-1.5 rounded-full bg-white/80 hover:bg-white shadow-sm transition-colors"
+                  className="absolute top-2 right-2 p-1.5 rounded-full bg-card/80 hover:bg-card shadow-sm transition-colors"
                 >
                   <Star size={12} className={favoritos.has(noticia.link) ? "text-amber-500 fill-amber-500" : "text-gray-400"} />
                 </button>
@@ -343,7 +343,7 @@ const TabNoticias = () => {
 };
 
 // ─── Tab: Artigos ──────────────────────────────────────
-const TabArtigos = () => {
+const TabArtigos = ({ artigos }: { artigos: Artigo[] }) => {
   const [busca, setBusca] = useState("");
   const [categoriaAtiva, setCategoriaAtiva] = useState("Todas");
   const [ordenacao, setOrdenacao] = useState<"recente" | "autor">("recente");
@@ -353,7 +353,7 @@ const TabArtigos = () => {
     artigos.forEach((a) => a.categorias.forEach((c) => map.set(c, (map.get(c) || 0) + 1)));
     const sorted = Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
     return ["Todas", ...sorted.map(([c]) => c)];
-  }, []);
+  }, [artigos]);
 
   const artigosFiltrados = useMemo(() => {
     let filtered = artigos.filter((a) => {
@@ -373,7 +373,7 @@ const TabArtigos = () => {
       filtered = [...filtered].sort((a, b) => a.autor.localeCompare(b.autor));
     }
     return filtered;
-  }, [busca, categoriaAtiva, ordenacao]);
+  }, [artigos, busca, categoriaAtiva, ordenacao]);
 
   return (
     <div>
@@ -411,7 +411,7 @@ const TabArtigos = () => {
               className={`text-[0.6rem] font-semibold px-2.5 py-1 rounded-full transition-all ${
                 categoriaAtiva === c
                   ? "bg-primary text-white"
-                  : categoryStyles[c] || "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : categoryStyles[c] || "bg-muted text-muted-foreground hover:bg-gray-200"
               }`}
             >
               {c}
@@ -442,7 +442,7 @@ const TabArtigos = () => {
                       {artigo.categorias.slice(0, 3).map((cat) => (
                         <span
                           key={cat}
-                          className={`text-[0.55rem] font-bold uppercase px-2 py-0.5 rounded-full ${categoryStyles[cat] || "bg-gray-100 text-gray-700"}`}
+                          className={`text-[0.55rem] font-bold uppercase px-2 py-0.5 rounded-full ${categoryStyles[cat] || "bg-muted text-muted-foreground"}`}
                         >
                           {cat}
                         </span>
@@ -462,7 +462,7 @@ const TabArtigos = () => {
                         <p className="text-xs font-semibold">{artigo.autor}</p>
                         <div className="flex items-center gap-2 text-[0.6rem] text-muted-foreground">
                           <span className="flex items-center gap-0.5"><Clock size={10} />{diasAtras(artigo.data_publicacao)}</span>
-                          <span className={`px-1.5 py-0 rounded-full ${fonteStyles[artigo.fonte] || "bg-gray-100 text-gray-600"}`}>
+                          <span className={`px-1.5 py-0 rounded-full ${fonteStyles[artigo.fonte] || "bg-muted text-muted-foreground"}`}>
                             {artigo.fonte}
                           </span>
                         </div>
@@ -493,11 +493,11 @@ const TabArtigos = () => {
 };
 
 // ─── Tab: Panorama (Analytics) ─────────────────────────
-const TabPanorama = () => {
+const TabPanorama = ({ noticias, artigos }: { noticias: Noticia[]; artigos: Artigo[] }) => {
   const dadosPanorama = useMemo(() => {
     // Source distribution - noticias
     const fontesNoticias = new Map<string, number>();
-    noticiasEmbutidas.forEach((n) => fontesNoticias.set(n.fonte, (fontesNoticias.get(n.fonte) || 0) + 1));
+    noticias.forEach((n) => fontesNoticias.set(n.fonte, (fontesNoticias.get(n.fonte) || 0) + 1));
     const distribuicaoFontes = Array.from(fontesNoticias.entries())
       .sort((a, b) => b[1] - a[1])
       .map(([nome, valor]) => ({ nome, valor }));
@@ -512,7 +512,7 @@ const TabPanorama = () => {
 
     // Timeline - combine noticias+artigos by week
     const todasDatas = [
-      ...noticiasEmbutidas.map((n) => ({ data: n.data_publicacao, tipo: "noticia" as const })),
+      ...noticias.map((n) => ({ data: n.data_publicacao, tipo: "noticia" as const })),
       ...artigos.map((a) => ({ data: a.data_publicacao, tipo: "artigo" as const })),
     ];
     const semanaMap = new Map<string, { semana: string; noticias: number; artigos: number }>();
@@ -543,7 +543,7 @@ const TabPanorama = () => {
     const topTopicos = distribuicaoCategorias.slice(0, 5);
 
     return { distribuicaoFontes, distribuicaoCategorias, timeline, autores, topTopicos };
-  }, []);
+  }, [noticias, artigos]);
 
   return (
     <div className="space-y-6">
@@ -551,8 +551,8 @@ const TabPanorama = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <Card className="p-4 border-0 shadow-sm">
           <p className="text-[0.6rem] font-semibold text-muted-foreground uppercase tracking-wide">Total Noticias</p>
-          <p className="text-2xl font-bold">{noticiasEmbutidas.length}</p>
-          <p className="text-[0.6rem] text-muted-foreground">{new Set(noticiasEmbutidas.map((n) => n.fonte)).size} fontes</p>
+          <p className="text-2xl font-bold">{noticias.length}</p>
+          <p className="text-[0.6rem] text-muted-foreground">{new Set(noticias.map((n) => n.fonte)).size} fontes</p>
         </Card>
         <Card className="p-4 border-0 shadow-sm">
           <p className="text-[0.6rem] font-semibold text-muted-foreground uppercase tracking-wide">Total Artigos</p>
@@ -568,7 +568,7 @@ const TabPanorama = () => {
         </Card>
         <Card className="p-4 border-0 shadow-sm">
           <p className="text-[0.6rem] font-semibold text-muted-foreground uppercase tracking-wide">Conteudo Total</p>
-          <p className="text-2xl font-bold text-amber-600">{noticiasEmbutidas.length + artigos.length}</p>
+          <p className="text-2xl font-bold text-amber-600">{noticias.length + artigos.length}</p>
           <p className="text-[0.6rem] text-muted-foreground">noticias + artigos</p>
         </Card>
       </div>
@@ -728,10 +728,12 @@ const TabPanorama = () => {
 
 // ─── Pagina Principal ──────────────────────────────────
 const Noticias = () => {
+  const { dados: noticias } = useNoticias();
+  const { dados: artigos } = useArtigos();
   const [tab, setTab] = useState<TabHub>("noticias");
 
   const tabs: { id: TabHub; label: string; icon: React.ReactNode; count: number }[] = [
-    { id: "noticias", label: "Noticias", icon: <Newspaper size={16} />, count: noticiasEmbutidas.length },
+    { id: "noticias", label: "Noticias", icon: <Newspaper size={16} />, count: noticias.length },
     { id: "artigos", label: "Artigos", icon: <BookOpen size={16} />, count: artigos.length },
     { id: "panorama", label: "Panorama", icon: <BarChart3 size={16} />, count: 0 },
   ];
@@ -761,7 +763,7 @@ const Noticias = () => {
             onClick={() => setTab(t.id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
               tab === t.id
-                ? "bg-white text-foreground shadow-sm"
+                ? "bg-card text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -779,9 +781,9 @@ const Noticias = () => {
       </div>
 
       {/* Tab Content */}
-      {tab === "noticias" && <TabNoticias />}
-      {tab === "artigos" && <TabArtigos />}
-      {tab === "panorama" && <TabPanorama />}
+      {tab === "noticias" && <TabNoticias noticias={noticias} />}
+      {tab === "artigos" && <TabArtigos artigos={artigos} />}
+      {tab === "panorama" && <TabPanorama noticias={noticias} artigos={artigos} />}
     </div>
   );
 };

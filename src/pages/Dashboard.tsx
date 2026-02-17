@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -37,9 +37,8 @@ import {
   Globe,
   ShieldCheck,
 } from "lucide-react";
-import noticiasEmbutidas, { type Noticia } from "@/data/noticias";
-import { dadosEmbutidosLicitacoes } from "@/data/licitacoes";
-import type { Licitacao } from "@/types/database";
+import { useNoticias } from "@/hooks/useNoticias";
+import { useLicitacoes } from "@/hooks/useLicitacoes";
 import { urlSegura } from "@/lib/utils";
 
 // ── Indicadores do setor ──
@@ -137,28 +136,8 @@ function formatarValor(valor: number): string {
 }
 
 const Dashboard = () => {
-  const [noticias, setNoticias] = useState<Noticia[]>(noticiasEmbutidas);
-  const [licitacoes, setLicitacoes] = useState<Licitacao[]>(dadosEmbutidosLicitacoes);
-
-  useEffect(() => {
-    const carregarDados = async () => {
-      try {
-        const [resN, resL] = await Promise.allSettled([
-          fetch("./noticias.json").then((r) => (r.ok ? r.json() : null)),
-          fetch("./licitacoes.json").then((r) => (r.ok ? r.json() : null)),
-        ]);
-        if (resN.status === "fulfilled" && Array.isArray(resN.value) && resN.value.length > 0) {
-          setNoticias(resN.value);
-        }
-        if (resL.status === "fulfilled" && Array.isArray(resL.value) && resL.value.length > 0) {
-          setLicitacoes(resL.value);
-        }
-      } catch {
-        /* mantém dados embutidos */
-      }
-    };
-    carregarDados();
-  }, []);
+  const { dados: noticias } = useNoticias();
+  const { dados: licitacoes } = useLicitacoes();
 
   const totalLicitacoes = licitacoes.length;
   const valorTotal = useMemo(() => {

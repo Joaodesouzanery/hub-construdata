@@ -15,7 +15,7 @@ import {
   FileText,
   Briefcase,
 } from "lucide-react";
-import { empresas } from "@/data/empresas";
+import { useEmpresas } from "@/hooks/useEmpresas";
 import { projetos } from "@/data/projetos";
 import type { Empresa } from "@/types/database";
 
@@ -71,7 +71,7 @@ const EmpresaCard = ({ empresa }: { empresa: Empresa }) => {
             <span className={`text-[0.6rem] font-bold uppercase px-2 py-0.5 rounded-full ${scoreColor(empresa.nota_score)}`}>
               {scoreLabel(empresa.nota_score)} ({empresa.nota_score})
             </span>
-            <span className="text-[0.6rem] font-semibold uppercase px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+            <span className="text-[0.6rem] font-semibold uppercase px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
               {porteLabel(empresa.porte)}
             </span>
             {empresa.segmentos.map((seg) => (
@@ -124,6 +124,7 @@ const EmpresaCard = ({ empresa }: { empresa: Empresa }) => {
 };
 
 const EmpresasPage = () => {
+  const { dados: empresas } = useEmpresas();
   const [busca, setBusca] = useState("");
   const [segmentoFiltro, setSegmentoFiltro] = useState("Todos");
   const [porteFiltro, setPorteFiltro] = useState("Todos");

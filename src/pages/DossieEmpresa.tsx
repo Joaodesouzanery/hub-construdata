@@ -68,9 +68,9 @@ function statusStyle(status: string): string {
     case "Em Andamento": return "bg-blue-50 text-blue-700";
     case "Concluido": return "bg-emerald-50 text-emerald-700";
     case "Atrasado": return "bg-red-50 text-red-700";
-    case "Planejado": return "bg-gray-50 text-gray-600";
+    case "Planejado": return "bg-muted text-muted-foreground";
     case "Paralisado": return "bg-amber-50 text-amber-700";
-    default: return "bg-gray-50 text-gray-600";
+    default: return "bg-muted text-muted-foreground";
   }
 }
 
@@ -236,7 +236,7 @@ const DossieEmpresa = () => {
             <span className={`text-xs font-bold px-3 py-1 rounded-full border ${scoreColor(empresa.nota_score)}`}>
               Score: {empresa.nota_score}/100 — {scoreLabel(empresa.nota_score)}
             </span>
-            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-gray-100 text-gray-600">
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-muted text-muted-foreground">
               {porteLabel(empresa.porte)}
             </span>
             <span className={`text-xs font-semibold px-3 py-1 rounded-full ${empresa.status === "Ativa" ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"}`}>
@@ -404,7 +404,7 @@ const DossieEmpresa = () => {
             {estadosAtuacao
               .filter((uf) => uf !== empresa.estado_sede)
               .map((uf) => (
-                <span key={uf} className="text-xs font-semibold px-3 py-1.5 rounded-full bg-gray-100 text-gray-600">
+                <span key={uf} className="text-xs font-semibold px-3 py-1.5 rounded-full bg-muted text-muted-foreground">
                   {uf}
                 </span>
               ))}
@@ -423,7 +423,7 @@ const DossieEmpresa = () => {
                     onClick={() => navigate(`/empresas/${p.id}`)}
                   >
                     <span className="text-muted-foreground">{p.nome}</span>
-                    <span className="text-[0.6rem] font-semibold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                    <span className="text-[0.6rem] font-semibold bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
                       {p.count}x · {p.papeis[0]}
                     </span>
                   </div>

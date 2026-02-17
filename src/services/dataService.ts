@@ -15,7 +15,7 @@
  *   - Observabilidade via logger estruturado
  */
 
-import type { Noticia, Artigo, Licitacao } from "@/types/database";
+import type { Noticia, Artigo, Licitacao, Empresa, Indicador } from "@/types/database";
 import { logger } from "@/services/logger";
 
 // ══════════════════════════════════════════════════════════════
@@ -309,13 +309,13 @@ export async function fetchLicitacoes(): Promise<Licitacao[]> {
   return validarArray<Licitacao>(data, ["titulo", "orgao", "link", "modalidade"]);
 }
 
-export async function fetchIndicadores(): Promise<unknown[]> {
-  if (useSupabase) return supabaseQuery("indicadores", "created_at", 20);
+export async function fetchIndicadores(): Promise<Indicador[]> {
+  if (useSupabase) return supabaseQuery<Indicador>("indicadores", "created_at", 20);
   return [];
 }
 
-export async function fetchEmpresas(): Promise<unknown[]> {
-  if (useSupabase) return supabaseQuery("empresas", "nota_score", 100);
+export async function fetchEmpresas(): Promise<Empresa[]> {
+  if (useSupabase) return supabaseQuery<Empresa>("empresas", "nota_score", 100);
   return [];
 }
 

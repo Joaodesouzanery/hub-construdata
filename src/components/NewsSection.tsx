@@ -72,7 +72,7 @@ function formatarData(dataStr: string): string {
 const FonteTag = ({ fonte }: { fonte: string }) => (
   <span
     className={`inline-block text-[0.7rem] font-semibold tracking-wide uppercase px-2.5 py-1 rounded-full ${
-      fonteStyles[fonte] || "bg-gray-100 text-gray-700"
+      fonteStyles[fonte] || "bg-muted text-muted-foreground"
     }`}
   >
     {fonte}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -25,8 +25,7 @@ import {
   Filter,
 } from "lucide-react";
 import { toast } from "sonner";
-import { dadosEmbutidosLicitacoes } from "@/data/licitacoes";
-import type { Licitacao } from "@/types/database";
+import { useLicitacoes } from "@/hooks/useLicitacoes";
 
 // ── SINAPI Watch — Monitoramento de preços ──
 interface InsumoSINAPI {
@@ -168,16 +167,7 @@ const AlertasInteligentes = () => {
   const [emailAlerta, setEmailAlerta] = useState("");
   const [emailAtivo, setEmailAtivo] = useState(false);
   const [frequencia, setFrequencia] = useState<"tempo_real" | "diario" | "semanal">("diario");
-  const [licitacoes, setLicitacoes] = useState<Licitacao[]>(dadosEmbutidosLicitacoes);
-
-  useEffect(() => {
-    fetch("./licitacoes.json")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) setLicitacoes(data);
-      })
-      .catch(() => {});
-  }, []);
+  const { dados: licitacoes } = useLicitacoes();
 
   const alertasFiltrados = useMemo(() => {
     return alertas
