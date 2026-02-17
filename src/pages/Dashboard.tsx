@@ -714,7 +714,7 @@ const Dashboard = () => {
 
       {/* Versão da Plataforma */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-[0.6rem] text-muted-foreground/60 pt-2 border-t border-border/50 gap-1">
-        <span>ConstruData Hub v3.0 — Inteligência para Engenharia, Saneamento e Infraestrutura</span>
+        <span>ConstruData Hub v4.0 — Inteligência para Engenharia, Saneamento e Infraestrutura</span>
         <span>{empresas.length} empresas · {projetos.length} projetos · {totalLicitacoes} licitações · {dadosSNIS.length} cidades SNIS · {sancoes.length} sanções · {fontesDueDiligence.length} fontes</span>
       </div>
     </div>

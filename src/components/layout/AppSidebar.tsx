@@ -106,6 +106,11 @@ const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
             </span>
           </div>
         )}
+        {!collapsed && (
+          <span className="ml-auto text-[0.65rem] font-bold bg-emerald-500 text-white px-2 py-0.5 rounded-full">
+            v4.0
+          </span>
+        )}
       </div>
 
       {/* Navigation */}
@@ -185,7 +190,7 @@ const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
       <div className="border-t border-white/10">
         {!collapsed && (
           <div className="px-4 py-1.5 text-[0.5rem] text-white/20 text-center">
-            v3.0 · Inteligência para Engenharia
+            v4.0 · Inteligência para Engenharia
           </div>
         )}
         <button
