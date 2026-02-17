@@ -20,6 +20,8 @@ import {
   Brain,
   Network,
   Search,
+  AlertTriangle,
+  Database,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -32,6 +34,8 @@ const navItems = [
   { to: "/empresas", icon: Briefcase, label: "Dossiês", badge: "Fase 4", group: "fase2" },
   { to: "/vinculos", icon: Network, label: "Grafo Vínculos", badge: "Novo", group: "fase2" },
   { to: "/busca", icon: Search, label: "Busca IA", badge: "IA", group: "fase2" },
+  { to: "/anomalias", icon: AlertTriangle, label: "Anomalias", badge: "IA", group: "fase2" },
+  { to: "/enriquecimento", icon: Database, label: "Enriquecimento", badge: "Novo", group: "fase2" },
   { to: "/analitico", icon: TrendingUp, label: "Análises", badge: "Novo", group: "fase2" },
   { to: "/insights-ia", icon: Brain, label: "Insights IA", badge: "IA", group: "fase2" },
   { to: "/relatorios", icon: Download, label: "Relatórios", badge: "Novo", group: "fase2" },
