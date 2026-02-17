@@ -180,7 +180,8 @@ INSERT INTO indicadores (titulo, valor, descricao, icone, variacao, positivo, fo
 ('Perdas na Distribuicao', '36,7%', 'Indice de perdas de agua na distribuicao', 'AlertTriangle', '-1,2%', true, 'SNIS 2025'),
 ('Licitacoes Ativas', '847', 'Numero de licitacoes abertas no setor de saneamento e infraestrutura', 'FileText', '+156', true, 'PNCP 2026'),
 ('INCC Acumulado', '5,83%', 'Indice Nacional de Custo da Construcao acumulado 12 meses', 'BarChart3', '+0,42%', false, 'FGV 2026'),
-('Empregos Construcao', '2,87 mi', 'Postos de trabalho formais na construcao civil', 'Users', '+124 mil', true, 'CAGED 2025');
+('Empregos Construcao', '2,87 mi', 'Postos de trabalho formais na construcao civil', 'Users', '+124 mil', true, 'CAGED 2025')
+ON CONFLICT (titulo) DO NOTHING;
 
 
 -- ╔══════════════════════════════════════════════════════════════╗
@@ -195,7 +196,8 @@ INSERT INTO fontes_uteis (nome, descricao, url) VALUES
 ('Trata Brasil', 'Instituto com dados e estudos sobre saneamento basico no Brasil', 'https://tratabrasil.org.br'),
 ('CBIC - Camara Brasileira da Industria da Construcao', 'Entidade representativa do setor com dados e estudos', 'https://cbic.org.br'),
 ('ABES - Associacao Brasileira de Engenharia Sanitaria', 'Associacao tecnica de engenharia sanitaria e ambiental', 'https://abes-dn.org.br'),
-('TCU - Tribunal de Contas da Uniao', 'Fiscalizacao de obras publicas federais e jurisprudencia', 'https://portal.tcu.gov.br');
+('TCU - Tribunal de Contas da Uniao', 'Fiscalizacao de obras publicas federais e jurisprudencia', 'https://portal.tcu.gov.br')
+ON CONFLICT (url) DO NOTHING;
 
 
 -- ╔══════════════════════════════════════════════════════════════╗
