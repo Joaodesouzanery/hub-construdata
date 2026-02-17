@@ -181,14 +181,21 @@ const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
         )}
       </NavLink>
 
-      {/* Collapse Toggle */}
-      <button
-        onClick={onToggle}
-        className="flex items-center justify-center h-12 border-t border-white/10 text-white/40 hover:text-white transition-colors"
-        title={collapsed ? "Expandir menu" : "Recolher menu"}
-      >
-        {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-      </button>
+      {/* Collapse Toggle + Version */}
+      <div className="border-t border-white/10">
+        {!collapsed && (
+          <div className="px-4 py-1.5 text-[0.5rem] text-white/20 text-center">
+            v2.4.0 · World Monitor + Sherlocker
+          </div>
+        )}
+        <button
+          onClick={onToggle}
+          className="flex items-center justify-center w-full h-10 text-white/40 hover:text-white transition-colors"
+          title={collapsed ? "Expandir menu" : "Recolher menu"}
+        >
+          {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+        </button>
+      </div>
     </aside>
   );
 };

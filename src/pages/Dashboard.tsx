@@ -36,10 +36,18 @@ import {
   Zap,
   Globe,
   ShieldCheck,
+  Database,
+  Radio,
+  Briefcase,
+  Network,
+  Shield,
 } from "lucide-react";
 import { useNoticias } from "@/hooks/useNoticias";
 import { useLicitacoes } from "@/hooks/useLicitacoes";
 import { urlSegura } from "@/lib/utils";
+import { empresas } from "@/data/empresas";
+import { projetos } from "@/data/projetos";
+import { fontesDueDiligence } from "@/data/sancoes";
 
 // ── Indicadores do setor ──
 const indicadores = [
@@ -593,6 +601,115 @@ const Dashboard = () => {
             </Link>
           </CardContent>
         </Card>
+      </div>
+
+      {/* ════════════════════════════════════════════════════════════════
+          Inteligência da Plataforma (World Monitor-style)
+         ════════════════════════════════════════════════════════════════ */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* Base de Dados da Plataforma */}
+        <Card className="border-0 shadow-sm">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-bold flex items-center gap-2">
+              <Database size={16} className="text-primary" />
+              Base de Dados
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="p-3 bg-blue-50 rounded-lg text-center">
+                <p className="text-lg font-extrabold text-blue-700">{empresas.length}</p>
+                <p className="text-[0.6rem] text-blue-600 font-semibold uppercase">Empresas Monitoradas</p>
+              </div>
+              <div className="p-3 bg-violet-50 rounded-lg text-center">
+                <p className="text-lg font-extrabold text-violet-700">{projetos.length}</p>
+                <p className="text-[0.6rem] text-violet-600 font-semibold uppercase">Projetos Rastreados</p>
+              </div>
+              <div className="p-3 bg-emerald-50 rounded-lg text-center">
+                <p className="text-lg font-extrabold text-emerald-700">{totalLicitacoes}</p>
+                <p className="text-[0.6rem] text-emerald-600 font-semibold uppercase">Licitações Indexadas</p>
+              </div>
+              <div className="p-3 bg-amber-50 rounded-lg text-center">
+                <p className="text-lg font-extrabold text-amber-700">{fontesDueDiligence.length}</p>
+                <p className="text-[0.6rem] text-amber-600 font-semibold uppercase">Fontes Oficiais</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Link to="/empresas" className="flex items-center gap-2 text-xs p-2 rounded-lg hover:bg-muted transition-colors group">
+                <Briefcase size={14} className="text-primary" />
+                <span className="flex-1">Dossiês de Empresas</span>
+                <span className="text-primary font-bold">{empresas.length}</span>
+                <ChevronRight size={12} className="text-muted-foreground opacity-0 group-hover:opacity-100" />
+              </Link>
+              <Link to="/vinculos" className="flex items-center gap-2 text-xs p-2 rounded-lg hover:bg-muted transition-colors group">
+                <Network size={14} className="text-primary" />
+                <span className="flex-1">Grafo de Vínculos</span>
+                <span className="text-primary font-bold">{empresas.length} nós</span>
+                <ChevronRight size={12} className="text-muted-foreground opacity-0 group-hover:opacity-100" />
+              </Link>
+              <Link to="/anomalias" className="flex items-center gap-2 text-xs p-2 rounded-lg hover:bg-muted transition-colors group">
+                <AlertTriangle size={14} className="text-amber-500" />
+                <span className="flex-1">Detecção de Anomalias</span>
+                <span className="text-amber-600 font-bold">6 algoritmos</span>
+                <ChevronRight size={12} className="text-muted-foreground opacity-0 group-hover:opacity-100" />
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Fontes de Dados Oficiais */}
+        <Card className="border-0 shadow-sm">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-bold flex items-center gap-2">
+              <Radio size={16} className="text-emerald-500" />
+              Fontes de Dados Oficiais
+              <span className="ml-auto inline-flex items-center gap-1 text-[0.6rem] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                {fontesDueDiligence.length} fontes ativas
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-1.5 max-h-[280px] overflow-y-auto">
+              {fontesDueDiligence.map((fonte) => {
+                const tipoCores: Record<string, string> = {
+                  sancao: "bg-red-100 text-red-700",
+                  cadastral: "bg-blue-100 text-blue-700",
+                  judicial: "bg-violet-100 text-violet-700",
+                  financeiro: "bg-emerald-100 text-emerald-700",
+                  ambiental: "bg-green-100 text-green-700",
+                  trabalhista: "bg-amber-100 text-amber-700",
+                };
+                return (
+                  <div key={fonte.sigla} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors text-xs">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold">{fonte.sigla}</span>
+                        <span className={`text-[0.5rem] font-bold uppercase px-1.5 py-0.5 rounded ${tipoCores[fonte.tipo] || "bg-gray-100 text-gray-700"}`}>
+                          {fonte.tipo}
+                        </span>
+                      </div>
+                      <p className="text-[0.6rem] text-muted-foreground truncate">{fonte.descricao}</p>
+                    </div>
+                    <Shield size={12} className="text-muted-foreground/40 flex-shrink-0" />
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-3 p-2.5 bg-blue-50 rounded-lg border border-blue-100">
+              <p className="text-[0.6rem] text-blue-700">
+                <strong>LGPD:</strong> Todos os dados são de fontes públicas oficiais, tratados conforme Art. 7°, II e III da Lei 13.709/2018.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Versão da Plataforma */}
+      <div className="flex items-center justify-between text-[0.6rem] text-muted-foreground/60 pt-2 border-t border-border/50">
+        <span>ConstruData Hub v2.4.0 — Inteligência para Engenharia, Saneamento e Infraestrutura</span>
+        <span>Build: {new Date().toISOString().slice(0, 10)} · {empresas.length} empresas · {totalLicitacoes} licitações · {fontesDueDiligence.length} fontes</span>
       </div>
     </div>
   );

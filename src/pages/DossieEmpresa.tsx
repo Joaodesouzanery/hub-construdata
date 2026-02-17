@@ -15,6 +15,7 @@ import {
 import { empresas } from "@/data/empresas";
 import { projetos } from "@/data/projetos";
 import { calcularRiskScore } from "@/lib/riskScore";
+import { consultarSancoes, fontesDueDiligence } from "@/data/sancoes";
 import type { Projeto } from "@/types/database";
 
 function scoreColor(score: number): string {
@@ -242,6 +243,13 @@ const DossieEmpresa = () => {
       .sort((a, b) => b.count - a.count);
   }, [projetosEmpresa, empresa]);
 
+  // ── Sanções CEIS/CNEP/TCU ──
+  const sancoesEmpresa = useMemo(() => {
+    if (!empresa) return [];
+    return consultarSancoes(empresa.cnpj);
+  }, [empresa]);
+  const sancoesAtivas = sancoesEmpresa.filter((s) => s.ativa);
+
   // ── Risk Score ──
   const riskAnalysis = useMemo(() => {
     if (!empresa) return null;
@@ -382,7 +390,101 @@ const DossieEmpresa = () => {
       </div>
 
       {/* ════════════════════════════════════════════════════════════════
-          NOVO: Score de Risco Aprimorado (Sherlocker-style)
+          Due Diligence & Compliance (Sherlocker-style)
+         ════════════════════════════════════════════════════════════════ */}
+      <Card className="p-5 mb-6 border-0 shadow-sm">
+        <h3 className="text-sm font-bold mb-4 flex items-center gap-2">
+          <Shield size={16} className="text-blue-600" />
+          Due Diligence — Consulta em Bases Públicas
+          {sancoesAtivas.length === 0 ? (
+            <span className="ml-auto text-[0.6rem] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+              Sem impedimentos ativos
+            </span>
+          ) : (
+            <span className="ml-auto text-[0.6rem] font-bold px-2.5 py-1 rounded-full bg-red-50 text-red-700 border border-red-200">
+              {sancoesAtivas.length} sanção(ões) ativa(s)
+            </span>
+          )}
+        </h3>
+
+        {/* Sanções encontradas */}
+        {sancoesEmpresa.length > 0 && (
+          <div className="mb-4">
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-2 flex items-center gap-1">
+              <AlertTriangle size={12} className="text-amber-500" />
+              Registros de Sanções ({sancoesEmpresa.length})
+            </h4>
+            <div className="space-y-2">
+              {sancoesEmpresa.map((s, i) => (
+                <div
+                  key={i}
+                  className={`p-3 rounded-lg border text-xs ${
+                    s.ativa
+                      ? "bg-red-50 border-red-200"
+                      : "bg-gray-50 border-gray-200"
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className={`text-[0.55rem] font-bold uppercase px-1.5 py-0.5 rounded text-white ${
+                      s.ativa ? "bg-red-500" : "bg-gray-400"
+                    }`}>
+                      {s.tipo}
+                    </span>
+                    <span className={`text-[0.55rem] font-bold uppercase px-1.5 py-0.5 rounded ${
+                      s.ativa ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-600"
+                    }`}>
+                      {s.ativa ? "ATIVA" : "ENCERRADA"}
+                    </span>
+                    <span className="text-[0.55rem] text-muted-foreground ml-auto">
+                      {formatarDataBR(s.data_inicio)} {s.data_fim ? `— ${formatarDataBR(s.data_fim)}` : "— em vigor"}
+                    </span>
+                  </div>
+                  <p className="font-semibold text-xs">{s.motivo}</p>
+                  <p className="text-muted-foreground mt-0.5">
+                    Órgão: {s.orgao_sancionador} · {s.fundamentacao}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Fontes consultadas */}
+        <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-2">
+          Fontes de Dados Consultadas ({fontesDueDiligence.length})
+        </h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+          {fontesDueDiligence.map((fonte) => {
+            const hasSancao = fonte.tipo === "sancao" && sancoesEmpresa.some((s) => s.tipo === fonte.sigla);
+            return (
+              <div
+                key={fonte.sigla}
+                className={`p-2.5 rounded-lg border text-xs flex items-start gap-2 ${
+                  hasSancao
+                    ? "bg-amber-50 border-amber-200"
+                    : "bg-gray-50 border-gray-100"
+                }`}
+              >
+                <div className={`w-2 h-2 rounded-full mt-1 flex-shrink-0 ${
+                  hasSancao ? "bg-amber-500" : "bg-emerald-500"
+                }`} />
+                <div className="min-w-0">
+                  <p className="font-semibold truncate">{fonte.sigla}</p>
+                  <p className="text-[0.6rem] text-muted-foreground line-clamp-1">{fonte.descricao}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <p className="text-[0.6rem] text-muted-foreground mt-3">
+          Dados públicos consultados em bases oficiais do governo federal. Última verificação: {new Date().toLocaleDateString("pt-BR")}.
+          Conforme LGPD Art. 7°, II — tratamento para cumprimento de obrigação legal.
+        </p>
+      </Card>
+
+      {/* ════════════════════════════════════════════════════════════════
+          Score de Risco Aprimorado (Sherlocker-style)
          ════════════════════════════════════════════════════════════════ */}
       {riskAnalysis && (
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5 mb-6">
