@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import AppSidebar from "./AppSidebar";
 import GlobalSearch from "../GlobalSearch";
-import { Menu, Sun, Moon } from "lucide-react";
+import { Menu, Sun, Moon, Shield } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 
 const AppLayout = () => {
@@ -93,6 +93,20 @@ const AppLayout = () => {
         <main className="animate-fade-in">
           <Outlet />
         </main>
+
+        {/* Footer */}
+        <footer className="border-t border-border py-4 px-4 lg:px-6 mt-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
+            <span>&copy; {new Date().getFullYear()} ConstruData Hub</span>
+            <Link
+              to="/privacidade"
+              className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+            >
+              <Shield size={12} />
+              Política de Privacidade
+            </Link>
+          </div>
+        </footer>
       </div>
     </div>
   );

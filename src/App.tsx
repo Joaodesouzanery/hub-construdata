@@ -18,6 +18,7 @@ import Relatorios from "./pages/Relatorios";
 import EmpresasPage from "./pages/EmpresasPage";
 import DossieEmpresa from "./pages/DossieEmpresa";
 import DossieProjeto from "./pages/DossieProjeto";
+import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -43,6 +44,7 @@ const App = () => (
         <Route path="/empresas" element={<EmpresasPage />} />
         <Route path="/empresas/:id" element={<DossieEmpresa />} />
         <Route path="/projetos/:id" element={<DossieProjeto />} />
+        <Route path="/privacidade" element={<PoliticaPrivacidade />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

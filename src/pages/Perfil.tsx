@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ import {
   Shield,
   Settings,
   CheckCircle2,
+  AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -145,6 +147,8 @@ const ProfilePanel = () => {
   const [nome, setNome] = useState(user?.nome ?? "");
   const [empresa, setEmpresa] = useState(user?.empresa ?? "");
   const [cargo, setCargo] = useState(user?.cargo ?? "");
+  const [confirmarExclusao, setConfirmarExclusao] = useState(false);
+  const [textoConfirmacao, setTextoConfirmacao] = useState("");
 
   if (!user) return null;
 
@@ -424,6 +428,92 @@ const ProfilePanel = () => {
             </CardContent>
           </Card>
         </div>
+      </div>
+
+      {/* Zona de Perigo — Excluir Conta */}
+      <Card className="border-destructive/30">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-bold flex items-center gap-2 text-destructive">
+            <AlertTriangle size={18} />
+            Excluir Minha Conta
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            Ao excluir sua conta, <strong className="text-foreground">todos os seus dados pessoais
+            serao permanentemente removidos</strong>, incluindo perfil, filtros salvos e configuracoes
+            de alertas. Esta acao nao pode ser desfeita.
+          </p>
+          <p className="text-xs text-muted-foreground mb-4">
+            Conforme a LGPD (Art. 18, VI), voce tem o direito de solicitar a eliminacao dos seus
+            dados pessoais. Ao confirmar, cumpriremos sua solicitacao imediatamente.
+          </p>
+
+          {!confirmarExclusao ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setConfirmarExclusao(true)}
+              className="text-destructive border-destructive/30 hover:bg-destructive/10"
+            >
+              <Trash2 size={14} className="mr-1.5" />
+              Quero excluir minha conta
+            </Button>
+          ) : (
+            <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-4 space-y-3">
+              <p className="text-sm font-semibold text-destructive">
+                Digite "EXCLUIR" para confirmar:
+              </p>
+              <Input
+                value={textoConfirmacao}
+                onChange={(e) => setTextoConfirmacao(e.target.value)}
+                placeholder='Digite "EXCLUIR"'
+                className="max-w-[200px] border-destructive/30"
+              />
+              <div className="flex gap-2">
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  disabled={textoConfirmacao !== "EXCLUIR"}
+                  onClick={() => {
+                    // Limpa todos os dados locais
+                    localStorage.removeItem("hub_construdata_user");
+                    localStorage.removeItem("hub_construdata_filters");
+                    localStorage.removeItem("hub_construdata_alerts");
+                    localStorage.removeItem("hub_construdata_theme");
+                    localStorage.removeItem("hub_construdata_favoritos");
+                    logout();
+                    toast.success("Conta excluida com sucesso. Todos os seus dados foram removidos.");
+                  }}
+                >
+                  <Trash2 size={14} className="mr-1.5" />
+                  Confirmar exclusao
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setConfirmarExclusao(false);
+                    setTextoConfirmacao("");
+                  }}
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Link LGPD */}
+      <div className="text-center pt-2 pb-6">
+        <Link
+          to="/privacidade"
+          className="text-xs text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5"
+        >
+          <Shield size={12} />
+          Politica de Privacidade (LGPD)
+        </Link>
       </div>
     </div>
   );
