@@ -328,27 +328,103 @@ CREATE TRIGGER trg_projetos_updated_at BEFORE UPDATE ON projetos
 -- ║  PASSO 1D — UNIQUE constraints adicionais (idempotente)      ║
 -- ╚══════════════════════════════════════════════════════════════╝
 
--- Deduplicacao de precos: mesmo insumo na mesma data nao pode repetir
+-- Noticias: link unico (necessario para ON CONFLICT)
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'noticias_link_key' OR conname = 'uq_noticias_link'
+  ) THEN
+    DELETE FROM noticias a USING noticias b
+      WHERE a.ctid < b.ctid AND a.link = b.link;
+    ALTER TABLE noticias ADD CONSTRAINT uq_noticias_link UNIQUE (link);
+  END IF;
+EXCEPTION WHEN duplicate_table THEN NULL;
+          WHEN unique_violation THEN NULL;
+END $$;
+
+-- Artigos: link unico
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'artigos_link_key' OR conname = 'uq_artigos_link'
+  ) THEN
+    DELETE FROM artigos a USING artigos b
+      WHERE a.ctid < b.ctid AND a.link = b.link;
+    ALTER TABLE artigos ADD CONSTRAINT uq_artigos_link UNIQUE (link);
+  END IF;
+EXCEPTION WHEN duplicate_table THEN NULL;
+          WHEN unique_violation THEN NULL;
+END $$;
+
+-- Licitacoes: numero_controle unico
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'licitacoes_numero_controle_key' OR conname = 'uq_licitacoes_numero_controle'
+  ) THEN
+    DELETE FROM licitacoes a USING licitacoes b
+      WHERE a.ctid < b.ctid AND a.numero_controle = b.numero_controle
+        AND a.numero_controle IS NOT NULL;
+    ALTER TABLE licitacoes ADD CONSTRAINT uq_licitacoes_numero_controle UNIQUE (numero_controle);
+  END IF;
+EXCEPTION WHEN duplicate_table THEN NULL;
+          WHEN unique_violation THEN NULL;
+END $$;
+
+-- Indicadores: titulo unico
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'indicadores_titulo_key' OR conname = 'uq_indicadores_titulo'
+  ) THEN
+    DELETE FROM indicadores a USING indicadores b
+      WHERE a.ctid < b.ctid AND a.titulo = b.titulo;
+    ALTER TABLE indicadores ADD CONSTRAINT uq_indicadores_titulo UNIQUE (titulo);
+  END IF;
+EXCEPTION WHEN duplicate_table THEN NULL;
+          WHEN unique_violation THEN NULL;
+END $$;
+
+-- Fontes uteis: url unica
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'fontes_uteis_url_key' OR conname = 'uq_fontes_uteis_url'
+  ) THEN
+    DELETE FROM fontes_uteis a USING fontes_uteis b
+      WHERE a.ctid < b.ctid AND a.url = b.url;
+    ALTER TABLE fontes_uteis ADD CONSTRAINT uq_fontes_uteis_url UNIQUE (url);
+  END IF;
+EXCEPTION WHEN duplicate_table THEN NULL;
+          WHEN unique_violation THEN NULL;
+END $$;
+
+-- Empresas: cnpj unico
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'empresas_cnpj_key' OR conname = 'uq_empresas_cnpj'
+  ) THEN
+    DELETE FROM empresas a USING empresas b
+      WHERE a.ctid < b.ctid AND a.cnpj = b.cnpj;
+    ALTER TABLE empresas ADD CONSTRAINT uq_empresas_cnpj UNIQUE (cnpj);
+  END IF;
+EXCEPTION WHEN duplicate_table THEN NULL;
+          WHEN unique_violation THEN NULL;
+END $$;
+
+-- Historico precos: insumo + data_referencia unico
 DO $$ BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_constraint WHERE conname = 'uq_historico_insumo_data'
   ) THEN
+    DELETE FROM historico_precos a USING historico_precos b
+      WHERE a.ctid < b.ctid AND a.insumo = b.insumo AND a.data_referencia = b.data_referencia;
     ALTER TABLE historico_precos ADD CONSTRAINT uq_historico_insumo_data
       UNIQUE (insumo, data_referencia);
   END IF;
-EXCEPTION WHEN unique_violation THEN
-  -- Se ja existem duplicatas, ignorar (o constraint ja existe ou dados precisam limpeza)
-  NULL;
-END $$;
-
--- Fontes uteis: URL unica
-DO $$ BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_constraint WHERE conname = 'uq_fontes_uteis_url'
-  ) THEN
-    ALTER TABLE fontes_uteis ADD CONSTRAINT uq_fontes_uteis_url UNIQUE (url);
-  END IF;
-EXCEPTION WHEN unique_violation THEN NULL;
+EXCEPTION WHEN duplicate_table THEN NULL;
+          WHEN unique_violation THEN NULL;
 END $$;
 
 
