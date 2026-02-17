@@ -260,7 +260,15 @@ const TabNoticias = () => {
             <div className="relative mb-6">
               <Card className="overflow-hidden hover:shadow-md transition-shadow group border-0 shadow-sm">
                 <a href={urlSegura(destaque.link)} target="_blank" rel="noopener noreferrer">
-                  <div className="w-full h-[220px] bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+                  {destaque.imagem ? (
+                    <img
+                      src={urlSegura(destaque.imagem)}
+                      alt={destaque.titulo}
+                      className="w-full h-[220px] object-cover"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; (e.target as HTMLImageElement).nextElementSibling?.classList.remove("hidden"); }}
+                    />
+                  ) : null}
+                  <div className={`w-full h-[220px] bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center ${destaque.imagem ? "hidden" : ""}`}>
                     <Newspaper className="text-primary/30" size={64} />
                   </div>
                   <div className="p-5">
@@ -295,7 +303,15 @@ const TabNoticias = () => {
               <div key={index} className="relative">
                 <a href={urlSegura(noticia.link)} target="_blank" rel="noopener noreferrer">
                   <Card className="overflow-hidden hover:shadow-md transition-shadow group h-full border-0 shadow-sm">
-                    <div className="w-full h-[100px] bg-gradient-to-br from-slate-100 to-slate-50 flex items-center justify-center">
+                    {noticia.imagem ? (
+                      <img
+                        src={urlSegura(noticia.imagem)}
+                        alt={noticia.titulo}
+                        className="w-full h-[140px] object-cover"
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; (e.target as HTMLImageElement).nextElementSibling?.classList.remove("hidden"); }}
+                      />
+                    ) : null}
+                    <div className={`w-full h-[140px] bg-gradient-to-br from-slate-100 to-slate-50 flex items-center justify-center ${noticia.imagem ? "hidden" : ""}`}>
                       <Newspaper className="text-slate-300" size={36} />
                     </div>
                     <div className="p-4">
@@ -454,7 +470,15 @@ const TabArtigos = () => {
                     </div>
                   </div>
                   <div className="hidden md:flex items-center">
-                    <div className="w-[140px] h-[90px] bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg flex items-center justify-center">
+                    {artigo.imagem ? (
+                      <img
+                        src={urlSegura(artigo.imagem)}
+                        alt={artigo.titulo}
+                        className="w-[140px] h-[90px] object-cover rounded-lg"
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; (e.target as HTMLImageElement).nextElementSibling?.classList.remove("hidden"); }}
+                      />
+                    ) : null}
+                    <div className={`w-[140px] h-[90px] bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg flex items-center justify-center ${artigo.imagem ? "hidden" : ""}`}>
                       <BookOpen className="text-primary/30" size={28} />
                     </div>
                   </div>

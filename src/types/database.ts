@@ -16,6 +16,7 @@ export interface Noticia {
   link: string;
   data_publicacao: string;      // timestamptz ISO 8601
   fonte: string;
+  imagem?: string;              // URL da imagem (og:image ou placeholder)
   created_at?: string;          // timestamptz (Supabase gera)
 }
 

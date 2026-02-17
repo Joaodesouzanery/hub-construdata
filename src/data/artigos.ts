@@ -19,6 +19,7 @@ const artigos: Artigo[] = [
     fonte: "AECweb",
     autor: "Eng. Ricardo Mendes",
     categorias: ["BIM", "Saneamento", "Tecnologia"],
+    imagem: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Analise comparativa SINAPI vs SICRO 2026: impactos nos orcamentos de infraestrutura hidrica",
@@ -29,6 +30,7 @@ const artigos: Artigo[] = [
     fonte: "CBIC",
     autor: "Dr. Ana Cristina Ferreira",
     categorias: ["Custos", "Infraestrutura", "Normas Tecnicas"],
+    imagem: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "O papel das PPPs na universalizacao do saneamento: licoes da concessao do Amapa",
@@ -39,6 +41,7 @@ const artigos: Artigo[] = [
     fonte: "Saneamento Basico",
     autor: "Juliana Tavares",
     categorias: ["Saneamento", "Legislacao", "Governo"],
+    imagem: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Machine Learning aplicado a previsao de demanda hidrica em regioes metropolitanas",
@@ -49,6 +52,7 @@ const artigos: Artigo[] = [
     fonte: "Tratamento de Agua",
     autor: "Prof. Carlos Eduardo Lima",
     categorias: ["Tecnologia", "Recursos Hidricos", "Saneamento"],
+    imagem: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Nova NR-18 e seus impactos na gestao de seguranca em obras de grande porte",
@@ -59,6 +63,7 @@ const artigos: Artigo[] = [
     fonte: "SindusCon-SP",
     autor: "Adv. Marcos Ribeiro",
     categorias: ["Regulamentacao", "Construcao Civil", "Normas Tecnicas"],
+    imagem: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Concreto de ultra-alto desempenho (UHPC) em infraestrutura de saneamento: casos brasileiros",
@@ -69,6 +74,7 @@ const artigos: Artigo[] = [
     fonte: "Engenharia 360",
     autor: "Eng. Patricia Santos",
     categorias: ["Engenharia", "Saneamento", "Estruturas"],
+    imagem: "https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Marco Legal do Saneamento: balanco de 5 anos e os proximos desafios para 2033",
@@ -79,6 +85,7 @@ const artigos: Artigo[] = [
     fonte: "Trata Brasil",
     autor: "Edison Carlos",
     categorias: ["Saneamento", "Legislacao", "Indicadores"],
+    imagem: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Drones e LiDAR na inspecao de barragens: regulamentacao CONFEA e boas praticas",
@@ -89,6 +96,7 @@ const artigos: Artigo[] = [
     fonte: "CONFEA",
     autor: "Eng. Roberto Alves",
     categorias: ["Engenharia", "Tecnologia", "Regulamentacao"],
+    imagem: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Economia circular na construcao: como reaproveitar 85% dos residuos de demolicao",
@@ -99,6 +107,7 @@ const artigos: Artigo[] = [
     fonte: "Canal Meio Ambiente",
     autor: "Marina Oliveira",
     categorias: ["Sustentabilidade", "Construcao Civil", "Meio Ambiente"],
+    imagem: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Estacoes de tratamento modulares: solucao para municipios de pequeno porte",
@@ -109,6 +118,7 @@ const artigos: Artigo[] = [
     fonte: "ABES",
     autor: "Dr. Fernando Costa",
     categorias: ["Saneamento", "Infraestrutura", "Tecnologia"],
+    imagem: "https://images.unsplash.com/photo-1504309092620-4d0ec726efa4?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Impacto das mudancas climaticas no dimensionamento de redes de drenagem urbana",
@@ -119,6 +129,7 @@ const artigos: Artigo[] = [
     fonte: "O Eco",
     autor: "Prof. Lucia Andrade",
     categorias: ["Meio Ambiente", "Infraestrutura", "Normas Tecnicas"],
+    imagem: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Licitacoes de saneamento em 2026: tendencias, valores e oportunidades por regiao",
@@ -129,6 +140,7 @@ const artigos: Artigo[] = [
     fonte: "CBIC",
     autor: "Equipe CBIC",
     categorias: ["Licitacoes", "Saneamento", "Indicadores"],
+    imagem: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Gemeos digitais em redes de distribuicao: a experiencia da COPASA em MG",
@@ -139,6 +151,7 @@ const artigos: Artigo[] = [
     fonte: "AECweb",
     autor: "Eng. Thiago Moreira",
     categorias: ["Tecnologia", "Saneamento", "BIM"],
+    imagem: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Guia completo: como elaborar propostas vencedoras em licitacoes de obras publicas",
@@ -149,6 +162,7 @@ const artigos: Artigo[] = [
     fonte: "Buildin",
     autor: "Adv. Camila Rocha",
     categorias: ["Licitacoes", "Gestao de Obras", "Construcao Civil"],
+    imagem: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Reuso de agua na industria da construcao: normas, custos e retorno sobre investimento",
@@ -159,6 +173,7 @@ const artigos: Artigo[] = [
     fonte: "Tratamento de Agua",
     autor: "Eng. Renata Dias",
     categorias: ["Sustentabilidade", "Construcao Civil", "Recursos Hidricos"],
+    imagem: "https://images.unsplash.com/photo-1548407260-da850faa41e8?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Inteligencia artificial na fiscalizacao de obras: o sistema da CGU para obras federais",
@@ -169,6 +184,7 @@ const artigos: Artigo[] = [
     fonte: "Agencia Brasil",
     autor: "Redacao Agencia Brasil",
     categorias: ["Tecnologia", "Governo", "Gestao de Obras"],
+    imagem: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "CREA-SP atualiza tabela de honorarios para projetos de engenharia em 2026",
@@ -179,6 +195,7 @@ const artigos: Artigo[] = [
     fonte: "CREA-SP",
     autor: "CREA-SP",
     categorias: ["Engenharia", "Regulamentacao", "Custos"],
+    imagem: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=300&fit=crop&auto=format",
   },
   {
     titulo: "Cidades esponja: como Curitiba e Recife estao adotando infraestrutura verde contra enchentes",
@@ -189,6 +206,7 @@ const artigos: Artigo[] = [
     fonte: "Revista AdNormas",
     autor: "Arq. Daniela Fonseca",
     categorias: ["Infraestrutura", "Sustentabilidade", "Meio Ambiente"],
+    imagem: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=300&fit=crop&auto=format",
   },
 ];
 
