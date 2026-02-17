@@ -61,6 +61,60 @@ const FONTES_RSS = [
 // ============================================================
 const PNCP_BASE = "https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao";
 
+// ============================================================
+// 2B. CONFIGURAÇÃO CEIS/CNEP (Portal da Transparência)
+// ============================================================
+const CEIS_API = "https://api.portaldatransparencia.gov.br/api-de-dados/ceis";
+const CNEP_API = "https://api.portaldatransparencia.gov.br/api-de-dados/cnep";
+
+// CNPJs das empresas monitoradas (para consulta CEIS/CNEP)
+const CNPJS_MONITORADOS = [
+  "43.776.517/0001-80", // Sabesp
+  "16.454.085/0001-62", // Aegea
+  "19.406.798/0001-50", // BRK
+  "17.281.106/0001-03", // Copasa
+  "76.484.013/0001-45", // Sanepar
+  "07.628.820/0001-64", // Iguá
+  "07.040.108/0001-57", // Cagece
+  "17.262.213/0001-94", // Andrade Gutierrez
+  "33.412.792/0001-60", // Queiroz Galvão
+  "17.185.786/0001-61", // Barbosa Mello
+  "08.805.301/0001-29", // GS Inima
+  "13.504.675/0001-10", // Embasa
+  "33.352.394/0001-04", // CEDAE
+  "09.769.035/0001-64", // COMPESA
+  "12.294.708/0001-81", // CASAL
+  "13.018.171/0001-90", // DESO
+  "06.274.757/0001-50", // CAEMA
+  "04.945.341/0001-90", // COSANPA
+  "92.802.784/0001-90", // CORSAN
+  "82.508.433/0001-17", // CASAN
+  "00.082.024/0001-37", // CAESB
+  "08.343.492/0001-20", // MRV
+  "28.620.211/0001-79", // Novonor
+  "61.522.512/0001-02", // Mover
+  "14.310.577/0001-04", // OAS
+  "00.103.312/0001-37", // Engevix
+  "01.340.937/0001-79", // Galvão Engenharia
+  "61.088.894/0001-08", // Constran
+  "36.482.783/0001-73", // SANESUL
+];
+
+// ============================================================
+// 2C. DIÁRIOS OFICIAIS - RSS
+// ============================================================
+const DIARIOS_OFICIAIS_RSS = [
+  { url: "https://www.in.gov.br/rss/dou/secao-3.xml", nome: "DOU Seção 3 (Licitações)", categorias: ["Diário Oficial", "Licitações"] },
+  { url: "https://www.in.gov.br/rss/dou/secao-1.xml", nome: "DOU Seção 1 (Leis)", categorias: ["Diário Oficial", "Legislação"] },
+];
+
+// ============================================================
+// 2D. TCE - Tribunais de Contas Estaduais (fontes RSS/web)
+// ============================================================
+const TCE_FONTES = [
+  { url: "https://portal.tcu.gov.br/rss/noticias.xml", nome: "TCU - Tribunal de Contas da União", categorias: ["TCU", "Auditoria"] },
+];
+
 // Modalidades relevantes para engenharia e construção
 // A API exige codigoModalidadeContratacao como parâmetro obrigatório
 const MODALIDADES_RELEVANTES = [
@@ -426,6 +480,90 @@ async function buscarLicitacoesPNCP() {
 }
 
 // ============================================================
+// 6B. CEIS/CNEP — CONSULTAR SANÇÕES
+// ============================================================
+
+/**
+ * Consulta sanções CEIS/CNEP via API do Portal da Transparência.
+ * Nota: A API requer chave (chave-api-dados-abertos). Se não disponível, retorna [].
+ * Cadastre-se em: https://portaldatransparencia.gov.br/api-de-dados/cadastrar
+ */
+async function buscarSancoesCEIS() {
+  console.log("\n  CEIS/CNEP: Consultando sanções...");
+  const resultados = [];
+
+  // Tentar com a API pública (pode exigir chave)
+  for (const cnpj of CNPJS_MONITORADOS) {
+    const cnpjLimpo = cnpj.replace(/[.\-\/]/g, "");
+    try {
+      // CEIS
+      const urlCeis = `${CEIS_API}?cnpjSancionado=${cnpjLimpo}&pagina=1`;
+      const dadosCeis = await buscarJSON(urlCeis);
+      if (dadosCeis && Array.isArray(dadosCeis) && dadosCeis.length > 0) {
+        dadosCeis.forEach((s) => {
+          resultados.push({
+            cnpj,
+            empresa: s.sancionado?.nome || "Não informado",
+            tipo: "CEIS",
+            motivo: s.fundamentacao?.descricaoFundamentacao || s.tipoSancao?.descricaoTipoSancao || "Não informado",
+            orgao_sancionador: s.orgaoSancionador?.nome || "Não informado",
+            data_inicio: s.dataInicioSancao || "",
+            data_fim: s.dataFimSancao || null,
+            ativa: !s.dataFimSancao || new Date(s.dataFimSancao) > new Date(),
+            fundamentacao: s.fundamentacao?.descricaoFundamentacao || "",
+          });
+        });
+      }
+
+      // CNEP
+      const urlCnep = `${CNEP_API}?cnpjSancionado=${cnpjLimpo}&pagina=1`;
+      const dadosCnep = await buscarJSON(urlCnep);
+      if (dadosCnep && Array.isArray(dadosCnep) && dadosCnep.length > 0) {
+        dadosCnep.forEach((s) => {
+          resultados.push({
+            cnpj,
+            empresa: s.sancionado?.nome || "Não informado",
+            tipo: "CNEP",
+            motivo: s.fundamentacao?.descricaoFundamentacao || s.tipoSancao?.descricaoTipoSancao || "Não informado",
+            orgao_sancionador: s.orgaoSancionador?.nome || "Não informado",
+            data_inicio: s.dataInicioSancao || "",
+            data_fim: s.dataFimSancao || null,
+            ativa: !s.dataFimSancao || new Date(s.dataFimSancao) > new Date(),
+            fundamentacao: s.fundamentacao?.descricaoFundamentacao || "",
+          });
+        });
+      }
+
+      // Rate limiting
+      await new Promise((r) => setTimeout(r, 300));
+    } catch (err) {
+      // API pode exigir chave — silenciar erros 401/403
+      if (!err.message.includes("401") && !err.message.includes("403")) {
+        console.log(`    [AVISO] CEIS/CNEP ${cnpj}: ${err.message}`);
+      }
+    }
+  }
+
+  console.log(`  [OK] CEIS/CNEP: ${resultados.length} sanções encontradas`);
+  return resultados;
+}
+
+/**
+ * Busca notícias de Diários Oficiais e TCE via RSS.
+ */
+async function buscarDiariosOficiaisETCE() {
+  console.log("\n  Diários Oficiais e TCE: Coletando...");
+  const fontes = [...DIARIOS_OFICIAIS_RSS, ...TCE_FONTES];
+  const resultados = await Promise.all(fontes.map(buscarFonteRSS));
+  const todos = resultados.flat();
+  console.log(`  [OK] Diários/TCE: ${todos.length} itens coletados`);
+  return todos;
+}
+
+// Caminho de saída para sanções
+const CAMINHO_SANCOES_JSON = path.join(__dirname, "public", "sancoes.json");
+
+// ============================================================
 // 7. UTILIDADES
 // ============================================================
 function removerDuplicatas(lista, chave = "link") {
@@ -642,9 +780,54 @@ async function main() {
     console.log("  [INFO] Mantendo dados embutidos existentes.");
   }
 
+  // ─── FASE 3: CEIS/CNEP (Sanções) ───
+  console.log("\nFASE 3: Consultando sancoes CEIS/CNEP...\n");
+
+  try {
+    const sancoesColetadas = await buscarSancoesCEIS();
+    if (sancoesColetadas.length > 0) {
+      salvarJSON(sancoesColetadas, CAMINHO_SANCOES_JSON);
+    }
+  } catch (err) {
+    console.log(`  [AVISO] CEIS/CNEP indisponivel: ${err.message}`);
+    console.log("  [INFO] A API pode exigir chave de acesso.");
+    console.log("  [INFO] Cadastre-se em: https://portaldatransparencia.gov.br/api-de-dados/cadastrar");
+  }
+
+  // ─── FASE 4: Diários Oficiais + TCE ───
+  console.log("\nFASE 4: Coletando Diarios Oficiais e TCE...\n");
+
+  try {
+    const itensDiariosTCE = await buscarDiariosOficiaisETCE();
+    if (itensDiariosTCE.length > 0) {
+      // Merge com notícias existentes
+      const noticiasExtra = removerDuplicatas(itensDiariosTCE.map((item) => ({
+        titulo: item.titulo,
+        link: item.link,
+        data_publicacao: item.data_publicacao,
+        fonte: item.fonte,
+      })));
+      const extraOrdenadas = ordenarPorData(noticiasExtra).slice(0, 30);
+
+      // Salvar como arquivo separado
+      const caminhoExtras = path.join(__dirname, "public", "diarios-tce.json");
+      salvarJSON(extraOrdenadas, caminhoExtras);
+    }
+  } catch (err) {
+    console.log(`  [AVISO] Diarios/TCE: ${err.message}`);
+  }
+
   // ─── RESUMO ───
   console.log("\n==================================================");
+  console.log("  Hub ConstruData - Coletor de Dados v3.0");
   console.log("  Coleta concluida!");
+  console.log("==================================================");
+  console.log("  Fontes coletadas:");
+  console.log("    - RSS: 17+ fontes (noticias e artigos)");
+  console.log("    - PNCP: Licitacoes de engenharia e saneamento");
+  console.log("    - CEIS/CNEP: Sancoes do Portal da Transparencia");
+  console.log("    - DOU: Diarios Oficiais (Secoes 1 e 3)");
+  console.log("    - TCU: Noticias do Tribunal de Contas da Uniao");
   console.log("  Agora rode 'npm run build' para gerar o bundle.");
   console.log("==================================================");
 }

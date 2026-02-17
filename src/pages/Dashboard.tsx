@@ -47,14 +47,15 @@ import { useLicitacoes } from "@/hooks/useLicitacoes";
 import { urlSegura } from "@/lib/utils";
 import { empresas } from "@/data/empresas";
 import { projetos } from "@/data/projetos";
-import { fontesDueDiligence } from "@/data/sancoes";
+import { fontesDueDiligence, sancoes } from "@/data/sancoes";
+import { dadosSNIS } from "@/data/snis";
 
-// ── Indicadores do setor ──
+// ── Indicadores do setor (fonte: SNIS 2023, ANA, IBGE) ──
 const indicadores = [
-  { icon: Droplets, label: "Cobertura Água", valor: "84,2%", variacao: "+1,3%", positivo: true, cor: "text-blue-500", bg: "bg-blue-500/10" },
-  { icon: Waves, label: "Coleta Esgoto", valor: "55,8%", variacao: "+2,1%", positivo: true, cor: "text-emerald-500", bg: "bg-emerald-500/10" },
-  { icon: DollarSign, label: "Investimento 2025", valor: "R$ 23,1 bi", variacao: "+15%", positivo: true, cor: "text-amber-500", bg: "bg-amber-500/10" },
-  { icon: Users, label: "Sem Saneamento", valor: "100 mi", variacao: "-2,4%", positivo: true, cor: "text-red-500", bg: "bg-red-500/10" },
+  { icon: Droplets, label: "Cobertura Água", valor: "84,2%", variacao: "+1,3% vs 2022", positivo: true, cor: "text-blue-500", bg: "bg-blue-500/10", fonte: "SNIS 2023" },
+  { icon: Waves, label: "Coleta Esgoto", valor: "55,8%", variacao: "+2,1% vs 2022", positivo: true, cor: "text-emerald-500", bg: "bg-emerald-500/10", fonte: "SNIS 2023" },
+  { icon: DollarSign, label: "Investimento 2025", valor: "R$ 23,1 bi", variacao: "+15% vs 2024", positivo: true, cor: "text-amber-500", bg: "bg-amber-500/10", fonte: "CBIC/ABES" },
+  { icon: Users, label: "Sem Saneamento", valor: "100 mi", variacao: "-2,4% vs 2022", positivo: true, cor: "text-red-500", bg: "bg-red-500/10", fonte: "ANA/IBGE" },
 ];
 
 // ── Dados do gráfico de barras - Investimento por região ──
@@ -229,13 +230,18 @@ const Dashboard = () => {
                     {ind.label}
                   </p>
                   <p className="text-xl lg:text-2xl font-extrabold mt-0.5">{ind.valor}</p>
-                  <span
-                    className={`inline-block text-[0.6rem] font-semibold mt-1 px-2 py-0.5 rounded-full ${
-                      ind.positivo ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                    }`}
-                  >
-                    {ind.variacao}
-                  </span>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <span
+                      className={`inline-block text-[0.6rem] font-semibold px-2 py-0.5 rounded-full ${
+                        ind.positivo ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {ind.variacao}
+                    </span>
+                    {"fonte" in ind && (
+                      <span className="text-[0.5rem] text-muted-foreground/60">{(ind as { fonte: string }).fonte}</span>
+                    )}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -707,9 +713,9 @@ const Dashboard = () => {
       </div>
 
       {/* Versão da Plataforma */}
-      <div className="flex items-center justify-between text-[0.6rem] text-muted-foreground/60 pt-2 border-t border-border/50">
-        <span>ConstruData Hub v2.4.0 — Inteligência para Engenharia, Saneamento e Infraestrutura</span>
-        <span>Build: {new Date().toISOString().slice(0, 10)} · {empresas.length} empresas · {totalLicitacoes} licitações · {fontesDueDiligence.length} fontes</span>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-[0.6rem] text-muted-foreground/60 pt-2 border-t border-border/50 gap-1">
+        <span>ConstruData Hub v3.0 — Inteligência para Engenharia, Saneamento e Infraestrutura</span>
+        <span>{empresas.length} empresas · {projetos.length} projetos · {totalLicitacoes} licitações · {dadosSNIS.length} cidades SNIS · {sancoes.length} sanções · {fontesDueDiligence.length} fontes</span>
       </div>
     </div>
   );
