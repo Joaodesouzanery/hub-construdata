@@ -3,28 +3,18 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-  Building2,
-  MapPin,
-  Phone,
-  Mail,
-  Globe,
-  Trophy,
-  TrendingUp,
-  ArrowLeft,
-  Briefcase,
-  Target,
-  CheckCircle2,
-  Clock,
-  AlertTriangle,
-  FileText,
-  Users,
-  BarChart3,
-  Calendar,
-  DollarSign,
-  ExternalLink,
+  RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+  ResponsiveContainer, Tooltip,
+} from "recharts";
+import {
+  Building2, MapPin, Phone, Mail, Globe, Trophy, TrendingUp,
+  ArrowLeft, Briefcase, Target, CheckCircle2, Clock, AlertTriangle,
+  FileText, Users, BarChart3, Calendar, DollarSign, ExternalLink,
+  Shield, ShieldAlert, Activity, Network,
 } from "lucide-react";
 import { empresas } from "@/data/empresas";
 import { projetos } from "@/data/projetos";
+import { calcularRiskScore } from "@/lib/riskScore";
 import type { Projeto } from "@/types/database";
 
 function scoreColor(score: number): string {
@@ -80,6 +70,21 @@ function formatarDataBR(dataStr: string): string {
   return `${dia}/${mes}/${ano}`;
 }
 
+function riskClassColor(c: string) {
+  if (c === "baixo") return "text-emerald-600 bg-emerald-50 border-emerald-200";
+  if (c === "moderado") return "text-blue-600 bg-blue-50 border-blue-200";
+  if (c === "elevado") return "text-amber-600 bg-amber-50 border-amber-200";
+  return "text-red-600 bg-red-50 border-red-200";
+}
+
+function dimStatusColor(status: string) {
+  if (status === "excelente") return "bg-emerald-500";
+  if (status === "bom") return "bg-blue-500";
+  if (status === "regular") return "bg-amber-500";
+  if (status === "atencao") return "bg-orange-500";
+  return "bg-red-500";
+}
+
 const ProjetoMiniCard = ({ projeto }: { projeto: Projeto }) => {
   const navigate = useNavigate();
   return (
@@ -120,7 +125,6 @@ const ProjetoMiniCard = ({ projeto }: { projeto: Projeto }) => {
           </span>
         </div>
       </div>
-      {/* Progress bar */}
       <div className="mt-3 h-1.5 bg-gray-100 rounded-full overflow-hidden">
         <div
           className="h-full bg-primary rounded-full transition-all"
@@ -129,6 +133,55 @@ const ProjetoMiniCard = ({ projeto }: { projeto: Projeto }) => {
       </div>
     </Card>
   );
+};
+
+// ── Timeline de Eventos ──
+interface TimelineEvent {
+  data: string;
+  titulo: string;
+  tipo: "marco" | "inicio" | "conclusao" | "contrato";
+  projeto?: string;
+  status: "concluido" | "em_andamento" | "pendente";
+}
+
+function buildTimeline(projetosEmpresa: Projeto[]): TimelineEvent[] {
+  const events: TimelineEvent[] = [];
+
+  projetosEmpresa.forEach((proj) => {
+    // Início do projeto
+    events.push({
+      data: proj.data_inicio,
+      titulo: `Início: ${proj.titulo.slice(0, 50)}`,
+      tipo: "inicio",
+      projeto: proj.titulo,
+      status: proj.status === "Planejado" ? "pendente" : "concluido",
+    });
+
+    // Marcos
+    proj.marcos.forEach((m) => {
+      events.push({
+        data: m.data,
+        titulo: m.descricao,
+        tipo: "marco",
+        projeto: proj.titulo.slice(0, 40),
+        status: m.status,
+      });
+    });
+  });
+
+  return events.sort((a, b) => a.data.localeCompare(b.data));
+}
+
+const timelineStatusIcon = (status: string) => {
+  if (status === "concluido") return <CheckCircle2 size={14} className="text-emerald-500" />;
+  if (status === "em_andamento") return <Activity size={14} className="text-blue-500" />;
+  return <Clock size={14} className="text-gray-400" />;
+};
+
+const timelineStatusBg = (status: string) => {
+  if (status === "concluido") return "bg-emerald-500";
+  if (status === "em_andamento") return "bg-blue-500";
+  return "bg-gray-300";
 };
 
 const DossieEmpresa = () => {
@@ -157,7 +210,6 @@ const DossieEmpresa = () => {
     return `R$ ${soma.toLocaleString("pt-BR")}`;
   }, [projetosEmpresa]);
 
-  // Categorias mais frequentes
   const categoriasProjetos = useMemo(() => {
     const map: Record<string, number> = {};
     projetosEmpresa.forEach((p) => {
@@ -166,14 +218,12 @@ const DossieEmpresa = () => {
     return Object.entries(map).sort((a, b) => b[1] - a[1]);
   }, [projetosEmpresa]);
 
-  // Estados de atuacao
   const estadosAtuacao = useMemo(() => {
     const set = new Set<string>();
     projetosEmpresa.forEach((p) => set.add(p.estado));
     return Array.from(set).sort();
   }, [projetosEmpresa]);
 
-  // Parceiros frequentes
   const parceiros = useMemo(() => {
     const map: Record<string, { nome: string; count: number; papeis: Set<string> }> = {};
     projetosEmpresa.forEach((p) => {
@@ -191,6 +241,24 @@ const DossieEmpresa = () => {
       .map(([empId, data]) => ({ id: empId, ...data, papeis: Array.from(data.papeis) }))
       .sort((a, b) => b.count - a.count);
   }, [projetosEmpresa, empresa]);
+
+  // ── Risk Score ──
+  const riskAnalysis = useMemo(() => {
+    if (!empresa) return null;
+    return calcularRiskScore(empresa, projetosEmpresa, empresas);
+  }, [empresa, projetosEmpresa]);
+
+  const radarData = useMemo(() => {
+    if (!riskAnalysis) return [];
+    return riskAnalysis.dimensoes.map((d) => ({
+      dimension: d.nome,
+      valor: d.valor,
+      fullMark: 100,
+    }));
+  }, [riskAnalysis]);
+
+  // ── Timeline ──
+  const timeline = useMemo(() => buildTimeline(projetosEmpresa), [projetosEmpresa]);
 
   if (!empresa) {
     return (
@@ -236,6 +304,11 @@ const DossieEmpresa = () => {
             <span className={`text-xs font-bold px-3 py-1 rounded-full border ${scoreColor(empresa.nota_score)}`}>
               Score: {empresa.nota_score}/100 — {scoreLabel(empresa.nota_score)}
             </span>
+            {riskAnalysis && (
+              <span className={`text-xs font-bold px-3 py-1 rounded-full border ${riskClassColor(riskAnalysis.classificacao)}`}>
+                Risco: {riskAnalysis.classificacao.charAt(0).toUpperCase() + riskAnalysis.classificacao.slice(1)} ({riskAnalysis.scoreGeral}/100)
+              </span>
+            )}
             <span className="text-xs font-semibold px-3 py-1 rounded-full bg-muted text-muted-foreground">
               {porteLabel(empresa.porte)}
             </span>
@@ -307,6 +380,131 @@ const DossieEmpresa = () => {
           <p className="text-[0.65rem] text-muted-foreground uppercase">Projetos</p>
         </Card>
       </div>
+
+      {/* ════════════════════════════════════════════════════════════════
+          NOVO: Score de Risco Aprimorado (Sherlocker-style)
+         ════════════════════════════════════════════════════════════════ */}
+      {riskAnalysis && (
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5 mb-6">
+          {/* Radar Chart + Dimensões */}
+          <Card className="p-5 border-0 shadow-sm">
+            <h3 className="text-sm font-bold mb-4 flex items-center gap-2">
+              <Shield size={16} className="text-violet-500" />
+              Análise de Risco Multidimensional
+              <span className={`ml-auto text-[0.6rem] font-bold px-2.5 py-1 rounded-full border ${riskClassColor(riskAnalysis.classificacao)}`}>
+                Score: {riskAnalysis.scoreGeral}/100
+              </span>
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Radar */}
+              <div>
+                <ResponsiveContainer width="100%" height={250}>
+                  <RadarChart data={radarData}>
+                    <PolarGrid stroke="#e2e8f0" />
+                    <PolarAngleAxis dataKey="dimension" tick={{ fontSize: 10 }} />
+                    <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 8 }} />
+                    <Radar dataKey="valor" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.25} strokeWidth={2} />
+                    <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8 }} />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Barras de dimensão */}
+              <div className="space-y-3">
+                {riskAnalysis.dimensoes.map((dim) => (
+                  <div key={dim.nome}>
+                    <div className="flex items-center justify-between text-xs mb-1">
+                      <span className="font-semibold">{dim.nome}</span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="text-muted-foreground">{dim.descricao}</span>
+                        <span className="font-bold">{dim.valor}</span>
+                      </span>
+                    </div>
+                    <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all ${dimStatusColor(dim.status)}`}
+                        style={{ width: `${dim.valor}%` }}
+                      />
+                    </div>
+                    {dim.redFlags.length > 0 && (
+                      <div className="mt-1">
+                        {dim.redFlags.map((f, i) => (
+                          <p key={i} className="text-[0.6rem] text-amber-600 flex items-center gap-1">
+                            <AlertTriangle size={9} /> {f}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Resumo da IA */}
+            <div className="mt-4 p-3 bg-violet-50 rounded-lg border border-violet-100 text-xs text-violet-700">
+              <strong>Análise:</strong> {riskAnalysis.resumo}
+            </div>
+          </Card>
+
+          {/* Red Flags */}
+          <Card className="p-5 border-0 shadow-sm">
+            <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
+              <ShieldAlert size={16} className="text-red-500" />
+              Red Flags ({riskAnalysis.redFlags.length})
+            </h3>
+            {riskAnalysis.redFlags.length === 0 ? (
+              <div className="text-center py-6 text-muted-foreground">
+                <CheckCircle2 size={28} className="mx-auto mb-2 text-emerald-500 opacity-50" />
+                <p className="text-xs font-medium">Nenhum alerta identificado</p>
+                <p className="text-[0.65rem] mt-1">Empresa com perfil de risco saudável</p>
+              </div>
+            ) : (
+              <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                {riskAnalysis.redFlags.map((flag, i) => (
+                  <div
+                    key={i}
+                    className={`p-3 rounded-lg border ${
+                      flag.severidade === "alta"
+                        ? "bg-red-50 border-red-200"
+                        : flag.severidade === "media"
+                        ? "bg-amber-50 border-amber-200"
+                        : "bg-blue-50 border-blue-200"
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <span
+                        className={`text-[0.55rem] font-bold uppercase px-1.5 py-0.5 rounded text-white ${
+                          flag.severidade === "alta"
+                            ? "bg-red-500"
+                            : flag.severidade === "media"
+                            ? "bg-amber-500"
+                            : "bg-blue-500"
+                        }`}
+                      >
+                        {flag.severidade}
+                      </span>
+                      <span className="text-[0.55rem] text-muted-foreground">{flag.categoria}</span>
+                    </div>
+                    <p className="text-xs font-semibold">{flag.titulo}</p>
+                    <p className="text-[0.65rem] text-muted-foreground mt-0.5">{flag.descricao}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Quick link to graph */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full mt-3 gap-1.5"
+              onClick={() => navigate("/vinculos")}
+            >
+              <Network size={14} /> Ver Grafo de Vínculos
+            </Button>
+          </Card>
+        </div>
+      )}
 
       {/* Performance visual */}
       <Card className="p-5 mb-6 border-0 shadow-sm">
@@ -433,6 +631,54 @@ const DossieEmpresa = () => {
           )}
         </Card>
       </div>
+
+      {/* ════════════════════════════════════════════════════════════════
+          NOVO: Timeline de Eventos
+         ════════════════════════════════════════════════════════════════ */}
+      {timeline.length > 0 && (
+        <Card className="p-5 mb-6 border-0 shadow-sm">
+          <h3 className="text-sm font-bold mb-4 flex items-center gap-2">
+            <Activity size={16} className="text-violet-500" />
+            Timeline de Eventos ({timeline.length})
+          </h3>
+          <div className="relative ml-4">
+            {/* Vertical line */}
+            <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-gray-200" />
+
+            <div className="space-y-0">
+              {timeline.slice(0, 15).map((evt, i) => (
+                <div key={i} className="relative pl-6 pb-4">
+                  {/* Dot */}
+                  <div className={`absolute left-[-4px] top-1 w-2.5 h-2.5 rounded-full ${timelineStatusBg(evt.status)} ring-2 ring-white`} />
+
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        {timelineStatusIcon(evt.status)}
+                        <span className="text-xs font-semibold">{evt.titulo}</span>
+                      </div>
+                      {evt.projeto && (
+                        <p className="text-[0.6rem] text-muted-foreground mt-0.5 ml-5">
+                          {evt.projeto}
+                        </p>
+                      )}
+                    </div>
+                    <span className="text-[0.6rem] text-muted-foreground flex-shrink-0 tabular-nums">
+                      {formatarDataBR(evt.data)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {timeline.length > 15 && (
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                + {timeline.length - 15} eventos adicionais
+              </p>
+            )}
+          </div>
+        </Card>
+      )}
 
       {/* Projetos */}
       <div className="mb-6">

@@ -5,6 +5,7 @@
  */
 
 import type { Licitacao, Empresa, Projeto } from "@/types/database";
+import { calcularRiskScore } from "@/lib/riskScore";
 
 // ── PDF Export ──
 
@@ -230,7 +231,8 @@ export async function exportarComparativoXLSX(
 
 export async function exportarDossieEmpresaPDF(
   empresa: Empresa,
-  projetosEmpresa: Projeto[]
+  projetosEmpresa: Projeto[],
+  todasEmpresas?: Empresa[]
 ) {
   const { default: jsPDF } = await import("jspdf");
   const { default: autoTable } = await import("jspdf-autotable");
@@ -243,7 +245,7 @@ export async function exportarDossieEmpresaPDF(
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(16);
   doc.setFont("helvetica", "bold");
-  doc.text("Hub ConstruData — Dossie de Empresa", 14, 12);
+  doc.text("Hub ConstruData — Dossie Investigativo", 14, 12);
   doc.setFontSize(13);
   doc.text(empresa.nome_fantasia, 14, 22);
   doc.setFontSize(8);
@@ -311,6 +313,73 @@ export async function exportarDossieEmpresaPDF(
     y += 6;
   });
 
+  // ── Análise de Risco (NOVO) ──
+  if (todasEmpresas && todasEmpresas.length > 0) {
+    const risk = calcularRiskScore(empresa, projetosEmpresa, todasEmpresas);
+
+    y += 5;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("Analise de Risco Multidimensional", 14, y);
+    y += 7;
+
+    // Score geral
+    doc.setFontSize(10);
+    doc.text(`Score Geral: ${risk.scoreGeral}/100 — Risco ${risk.classificacao.toUpperCase()}`, 14, y);
+    y += 7;
+
+    // Dimensões como tabela
+    autoTable(doc, {
+      startY: y,
+      head: [["Dimensao", "Score", "Status", "Descricao"]],
+      body: risk.dimensoes.map((d) => [d.nome, `${d.valor}/100`, d.status.toUpperCase(), d.descricao]),
+      theme: "striped",
+      headStyles: { fillColor: [139, 92, 246], textColor: 255, fontSize: 8, fontStyle: "bold" },
+      bodyStyles: { fontSize: 8, cellPadding: 2 },
+      columnStyles: { 0: { cellWidth: 30 }, 1: { cellWidth: 20, halign: "center" as const }, 2: { cellWidth: 25 }, 3: { cellWidth: 100 } },
+      margin: { left: 14, right: 14 },
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    y = (doc as any).lastAutoTable.finalY + 5;
+
+    // Red Flags
+    if (risk.redFlags.length > 0) {
+      if (y > 240) { doc.addPage(); y = 20; }
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(220, 38, 38);
+      doc.text(`Red Flags (${risk.redFlags.length})`, 14, y);
+      doc.setTextColor(0);
+      y += 6;
+
+      autoTable(doc, {
+        startY: y,
+        head: [["Severidade", "Categoria", "Alerta", "Descricao"]],
+        body: risk.redFlags.map((f) => [f.severidade.toUpperCase(), f.categoria, f.titulo, f.descricao]),
+        theme: "striped",
+        headStyles: { fillColor: [239, 68, 68], textColor: 255, fontSize: 8, fontStyle: "bold" },
+        bodyStyles: { fontSize: 7, cellPadding: 2 },
+        columnStyles: { 0: { cellWidth: 22 }, 1: { cellWidth: 25 }, 2: { cellWidth: 40 }, 3: { cellWidth: 88 } },
+        margin: { left: 14, right: 14 },
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      y = (doc as any).lastAutoTable.finalY + 5;
+    }
+
+    // Resumo da IA
+    if (y > 260) { doc.addPage(); y = 20; }
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.text("Resumo da Analise:", 14, y);
+    y += 5;
+    doc.setFont("helvetica", "normal");
+    const resumoLines = doc.splitTextToSize(risk.resumo, 182);
+    doc.text(resumoLines, 14, y);
+    y += resumoLines.length * 4.5;
+  }
+
   // Projetos
   if (projetosEmpresa.length > 0) {
     doc.addPage();
@@ -357,7 +426,7 @@ export async function exportarDossieEmpresaPDF(
     doc.setFontSize(7);
     doc.setTextColor(150);
     doc.text(
-      `Hub ConstruData — Dossie ${empresa.nome_fantasia} — Pagina ${i}/${totalPages}`,
+      `Hub ConstruData — Dossie Investigativo ${empresa.nome_fantasia} — Pagina ${i}/${totalPages}`,
       210 / 2, 290, { align: "center" }
     );
   }

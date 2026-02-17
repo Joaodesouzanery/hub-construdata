@@ -18,6 +18,8 @@ import Relatorios from "./pages/Relatorios";
 import EmpresasPage from "./pages/EmpresasPage";
 import DossieEmpresa from "./pages/DossieEmpresa";
 import DossieProjeto from "./pages/DossieProjeto";
+import GrafoVinculos from "./pages/GrafoVinculos";
+import BuscaInteligente from "./pages/BuscaInteligente";
 import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
 import NotFound from "./pages/NotFound";
 
@@ -44,6 +46,8 @@ const App = () => (
         <Route path="/empresas" element={<EmpresasPage />} />
         <Route path="/empresas/:id" element={<DossieEmpresa />} />
         <Route path="/projetos/:id" element={<DossieProjeto />} />
+        <Route path="/vinculos" element={<GrafoVinculos />} />
+        <Route path="/busca" element={<BuscaInteligente />} />
         <Route path="/privacidade" element={<PoliticaPrivacidade />} />
         <Route path="*" element={<NotFound />} />
       </Route>

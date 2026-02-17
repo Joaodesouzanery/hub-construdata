@@ -52,7 +52,7 @@ const insumosSINAPI: InsumoSINAPI[] = [
 ];
 
 // ── Alertas do sistema (enhanced) ──
-type TipoAlerta = "critico" | "mercado" | "licitacao" | "regulatorio" | "ambiental" | "prazo";
+type TipoAlerta = "critico" | "mercado" | "licitacao" | "regulatorio" | "ambiental" | "prazo" | "empresa" | "vinculo";
 
 interface AlertaItem {
   tipo: TipoAlerta;
@@ -142,6 +142,42 @@ const alertas: AlertaItem[] = [
     prioridade: 2,
     acao: "Considerar compra antecipada para projetos do 1º semestre.",
   },
+  {
+    tipo: "empresa",
+    titulo: "Alteração societária — Nordeste Construções",
+    descricao: "Mudança de quadro societário detectada na Receita Federal. Novo sócio com participação em 3 outras empresas do setor.",
+    tempo: "1d atrás",
+    fonte: "Receita Federal / ConstruData IA",
+    prioridade: 4,
+    acao: "Investigar vínculos do novo sócio no Grafo de Vínculos. Verificar se participa de licitações concorrentes.",
+  },
+  {
+    tipo: "vinculo",
+    titulo: "Vínculo recorrente detectado entre Aquaverde e Mineira",
+    descricao: "As empresas Aquaverde Engenharia e Mineira Engenharia participam juntas em 2+ projetos. Possível relação comercial sistemática.",
+    tempo: "2d atrás",
+    fonte: "ConstruData IA — Análise de Grafos",
+    prioridade: 3,
+    acao: "Acessar o Grafo de Vínculos para visualizar conexões e verificar se há sobreposição em licitações.",
+  },
+  {
+    tipo: "empresa",
+    titulo: "Score de risco alterado — Catarinense Saneamento",
+    descricao: "O score de risco caiu de 78 para 62 após detecção de atraso em projeto e baixa diversificação geográfica.",
+    tempo: "3d atrás",
+    fonte: "ConstruData IA — Risk Engine",
+    prioridade: 3,
+    acao: "Revisar dossiê da empresa e monitorar projetos em andamento.",
+  },
+  {
+    tipo: "vinculo",
+    titulo: "Empresa recente com alto volume — Possível anomalia",
+    descricao: "Empresa fundada há menos de 5 anos detectada com volume de contratos acima de R$ 500M. Padrão atípico para o tempo de mercado.",
+    tempo: "5d atrás",
+    fonte: "ConstruData IA — Anomaly Detection",
+    prioridade: 4,
+    acao: "Verificar histórico completo no dossiê e red flags no score de risco multidimensional.",
+  },
 ];
 
 const tipoStyles: Record<TipoAlerta, { border: string; bg: string; icon: typeof AlertTriangle; label: string }> = {
@@ -151,6 +187,8 @@ const tipoStyles: Record<TipoAlerta, { border: string; bg: string; icon: typeof 
   regulatorio: { border: "border-l-violet-500", bg: "bg-violet-50", icon: Info, label: "Regulatório" },
   ambiental: { border: "border-l-emerald-500", bg: "bg-emerald-50", icon: Droplets, label: "Ambiental" },
   prazo: { border: "border-l-orange-500", bg: "bg-orange-50", icon: Calendar, label: "Prazo" },
+  empresa: { border: "border-l-pink-500", bg: "bg-pink-50", icon: AlertTriangle, label: "Empresa" },
+  vinculo: { border: "border-l-cyan-500", bg: "bg-cyan-50", icon: Zap, label: "Vínculo" },
 };
 
 const AlertasInteligentes = () => {
@@ -355,7 +393,7 @@ const AlertasInteligentes = () => {
                 Feed de Alertas — Priorizados
               </CardTitle>
               <div className="flex flex-wrap gap-2 mt-2">
-                {(["todos", "critico", "mercado", "licitacao", "prazo", "regulatorio", "ambiental"] as const).map(
+                {(["todos", "critico", "mercado", "licitacao", "prazo", "regulatorio", "ambiental", "empresa", "vinculo"] as const).map(
                   (tipo) => (
                     <button
                       key={tipo}
