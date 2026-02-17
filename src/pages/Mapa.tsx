@@ -671,10 +671,10 @@ const Mapa = () => {
       .finally(() => clearTimeout(timer));
   }, [mapLoaded, geoLoaded, porEstado, maxLicitacoes, valorPorEstado, alertasPorEstado]);
 
-  // Update markers when layers change
+  // Update markers when layers change — markers load independently of GeoJSON
   useEffect(() => {
-    if (geoLoaded) updateMarkers();
-  }, [geoLoaded, updateMarkers]);
+    if (mapLoaded) updateMarkers();
+  }, [mapLoaded, updateMarkers, layers]);
 
   // Toggle map layer visibility
   useEffect(() => {

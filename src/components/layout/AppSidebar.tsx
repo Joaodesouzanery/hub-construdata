@@ -7,43 +7,73 @@ import {
   BellRing,
   BarChart3,
   Scale,
-  Wrench,
-  CalendarDays,
-  Mail,
   ChevronLeft,
   ChevronRight,
   Building2,
   User,
-  TrendingUp,
   Download,
   Briefcase,
   Brain,
   Network,
   Search,
   AlertTriangle,
-  Database,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
-const navItems = [
-  { to: "/", icon: LayoutDashboard, label: "Dashboard", group: "principal" },
-  { to: "/noticias", icon: Newspaper, label: "Notícias", badge: "Fase 5", group: "principal" },
-  { to: "/licitacoes", icon: FileSearch, label: "Licitações", group: "principal" },
-  { to: "/mapa", icon: Map, label: "Mapa do Brasil", group: "principal" },
-  { to: "/alertas", icon: BellRing, label: "Alertas", group: "principal" },
-  { to: "/empresas", icon: Briefcase, label: "Dossiês", badge: "Fase 4", group: "fase2" },
-  { to: "/vinculos", icon: Network, label: "Grafo Vínculos", badge: "Novo", group: "fase2" },
-  { to: "/busca", icon: Search, label: "Busca IA", badge: "IA", group: "fase2" },
-  { to: "/anomalias", icon: AlertTriangle, label: "Anomalias", badge: "IA", group: "fase2" },
-  { to: "/enriquecimento", icon: Database, label: "Enriquecimento", badge: "Novo", group: "fase2" },
-  { to: "/analitico", icon: TrendingUp, label: "Análises", badge: "Novo", group: "fase2" },
-  { to: "/insights-ia", icon: Brain, label: "Insights IA", badge: "IA", group: "fase2" },
-  { to: "/relatorios", icon: Download, label: "Relatórios", badge: "Novo", group: "fase2" },
-  { to: "/indicadores", icon: BarChart3, label: "Indicadores", group: "dados" },
-  { to: "/legislacao", icon: Scale, label: "Legislação", group: "dados" },
-  { to: "/ferramentas", icon: Wrench, label: "Ferramentas", group: "dados" },
-  { to: "/eventos", icon: CalendarDays, label: "Eventos", group: "dados" },
-  { to: "/contato", icon: Mail, label: "Contato", group: "dados" },
+/**
+ * Sidebar reorganizado em 4 seções lógicas:
+ * - Painel: visão geral e monitoramento
+ * - Inteligência: investigação e análise de empresas
+ * - Mercado: licitações, dados e relatórios
+ * - Referência: legislação e informações
+ */
+
+interface NavItem {
+  to: string;
+  icon: typeof LayoutDashboard;
+  label: string;
+  badge?: string;
+}
+
+interface NavGroup {
+  title: string;
+  items: NavItem[];
+}
+
+const navGroups: NavGroup[] = [
+  {
+    title: "Painel",
+    items: [
+      { to: "/", icon: LayoutDashboard, label: "Dashboard" },
+      { to: "/mapa", icon: Map, label: "Mapa do Brasil" },
+      { to: "/alertas", icon: BellRing, label: "Alertas" },
+    ],
+  },
+  {
+    title: "Inteligência",
+    items: [
+      { to: "/empresas", icon: Briefcase, label: "Dossiês" },
+      { to: "/busca", icon: Search, label: "Busca IA", badge: "IA" },
+      { to: "/vinculos", icon: Network, label: "Grafo Vínculos" },
+      { to: "/anomalias", icon: AlertTriangle, label: "Anomalias", badge: "IA" },
+    ],
+  },
+  {
+    title: "Mercado",
+    items: [
+      { to: "/licitacoes", icon: FileSearch, label: "Licitações" },
+      { to: "/noticias", icon: Newspaper, label: "Notícias" },
+      { to: "/insights-ia", icon: Brain, label: "Insights IA", badge: "IA" },
+      { to: "/indicadores", icon: BarChart3, label: "Indicadores" },
+      { to: "/relatorios", icon: Download, label: "Relatórios" },
+    ],
+  },
+  {
+    title: "Referência",
+    items: [
+      { to: "/legislacao", icon: Scale, label: "Legislação" },
+    ],
+  },
 ];
 
 interface AppSidebarProps {
@@ -80,44 +110,48 @@ const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
 
       {/* Navigation */}
       <nav className="flex-1 py-3 overflow-y-auto">
-        <ul className="space-y-0.5 px-2">
-          {navItems.map((item, index) => {
-            const isActive =
-              location.pathname === item.to ||
-              (item.to === "/" && location.pathname === "/dashboard");
+        {navGroups.map((group, gi) => (
+          <div key={group.title}>
+            {gi > 0 && <div className="border-t border-white/10 my-2 mx-3" />}
+            {!collapsed && (
+              <p className="text-[0.55rem] font-bold text-white/30 uppercase tracking-widest px-4 mb-1 mt-1">
+                {group.title}
+              </p>
+            )}
+            <ul className="space-y-0.5 px-2">
+              {group.items.map((item) => {
+                const isActive =
+                  location.pathname === item.to ||
+                  (item.to === "/" && location.pathname === "/dashboard") ||
+                  (item.to !== "/" && location.pathname.startsWith(item.to));
 
-            // Add separator before "fase2" group
-            const prevItem = navItems[index - 1];
-            const showSeparator = prevItem && prevItem.group !== item.group;
-
-            return (
-              <li key={item.to}>
-                {showSeparator && (
-                  <div className="border-t border-white/10 my-2 mx-1" />
-                )}
-                <NavLink
-                  to={item.to}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                    isActive
-                      ? "bg-primary text-white shadow-lg shadow-primary/20"
-                      : "text-white/60 hover:text-white hover:bg-white/10"
-                  } ${collapsed ? "justify-center" : ""}`}
-                  title={collapsed ? item.label : undefined}
-                >
-                  <item.icon size={20} className="flex-shrink-0" />
-                  {!collapsed && (
-                    <span className="flex-1">{item.label}</span>
-                  )}
-                  {!collapsed && item.badge && (
-                    <span className="text-[0.55rem] font-bold bg-emerald-500 text-white px-1.5 py-0.5 rounded-full">
-                      {item.badge}
-                    </span>
-                  )}
-                </NavLink>
-              </li>
-            );
-          })}
-        </ul>
+                return (
+                  <li key={item.to}>
+                    <NavLink
+                      to={item.to}
+                      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                        isActive
+                          ? "bg-primary text-white shadow-lg shadow-primary/20"
+                          : "text-white/60 hover:text-white hover:bg-white/10"
+                      } ${collapsed ? "justify-center" : ""}`}
+                      title={collapsed ? item.label : undefined}
+                    >
+                      <item.icon size={18} className="flex-shrink-0" />
+                      {!collapsed && (
+                        <span className="flex-1 text-[0.8rem]">{item.label}</span>
+                      )}
+                      {!collapsed && item.badge && (
+                        <span className="text-[0.5rem] font-bold bg-emerald-500 text-white px-1.5 py-0.5 rounded-full">
+                          {item.badge}
+                        </span>
+                      )}
+                    </NavLink>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </nav>
 
       {/* User profile button */}
