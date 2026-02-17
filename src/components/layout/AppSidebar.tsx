@@ -185,7 +185,7 @@ const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
       <div className="border-t border-white/10">
         {!collapsed && (
           <div className="px-4 py-1.5 text-[0.5rem] text-white/20 text-center">
-            v2.4.0 · World Monitor + Sherlocker
+            v2.4.0 · Inteligência para Engenharia
           </div>
         )}
         <button
