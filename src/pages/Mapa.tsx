@@ -31,6 +31,8 @@ import { alertasMeteorologicos, alertaCores } from "@/data/alertas";
 import { estacoesANA, statusCores } from "@/data/estacoesANA";
 import type { Licitacao } from "@/types/database";
 import { urlSegura } from "@/lib/utils";
+import { empresas } from "@/data/empresas";
+import { projetos } from "@/data/projetos";
 
 // ── GeoJSON source for Brazil states (pinned to specific commit for security) ──
 const GEOJSON_URL =
@@ -111,6 +113,7 @@ interface LayerVisibility {
   bacias: boolean;
   etasEtes: boolean;
   projetos: boolean;
+  empresas: boolean;
   alertas: boolean;
   estacoesANA: boolean;
   heatmap: boolean;
@@ -140,6 +143,7 @@ const Mapa = () => {
     bacias: false,
     etasEtes: true,
     projetos: true,
+    empresas: true,
     alertas: true,
     estacoesANA: false,
     heatmap: false,
@@ -202,6 +206,28 @@ const Mapa = () => {
     for (const e of estacoesTratamento) {
       if (!map[e.estado]) map[e.estado] = [];
       map[e.estado].push(e);
+    }
+    return map;
+  }, []);
+
+  // ── Empresas por estado ──
+  const empresasPorEstado = useMemo(() => {
+    const map: Record<string, typeof empresas> = {};
+    for (const emp of empresas) {
+      const uf = emp.estado_sede;
+      if (!map[uf]) map[uf] = [];
+      map[uf].push(emp);
+    }
+    return map;
+  }, []);
+
+  // ── Projetos por estado ──
+  const projetosPorEstado = useMemo(() => {
+    const map: Record<string, typeof projetos> = {};
+    for (const p of projetos) {
+      const uf = p.estado;
+      if (!map[uf]) map[uf] = [];
+      map[uf].push(p);
     }
     return map;
   }, []);
@@ -315,6 +341,46 @@ const Mapa = () => {
     });
   }, []);
 
+  // Add empresa HQ markers
+  const addEmpresaMarkers = useCallback((map: maplibregl.Map) => {
+    empresas.forEach((emp) => {
+      const centroid = estadoCentroids[emp.estado_sede];
+      if (!centroid) return;
+
+      const scoreColor = emp.nota_score >= 85 ? "#10b981" : emp.nota_score >= 70 ? "#3b82f6" : emp.nota_score >= 50 ? "#f59e0b" : "#ef4444";
+
+      // Offset slightly to avoid overlapping same-state companies
+      const idx = empresas.filter((e) => e.estado_sede === emp.estado_sede).indexOf(emp);
+      const offsetLng = (idx % 4 - 1.5) * 0.5;
+      const offsetLat = (Math.floor(idx / 4) - 1) * 0.4;
+
+      const el = document.createElement("div");
+      el.style.cssText = `width:18px;height:18px;border-radius:4px;background:${scoreColor};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:bold;color:white;`;
+      el.textContent = String(emp.nota_score);
+      el.title = `${emp.nome_fantasia} (Score: ${emp.nota_score})`;
+
+      const popup = new maplibregl.Popup({ offset: 10, maxWidth: "260px" }).setHTML(`
+        <div style="font-family:Inter,sans-serif;font-size:12px;line-height:1.4;">
+          <div style="font-weight:700;color:${scoreColor};margin-bottom:4px;">${emp.nome_fantasia}</div>
+          <div><strong>CNPJ:</strong> ${emp.cnpj}</div>
+          <div><strong>Sede:</strong> ${emp.cidade_sede}/${emp.estado_sede}</div>
+          <div><strong>Segmentos:</strong> ${emp.segmentos.join(", ")}</div>
+          <div style="display:flex;gap:8px;margin-top:6px;">
+            <span style="padding:2px 6px;border-radius:4px;background:${scoreColor}22;color:${scoreColor};font-weight:600;font-size:10px;">Score: ${emp.nota_score}</span>
+            <span style="padding:2px 6px;border-radius:4px;background:#f1f5f9;color:#475569;font-weight:500;font-size:10px;">${emp.volume_total_fmt}</span>
+          </div>
+        </div>
+      `);
+
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat([centroid[0] + offsetLng, centroid[1] + offsetLat])
+        .setPopup(popup)
+        .addTo(map);
+
+      markersRef.current.push(marker);
+    });
+  }, []);
+
   // Add project markers (from licitações with geolocation)
   const addProjectMarkers = useCallback((map: maplibregl.Map) => {
     Object.entries(porEstado).forEach(([uf, lics]) => {
@@ -357,7 +423,8 @@ const Mapa = () => {
     if (layers.alertas) addAlertMarkers(mapRef.current);
     if (layers.estacoesANA) addANAMarkers(mapRef.current);
     if (layers.projetos) addProjectMarkers(mapRef.current);
-  }, [layers, clearMarkers, addETAMarkers, addAlertMarkers, addANAMarkers, addProjectMarkers]);
+    if (layers.empresas) addEmpresaMarkers(mapRef.current);
+  }, [layers, clearMarkers, addETAMarkers, addAlertMarkers, addANAMarkers, addProjectMarkers, addEmpresaMarkers]);
 
   // Initialize MapLibre
   useEffect(() => {
@@ -725,6 +792,8 @@ const Mapa = () => {
   const alertasEstado = estadoSelecionado ? (alertasPorEstado[estadoSelecionado] || []) : [];
   const estacoesEstado = estadoSelecionado ? (estacoesPorEstado[estadoSelecionado] || []) : [];
   const etasEstado = estadoSelecionado ? (etasPorEstado[estadoSelecionado] || []) : [];
+  const empresasEstado = estadoSelecionado ? (empresasPorEstado[estadoSelecionado] || []) : [];
+  const projetosEstado = estadoSelecionado ? (projetosPorEstado[estadoSelecionado] || []) : [];
 
   // Toggle layer helper
   const toggleLayer = (key: keyof LayerVisibility) => {
@@ -800,6 +869,7 @@ const Mapa = () => {
                       { key: "bacias" as const, label: "Bacias Hidrográficas", icon: Waves, color: "#065f46" },
                       { key: "etasEtes" as const, label: "ETAs / ETEs", icon: Droplets, color: "#10b981" },
                       { key: "projetos" as const, label: "Projetos / Obras", icon: Wrench, color: "#6366f1" },
+                      { key: "empresas" as const, label: "Empresas (Sede)", icon: Building2, color: "#8b5cf6" },
                       { key: "alertas" as const, label: "Alertas INMET/CEMADEN", icon: AlertTriangle, color: "#ef4444" },
                       { key: "heatmap" as const, label: "Mapa de Calor", icon: Flame, color: "#d946ef" },
                       { key: "estacoesANA" as const, label: "Estações ANA", icon: Gauge, color: "#0284c7" },
@@ -990,6 +1060,66 @@ const Mapa = () => {
                   </CardContent>
                 )}
               </Card>
+
+              {/* ── Empresas do estado ── */}
+              {empresasEstado.length > 0 && (
+                <Card className="border-0 shadow-sm">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-bold flex items-center gap-2">
+                      <Building2 size={16} className="text-violet-500" />
+                      Empresas Sediadas ({empresasEstado.length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0 space-y-1.5 max-h-[160px] overflow-y-auto">
+                    {empresasEstado.map((emp) => {
+                      const scoreColor = emp.nota_score >= 85 ? "#10b981" : emp.nota_score >= 70 ? "#3b82f6" : emp.nota_score >= 50 ? "#f59e0b" : "#ef4444";
+                      return (
+                        <div key={emp.id} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors text-xs">
+                          <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-bold text-[0.6rem]" style={{ backgroundColor: scoreColor }}>
+                            {emp.nota_score}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold truncate">{emp.nome_fantasia}</p>
+                            <p className="text-[0.6rem] text-muted-foreground truncate">{emp.segmentos.slice(0, 2).join(", ")}</p>
+                          </div>
+                          <span className="text-[0.6rem] font-bold text-muted-foreground">{emp.volume_total_fmt}</span>
+                        </div>
+                      );
+                    })}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* ── Projetos do estado ── */}
+              {projetosEstado.length > 0 && (
+                <Card className="border-0 shadow-sm">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-bold flex items-center gap-2">
+                      <Wrench size={16} className="text-emerald-500" />
+                      Projetos ({projetosEstado.length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0 space-y-1.5 max-h-[160px] overflow-y-auto">
+                    {projetosEstado.map((p) => {
+                      const statusColor = p.status === "Em Andamento" ? "#3b82f6" : p.status === "Concluido" ? "#10b981" : p.status === "Paralisado" ? "#ef4444" : "#f59e0b";
+                      return (
+                        <div key={p.id} className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-xs">
+                          <p className="font-semibold">{p.titulo.length > 50 ? p.titulo.slice(0, 50) + "…" : p.titulo}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[0.6rem] px-1.5 py-0.5 rounded text-white font-bold" style={{ backgroundColor: statusColor }}>
+                              {p.status}
+                            </span>
+                            <span className="text-muted-foreground">{p.valor_contrato_fmt}</span>
+                            {p.percentual_execucao != null && (
+                              <span className="text-muted-foreground">{p.percentual_execucao}%</span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </CardContent>
+                </Card>
+              )}
 
               {/* ── Alertas do estado (collapsible) ── */}
               {alertasEstado.length > 0 && (
@@ -1202,22 +1332,30 @@ const Mapa = () => {
               <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
                 Resumo Nacional
               </h4>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 rounded-lg bg-blue-500/5 text-center">
+              <div className="grid grid-cols-3 gap-2">
+                <div className="p-2.5 rounded-lg bg-violet-500/5 text-center">
+                  <p className="text-lg font-extrabold text-violet-600">{empresas.length}</p>
+                  <p className="text-[0.55rem] text-muted-foreground">Empresas</p>
+                </div>
+                <div className="p-2.5 rounded-lg bg-emerald-500/5 text-center">
+                  <p className="text-lg font-extrabold text-emerald-600">{projetos.length}</p>
+                  <p className="text-[0.55rem] text-muted-foreground">Projetos</p>
+                </div>
+                <div className="p-2.5 rounded-lg bg-blue-500/5 text-center">
                   <p className="text-lg font-extrabold text-blue-600">{licitacoes.length}</p>
-                  <p className="text-[0.6rem] text-muted-foreground">Licitações</p>
+                  <p className="text-[0.55rem] text-muted-foreground">Licitações</p>
                 </div>
-                <div className="p-3 rounded-lg bg-emerald-500/5 text-center">
-                  <p className="text-lg font-extrabold text-emerald-600">{estacoesTratamento.length}</p>
-                  <p className="text-[0.6rem] text-muted-foreground">ETAs/ETEs</p>
+                <div className="p-2.5 rounded-lg bg-cyan-500/5 text-center">
+                  <p className="text-lg font-extrabold text-cyan-600">{estacoesTratamento.length}</p>
+                  <p className="text-[0.55rem] text-muted-foreground">ETAs/ETEs</p>
                 </div>
-                <div className="p-3 rounded-lg bg-red-500/5 text-center">
+                <div className="p-2.5 rounded-lg bg-red-500/5 text-center">
                   <p className="text-lg font-extrabold text-red-600">{alertasMeteorologicos.length}</p>
-                  <p className="text-[0.6rem] text-muted-foreground">Alertas</p>
+                  <p className="text-[0.55rem] text-muted-foreground">Alertas</p>
                 </div>
-                <div className="p-3 rounded-lg bg-sky-500/5 text-center">
+                <div className="p-2.5 rounded-lg bg-sky-500/5 text-center">
                   <p className="text-lg font-extrabold text-sky-600">{estacoesANA.length}</p>
-                  <p className="text-[0.6rem] text-muted-foreground">Estações ANA</p>
+                  <p className="text-[0.55rem] text-muted-foreground">Estações ANA</p>
                 </div>
               </div>
               <div className="mt-3 pt-3 border-t border-border/30">
