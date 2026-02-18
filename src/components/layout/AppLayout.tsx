@@ -15,10 +15,7 @@ const routeLabels: Record<string, string> = {
   "/licitacoes": "Licitações",
   "/mapa": "Mapa do Brasil",
   "/alertas": "Alertas",
-  "/indicadores": "Indicadores",
   "/legislacao": "Legislação",
-  "/ferramentas": "Ferramentas",
-  "/eventos": "Eventos",
   "/contato": "Contato",
   "/perfil": "Perfil",
   "/analitico": "Analítico",
@@ -30,7 +27,7 @@ const routeLabels: Record<string, string> = {
   "/anomalias": "Anomalias",
   "/enriquecimento": "Enriquecimento",
   "/comparativo": "Comparativo UFs",
-  "/setor": "Dashboard Setor",
+  "/setor": "Painel Setorial",
   "/privacidade": "Privacidade",
 };
 

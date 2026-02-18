@@ -6,10 +6,7 @@ import Noticias from "./pages/Noticias";
 import LicitacoesPage from "./pages/LicitacoesPage";
 import Mapa from "./pages/Mapa";
 import Alertas from "./pages/AlertasInteligentes";
-import IndicadoresPage from "./pages/IndicadoresPage";
 import LegislacaoPage from "./pages/LegislacaoPage";
-import Ferramentas from "./pages/Ferramentas";
-import EventosPage from "./pages/EventosPage";
 import Contato from "./pages/Contato";
 import Perfil from "./pages/Perfil";
 import Analitico from "./pages/Analitico";
@@ -38,10 +35,7 @@ const App = () => (
         <Route path="/licitacoes" element={<LicitacoesPage />} />
         <Route path="/mapa" element={<Mapa />} />
         <Route path="/alertas" element={<Alertas />} />
-        <Route path="/indicadores" element={<IndicadoresPage />} />
         <Route path="/legislacao" element={<LegislacaoPage />} />
-        <Route path="/ferramentas" element={<Ferramentas />} />
-        <Route path="/eventos" element={<EventosPage />} />
         <Route path="/contato" element={<Contato />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/analitico" element={<Analitico />} />
