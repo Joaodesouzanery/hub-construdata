@@ -23,6 +23,8 @@ import {
   Calendar,
   Target,
   Filter,
+  Webhook,
+  Link2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useLicitacoes } from "@/hooks/useLicitacoes";
@@ -205,6 +207,8 @@ const AlertasInteligentes = () => {
   const [emailAlerta, setEmailAlerta] = useState("");
   const [emailAtivo, setEmailAtivo] = useState(false);
   const [frequencia, setFrequencia] = useState<"tempo_real" | "diario" | "semanal">("diario");
+  const [webhookUrl, setWebhookUrl] = useState("");
+  const [webhookAtivo, setWebhookAtivo] = useState(false);
   const { dados: licitacoes } = useLicitacoes();
 
   const alertasFiltrados = useMemo(() => {
@@ -242,6 +246,17 @@ const AlertasInteligentes = () => {
     }
     setEmailAtivo(true);
     toast.success(`Alertas serão enviados para ${emailAlerta} (${frequencia})`);
+  };
+
+  const ativarWebhook = () => {
+    try {
+      new URL(webhookUrl);
+    } catch {
+      toast.error("Informe uma URL válida (ex: https://hooks.slack.com/...)");
+      return;
+    }
+    setWebhookAtivo(true);
+    toast.success("Webhook configurado com sucesso");
   };
 
   return (
@@ -538,6 +553,55 @@ const AlertasInteligentes = () => {
               {emailAtivo && (
                 <p className="text-[0.6rem] text-green-600 font-medium flex items-center gap-1">
                   <CheckCircle2 size={10} /> Alertas configurados para {emailAlerta}
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Webhook Integration */}
+          <Card className="border-0 shadow-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <Webhook size={16} className="text-violet-500" />
+                Webhook / Integração
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-xs text-muted-foreground">
+                Envie alertas para Slack, Teams, Discord ou qualquer endpoint:
+              </p>
+              <Input
+                type="url"
+                placeholder="https://hooks.slack.com/services/..."
+                value={webhookUrl}
+                onChange={(e) => setWebhookUrl(e.target.value)}
+                className="text-sm font-mono"
+              />
+              <div className="text-[0.6rem] text-muted-foreground space-y-1">
+                <p className="flex items-center gap-1"><Link2 size={10} /> Slack: hooks.slack.com/services/...</p>
+                <p className="flex items-center gap-1"><Link2 size={10} /> Teams: outlook.office.com/webhook/...</p>
+                <p className="flex items-center gap-1"><Link2 size={10} /> Discord: discord.com/api/webhooks/...</p>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full gap-1.5"
+                onClick={ativarWebhook}
+                disabled={webhookAtivo}
+              >
+                {webhookAtivo ? (
+                  <>
+                    <CheckCircle2 size={14} className="text-green-500" /> Webhook Ativo
+                  </>
+                ) : (
+                  <>
+                    <Webhook size={14} /> Configurar Webhook
+                  </>
+                )}
+              </Button>
+              {webhookAtivo && (
+                <p className="text-[0.6rem] text-green-600 font-medium flex items-center gap-1">
+                  <CheckCircle2 size={10} /> Alertas serão enviados via POST para o endpoint
                 </p>
               )}
             </CardContent>

@@ -6,6 +6,7 @@ import Breadcrumbs from "../Breadcrumbs";
 import type { BreadcrumbItem } from "../Breadcrumbs";
 import { Menu, Sun, Moon, Shield } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { TourGuiado } from "../TourGuiado";
 
 const routeLabels: Record<string, string> = {
   "/": "Dashboard",
@@ -56,6 +57,7 @@ const AppLayout = () => {
   }, [location.pathname]);
 
   return (
+    <TourGuiado>
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
@@ -161,6 +163,7 @@ const AppLayout = () => {
         </footer>
       </div>
     </div>
+    </TourGuiado>
   );
 };
 
