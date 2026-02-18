@@ -5,16 +5,20 @@ import { Button } from "@/components/ui/button";
 import {
   Network, Building2, Users, ZoomIn, ZoomOut, Maximize2,
   AlertTriangle, Eye, EyeOff, Info, MapPin, Play, Pause,
-  Lock, Shield, ArrowRight,
+  Lock, Shield, ArrowRight, User, Layers,
 } from "lucide-react";
 import { empresas } from "@/data/empresas";
 import { projetos } from "@/data/projetos";
+import { socios, vinculosPessoais } from "@/data/socios";
 
 // ── Tipos ──
+type NodeType = "empresa" | "pessoa" | "grupo";
+type EdgeType = "projeto" | "societario" | "vinculo_pessoal";
+
 interface GraphNode {
   id: string;
   label: string;
-  type: "empresa";
+  type: NodeType;
   x: number;
   y: number;
   vx: number;
@@ -25,6 +29,7 @@ interface GraphNode {
   estado: string;
   porte: string;
   conexoes: number;
+  qualificacao?: string;
 }
 
 interface GraphEdge {
@@ -32,53 +37,118 @@ interface GraphEdge {
   target: string;
   label: string;
   peso: number;
+  tipo: EdgeType;
 }
 
 interface Anomalia {
   titulo: string;
   descricao: string;
-  tipo: "vinculo" | "concentracao" | "padrao";
-  severidade: "alta" | "media" | "baixa";
+  tipo: "vinculo" | "concentracao" | "padrao" | "societario" | "cruzado";
+  severidade: "critica" | "alta" | "media" | "baixa";
   empresas: string[];
 }
 
-// ── Construir grafo ──
-function buildGraph(): { nodes: GraphNode[]; edges: GraphEdge[] } {
+type CamadaView = "empresas" | "socios" | "todos";
+
+// ── Edge colors by type ──
+const edgeColors: Record<EdgeType, string> = {
+  projeto: "#8b5cf6",
+  societario: "#3b82f6",
+  vinculo_pessoal: "#f59e0b",
+};
+
+const edgeColorDimmed: Record<EdgeType, string> = {
+  projeto: "#cbd5e1",
+  societario: "#bfdbfe",
+  vinculo_pessoal: "#fde68a",
+};
+
+// ── Build full graph with all layers ──
+function buildGraph(camada: CamadaView): { nodes: GraphNode[]; edges: GraphEdge[] } {
   const edges: GraphEdge[] = [];
   const edgeSet = new Set<string>();
   const conexoesCount: Record<string, number> = {};
+  const nodeSet = new Set<string>();
 
-  // Edges via projetos compartilhados
-  projetos.forEach((proj) => {
-    const ids = proj.participantes.map((p) => p.empresa_id);
-    for (let i = 0; i < ids.length; i++) {
-      for (let j = i + 1; j < ids.length; j++) {
-        const key = [ids[i], ids[j]].sort().join("-");
-        conexoesCount[ids[i]] = (conexoesCount[ids[i]] || 0) + 1;
-        conexoesCount[ids[j]] = (conexoesCount[ids[j]] || 0) + 1;
-        if (!edgeSet.has(key)) {
-          edgeSet.add(key);
-          edges.push({
-            source: ids[i],
-            target: ids[j],
-            label: proj.titulo.slice(0, 40),
-            peso: 1,
-          });
-        } else {
-          const existing = edges.find(
-            (e) =>
-              (e.source === ids[i] && e.target === ids[j]) ||
-              (e.source === ids[j] && e.target === ids[i])
-          );
-          if (existing) existing.peso++;
+  // Always include empresa-empresa edges via projetos
+  if (camada === "empresas" || camada === "todos") {
+    projetos.forEach((proj) => {
+      const ids = proj.participantes.map((p) => p.empresa_id);
+      for (let i = 0; i < ids.length; i++) {
+        for (let j = i + 1; j < ids.length; j++) {
+          const key = [ids[i], ids[j]].sort().join("-") + ":proj";
+          conexoesCount[ids[i]] = (conexoesCount[ids[i]] || 0) + 1;
+          conexoesCount[ids[j]] = (conexoesCount[ids[j]] || 0) + 1;
+          if (!edgeSet.has(key)) {
+            edgeSet.add(key);
+            edges.push({
+              source: ids[i],
+              target: ids[j],
+              label: proj.titulo.slice(0, 40),
+              peso: 1,
+              tipo: "projeto",
+            });
+          } else {
+            const existing = edges.find(
+              (e) =>
+                e.tipo === "projeto" &&
+                ((e.source === ids[i] && e.target === ids[j]) ||
+                  (e.source === ids[j] && e.target === ids[i]))
+            );
+            if (existing) existing.peso++;
+          }
         }
       }
-    }
-  });
+    });
+  }
 
-  // Nodes — posições iniciais circulares
+  // Add societário edges from socios data
+  if (camada === "socios" || camada === "todos") {
+    socios.forEach((s) => {
+      const pessoaId = `p:${s.nome.toLowerCase().replace(/[^a-z0-9]/g, "_").slice(0, 40)}`;
+      const key = [pessoaId, s.empresa_id].sort().join("-") + ":soc";
+      if (!edgeSet.has(key)) {
+        edgeSet.add(key);
+        conexoesCount[pessoaId] = (conexoesCount[pessoaId] || 0) + 1;
+        conexoesCount[s.empresa_id] = (conexoesCount[s.empresa_id] || 0) + 1;
+        nodeSet.add(pessoaId);
+        edges.push({
+          source: pessoaId,
+          target: s.empresa_id,
+          label: s.qualificacao,
+          peso: s.participacao_percentual ? Math.max(1, Math.round(s.participacao_percentual / 20)) : 1,
+          tipo: "societario",
+        });
+      }
+    });
+
+    // Add vinculosPessoais edges (person linking multiple companies)
+    vinculosPessoais.forEach((v) => {
+      if (v.empresas.length >= 2) {
+        for (let i = 0; i < v.empresas.length; i++) {
+          for (let j = i + 1; j < v.empresas.length; j++) {
+            const key = [v.empresas[i].empresa_id, v.empresas[j].empresa_id].sort().join("-") + ":vp";
+            if (!edgeSet.has(key)) {
+              edgeSet.add(key);
+              conexoesCount[v.empresas[i].empresa_id] = (conexoesCount[v.empresas[i].empresa_id] || 0) + 1;
+              conexoesCount[v.empresas[j].empresa_id] = (conexoesCount[v.empresas[j].empresa_id] || 0) + 1;
+              edges.push({
+                source: v.empresas[i].empresa_id,
+                target: v.empresas[j].empresa_id,
+                label: `Via ${v.pessoa}`,
+                peso: v.risco === "alto" ? 3 : v.risco === "medio" ? 2 : 1,
+                tipo: "vinculo_pessoal",
+              });
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Build nodes
   const cx = 400, cy = 350, radius = 250;
-  const nodes: GraphNode[] = empresas.map((emp, i) => {
+  const empresaNodes: GraphNode[] = empresas.map((emp, i) => {
     const angle = (i / empresas.length) * 2 * Math.PI - Math.PI / 2;
     return {
       id: emp.id,
@@ -86,10 +156,7 @@ function buildGraph(): { nodes: GraphNode[]; edges: GraphEdge[] } {
       type: "empresa" as const,
       x: cx + radius * Math.cos(angle),
       y: cy + radius * Math.sin(angle),
-      vx: 0,
-      vy: 0,
-      fx: null,
-      fy: null,
+      vx: 0, vy: 0, fx: null, fy: null,
       score: emp.nota_score,
       estado: emp.estado_sede,
       porte: emp.porte,
@@ -97,25 +164,55 @@ function buildGraph(): { nodes: GraphNode[]; edges: GraphEdge[] } {
     };
   });
 
+  // Build person nodes from socios (only in socios/todos view)
+  const pessoaNodes: GraphNode[] = [];
+  if (camada === "socios" || camada === "todos") {
+    const pessoaMap = new Map<string, { nome: string; qual: string; empresaIds: string[] }>();
+    socios.forEach((s) => {
+      const pessoaId = `p:${s.nome.toLowerCase().replace(/[^a-z0-9]/g, "_").slice(0, 40)}`;
+      if (!pessoaMap.has(pessoaId)) {
+        pessoaMap.set(pessoaId, { nome: s.nome, qual: s.qualificacao, empresaIds: [s.empresa_id] });
+      } else {
+        pessoaMap.get(pessoaId)!.empresaIds.push(s.empresa_id);
+      }
+    });
+
+    let pIdx = 0;
+    pessoaMap.forEach((val, pessoaId) => {
+      const angle = (pIdx / pessoaMap.size) * 2 * Math.PI;
+      pIdx++;
+      pessoaNodes.push({
+        id: pessoaId,
+        label: val.nome.length > 25 ? val.nome.slice(0, 25) + "…" : val.nome,
+        type: val.nome.includes("S.A.") || val.nome.includes("S/A") || val.nome.includes("Ltd") || val.nome.includes("Estado") || val.nome.includes("Governo")
+          ? "grupo"
+          : "pessoa",
+        x: cx + (radius * 0.6) * Math.cos(angle),
+        y: cy + (radius * 0.6) * Math.sin(angle),
+        vx: 0, vy: 0, fx: null, fy: null,
+        score: 0,
+        estado: "",
+        porte: "",
+        conexoes: conexoesCount[pessoaId] || 0,
+        qualificacao: val.qual,
+      });
+    });
+  }
+
+  const nodes = [...empresaNodes, ...pessoaNodes];
   return { nodes, edges };
 }
 
 // ── Force-directed simulation ──
-function simulateForces(
-  nodes: GraphNode[],
-  edges: GraphEdge[],
-  alpha: number
-) {
+function simulateForces(nodes: GraphNode[], edges: GraphEdge[], alpha: number) {
   const cx = 400, cy = 350;
   const repulsion = 8000;
   const attraction = 0.005;
   const centerForce = 0.01;
   const damping = 0.85;
 
-  // Reset forces
   nodes.forEach((n) => { n.vx = 0; n.vy = 0; });
 
-  // Repulsive forces between all nodes
   for (let i = 0; i < nodes.length; i++) {
     for (let j = i + 1; j < nodes.length; j++) {
       const a = nodes[i], b = nodes[j];
@@ -125,14 +222,11 @@ function simulateForces(
       const force = repulsion / (dist * dist);
       const fx = (dx / dist) * force;
       const fy = (dy / dist) * force;
-      a.vx -= fx;
-      a.vy -= fy;
-      b.vx += fx;
-      b.vy += fy;
+      a.vx -= fx; a.vy -= fy;
+      b.vx += fx; b.vy += fy;
     }
   }
 
-  // Attractive forces along edges
   const nodeMap = new Map(nodes.map((n) => [n.id, n]));
   edges.forEach((e) => {
     const src = nodeMap.get(e.source);
@@ -144,45 +238,37 @@ function simulateForces(
     const force = attraction * dist * e.peso;
     const fx = (dx / dist) * force;
     const fy = (dy / dist) * force;
-    src.vx += fx;
-    src.vy += fy;
-    tgt.vx -= fx;
-    tgt.vy -= fy;
+    src.vx += fx; src.vy += fy;
+    tgt.vx -= fx; tgt.vy -= fy;
   });
 
-  // Center gravity
   nodes.forEach((n) => {
     n.vx += (cx - n.x) * centerForce;
     n.vy += (cy - n.y) * centerForce;
   });
 
-  // Update positions
   nodes.forEach((n) => {
     if (n.fx !== null && n.fy !== null) {
-      n.x = n.fx;
-      n.y = n.fy;
-      n.vx = 0;
-      n.vy = 0;
+      n.x = n.fx; n.y = n.fy; n.vx = 0; n.vy = 0;
       return;
     }
     n.vx *= damping * alpha;
     n.vy *= damping * alpha;
-    // Clamp velocity
     const maxV = 15;
     n.vx = Math.max(-maxV, Math.min(maxV, n.vx));
     n.vy = Math.max(-maxV, Math.min(maxV, n.vy));
     n.x += n.vx;
     n.y += n.vy;
-    // Keep in bounds
     n.x = Math.max(60, Math.min(740, n.x));
     n.y = Math.max(60, Math.min(640, n.y));
   });
 }
 
-// ── Detectar anomalias ──
+// ── Detect anomalies ──
 function detectAnomalias(): Anomalia[] {
   const anomalias: Anomalia[] = [];
 
+  // 1. Hubs de conexão via projetos
   const conexoes: Record<string, Set<string>> = {};
   projetos.forEach((proj) => {
     const ids = proj.participantes.map((p) => p.empresa_id);
@@ -192,7 +278,6 @@ function detectAnomalias(): Anomalia[] {
     });
   });
 
-  // Hubs
   Object.entries(conexoes).forEach(([empId, parceiros]) => {
     if (parceiros.size >= 3) {
       const emp = empresas.find((e) => e.id === empId);
@@ -208,7 +293,7 @@ function detectAnomalias(): Anomalia[] {
     }
   });
 
-  // Vínculos recorrentes
+  // 2. Vínculos recorrentes em projetos
   const pairCount: Record<string, number> = {};
   projetos.forEach((proj) => {
     const ids = proj.participantes.map((p) => p.empresa_id);
@@ -237,7 +322,7 @@ function detectAnomalias(): Anomalia[] {
     }
   });
 
-  // Empresa nova com alto volume
+  // 3. Empresa nova com alto volume
   const anoAtual = new Date().getFullYear();
   empresas.forEach((emp) => {
     const anos = anoAtual - emp.ano_fundacao;
@@ -252,11 +337,48 @@ function detectAnomalias(): Anomalia[] {
     }
   });
 
+  // 4. Vínculos societários cruzados (pessoa em múltiplas empresas)
+  vinculosPessoais.forEach((v) => {
+    if (v.empresas.length >= 2 && v.risco !== "baixo") {
+      anomalias.push({
+        titulo: `Vínculo societário cruzado: ${v.pessoa}`,
+        descricao: v.descricao.slice(0, 150) + (v.descricao.length > 150 ? "…" : ""),
+        tipo: "societario",
+        severidade: v.risco === "alto" ? "critica" : "alta",
+        empresas: v.empresas.map((e) => e.empresa_id),
+      });
+    }
+  });
+
+  // 5. Mesmo endereço / mesma cidade (concentração geográfica suspeita)
+  const cidadeEmpresas: Record<string, string[]> = {};
+  empresas.forEach((emp) => {
+    const key = `${emp.cidade_sede}-${emp.estado_sede}`;
+    if (!cidadeEmpresas[key]) cidadeEmpresas[key] = [];
+    cidadeEmpresas[key].push(emp.id);
+  });
+
+  Object.entries(cidadeEmpresas).forEach(([cidade, ids]) => {
+    if (ids.length >= 4) {
+      const nomes = ids.slice(0, 3).map((id) => empresas.find((e) => e.id === id)?.nome_fantasia).filter(Boolean);
+      anomalias.push({
+        titulo: `Concentração geográfica: ${cidade}`,
+        descricao: `${ids.length} empresas sediadas em ${cidade}: ${nomes.join(", ")} e mais ${ids.length - 3}.`,
+        tipo: "cruzado",
+        severidade: "baixa",
+        empresas: ids.slice(0, 4),
+      });
+    }
+  });
+
   return anomalias;
 }
 
-// ── Cores ──
-function nodeColor(score: number) {
+// ── Colors ──
+function nodeColor(node: GraphNode) {
+  if (node.type === "pessoa") return "#f59e0b";
+  if (node.type === "grupo") return "#6366f1";
+  const score = node.score;
   if (score >= 85) return "#10b981";
   if (score >= 70) return "#3b82f6";
   if (score >= 50) return "#f59e0b";
@@ -264,13 +386,18 @@ function nodeColor(score: number) {
 }
 
 function sevColor(sev: string) {
+  if (sev === "critica") return "bg-red-200 text-red-800 border-red-300";
   if (sev === "alta") return "bg-red-100 text-red-700 border-red-200";
   if (sev === "media") return "bg-amber-100 text-amber-700 border-amber-200";
   return "bg-blue-100 text-blue-700 border-blue-200";
 }
 
-function nodeRadius(conexoes: number, isSelected: boolean) {
-  const base = 18 + Math.min(10, conexoes * 2);
+function nodeRadius(node: GraphNode, isSelected: boolean) {
+  if (node.type === "pessoa" || node.type === "grupo") {
+    const base = 14 + Math.min(8, node.conexoes * 2);
+    return isSelected ? base + 5 : base;
+  }
+  const base = 18 + Math.min(10, node.conexoes * 2);
   return isSelected ? base + 6 : base;
 }
 
@@ -287,14 +414,16 @@ const GrafoVinculos = () => {
   const [isSimulating, setIsSimulating] = useState(true);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
+  const [camada, setCamada] = useState<CamadaView>("empresas");
   const panStart = useRef({ x: 0, y: 0 });
   const dragNode = useRef<string | null>(null);
   const dragOffset = useRef({ x: 0, y: 0 });
 
-  // Build graph once
-  const graphRef = useRef<{ nodes: GraphNode[]; edges: GraphEdge[] } | null>(null);
-  if (!graphRef.current) {
-    graphRef.current = buildGraph();
+  // Build graph when layer changes
+  const graphRef = useRef<{ nodes: GraphNode[]; edges: GraphEdge[]; camada: CamadaView } | null>(null);
+  if (!graphRef.current || graphRef.current.camada !== camada) {
+    graphRef.current = { ...buildGraph(camada), camada };
+    setIsSimulating(true);
   }
   const { nodes, edges } = graphRef.current;
 
@@ -308,8 +437,14 @@ const GrafoVinculos = () => {
   const filteredNodeIds = useMemo(() => {
     if (filtroEstado === "Todos") return new Set(nodes.map((n) => n.id));
     const empIds = new Set(empresas.filter((e) => e.estado_sede === filtroEstado).map((e) => e.id));
-    return empIds;
-  }, [nodes, filtroEstado]);
+    // Also include person nodes connected to filtered empresas
+    const personIds = new Set<string>();
+    edges.forEach((e) => {
+      if (empIds.has(e.source) && e.target.startsWith("p:")) personIds.add(e.target);
+      if (empIds.has(e.target) && e.source.startsWith("p:")) personIds.add(e.source);
+    });
+    return new Set([...empIds, ...personIds]);
+  }, [nodes, edges, filtroEstado]);
 
   const filteredNodes = useMemo(() => nodes.filter((n) => filteredNodeIds.has(n.id)), [nodes, filteredNodeIds, tick]);
   const filteredEdges = useMemo(() => edges.filter((e) => filteredNodeIds.has(e.source) && filteredNodeIds.has(e.target)), [edges, filteredNodeIds]);
@@ -324,6 +459,17 @@ const GrafoVinculos = () => {
     if (!selectedNode) return null;
     return empresas.find((e) => e.id === selectedNode) || null;
   }, [selectedNode]);
+
+  const selectedPessoa = useMemo(() => {
+    if (!selectedNode || !selectedNode.startsWith("p:")) return null;
+    const node = nodeMap.get(selectedNode);
+    if (!node) return null;
+    const sociosMatch = socios.filter((s) => {
+      const pid = `p:${s.nome.toLowerCase().replace(/[^a-z0-9]/g, "_").slice(0, 40)}`;
+      return pid === selectedNode;
+    });
+    return { node, socios: sociosMatch };
+  }, [selectedNode, nodeMap]);
 
   const connectedNodes = useMemo(() => {
     if (!selectedNode) return new Set<string>();
@@ -413,10 +559,7 @@ const GrafoVinculos = () => {
   const handleMouseUp = useCallback(() => {
     if (dragNode.current) {
       const node = nodeMap.get(dragNode.current);
-      if (node) {
-        node.fx = null;
-        node.fy = null;
-      }
+      if (node) { node.fx = null; node.fy = null; }
       dragNode.current = null;
     }
     setIsPanning(false);
@@ -426,28 +569,22 @@ const GrafoVinculos = () => {
     setZoom(1);
     setPanOffset({ x: 0, y: 0 });
     setSelectedNode(null);
-    // Restart simulation
-    nodes.forEach((n, i) => {
-      const angle = (i / nodes.length) * 2 * Math.PI - Math.PI / 2;
-      n.x = 400 + 250 * Math.cos(angle);
-      n.y = 350 + 250 * Math.sin(angle);
-      n.vx = 0;
-      n.vy = 0;
-      n.fx = null;
-      n.fy = null;
-    });
+    graphRef.current = null; // force rebuild
     setIsSimulating(true);
-  }, [nodes]);
+    setTick((t) => t + 1);
+  }, []);
 
   // Stats
-  const stats = useMemo(() => ({
-    totalEmpresas: filteredNodes.length,
-    totalConexoes: filteredEdges.length,
-    mediaConexoes: filteredNodes.length > 0
-      ? (filteredEdges.length * 2 / filteredNodes.length).toFixed(1)
-      : "0",
-    anomaliasAlta: anomalias.filter((a) => a.severidade === "alta").length,
-  }), [filteredNodes, filteredEdges, anomalias]);
+  const stats = useMemo(() => {
+    const empNodes = filteredNodes.filter((n) => n.type === "empresa").length;
+    const pesNodes = filteredNodes.filter((n) => n.type === "pessoa" || n.type === "grupo").length;
+    return {
+      totalEmpresas: empNodes,
+      totalPessoas: pesNodes,
+      totalConexoes: filteredEdges.length,
+      anomaliasAlta: anomalias.filter((a) => a.severidade === "alta" || a.severidade === "critica").length,
+    };
+  }, [filteredNodes, filteredEdges, anomalias]);
 
   // Edge path with curve
   const edgePath = useCallback((src: GraphNode, tgt: GraphNode) => {
@@ -455,10 +592,53 @@ const GrafoVinculos = () => {
     const dy = tgt.y - src.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
     if (dist < 1) return `M ${src.x} ${src.y} L ${tgt.x} ${tgt.y}`;
-    // Slight curve
     const mx = (src.x + tgt.x) / 2 + dy * 0.08;
     const my = (src.y + tgt.y) / 2 - dx * 0.08;
     return `M ${src.x} ${src.y} Q ${mx} ${my} ${tgt.x} ${tgt.y}`;
+  }, []);
+
+  // Node shape renderer
+  const renderNode = useCallback((node: GraphNode, r: number, color: string, strokeWidth: number, filter?: string) => {
+    if (node.type === "pessoa") {
+      // Diamond shape for persons
+      const d = r;
+      return (
+        <polygon
+          points={`${node.x},${node.y - d} ${node.x + d},${node.y} ${node.x},${node.y + d} ${node.x - d},${node.y}`}
+          fill="white"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          filter={filter}
+        />
+      );
+    }
+    if (node.type === "grupo") {
+      // Hexagon shape for groups/holdings
+      const d = r;
+      const pts = Array.from({ length: 6 }, (_, i) => {
+        const angle = (i * 60 - 30) * Math.PI / 180;
+        return `${node.x + d * Math.cos(angle)},${node.y + d * Math.sin(angle)}`;
+      }).join(" ");
+      return (
+        <polygon
+          points={pts}
+          fill="white"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          filter={filter}
+        />
+      );
+    }
+    // Circle for empresas
+    return (
+      <circle
+        cx={node.x} cy={node.y} r={r}
+        fill="white"
+        stroke={color}
+        strokeWidth={strokeWidth}
+        filter={filter}
+      />
+    );
   }, []);
 
   return (
@@ -471,7 +651,7 @@ const GrafoVinculos = () => {
             Grafo de Vínculos Empresariais
           </h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Mapeamento de conexões entre empresas via projetos e licitações — layout force-directed interativo
+            Rede de conexões societárias, projetos e vínculos pessoais — investigação corporativa
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -484,9 +664,9 @@ const GrafoVinculos = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
           { label: "Empresas", valor: stats.totalEmpresas, icon: Building2, cor: "text-blue-500", bg: "bg-blue-500/10" },
-          { label: "Conexões", valor: stats.totalConexoes, icon: Network, cor: "text-violet-500", bg: "bg-violet-500/10" },
-          { label: "Média Conexões", valor: stats.mediaConexoes, icon: Users, cor: "text-emerald-500", bg: "bg-emerald-500/10" },
-          { label: "Alertas de Vínculo", valor: anomalias.length, icon: AlertTriangle, cor: "text-red-500", bg: "bg-red-500/10" },
+          { label: camada === "empresas" ? "Conexões" : "Sócios/Diretores", valor: camada === "empresas" ? stats.totalConexoes : stats.totalPessoas, icon: camada === "empresas" ? Network : Users, cor: "text-violet-500", bg: "bg-violet-500/10" },
+          { label: "Vínculos Totais", valor: stats.totalConexoes, icon: Network, cor: "text-emerald-500", bg: "bg-emerald-500/10" },
+          { label: "Alertas Críticos", valor: stats.anomaliasAlta, icon: AlertTriangle, cor: "text-red-500", bg: "bg-red-500/10" },
         ].map((s) => (
           <Card key={s.label} className="border-0 shadow-sm hover:shadow-md transition-shadow duration-200">
             <CardContent className="p-3 flex items-center gap-3">
@@ -516,7 +696,28 @@ const GrafoVinculos = () => {
                   </span>
                 )}
               </CardTitle>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {/* Layer toggle */}
+                <div className="flex bg-muted rounded-lg p-0.5 text-xs">
+                  {([
+                    { key: "empresas" as CamadaView, label: "Empresas", icon: Building2 },
+                    { key: "socios" as CamadaView, label: "Sócios", icon: Users },
+                    { key: "todos" as CamadaView, label: "Todos", icon: Layers },
+                  ]).map((c) => (
+                    <button
+                      key={c.key}
+                      onClick={() => { setCamada(c.key); graphRef.current = null; setSelectedNode(null); }}
+                      className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-all ${
+                        camada === c.key
+                          ? "bg-white shadow-sm text-violet-700 font-bold"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      <c.icon size={12} />
+                      {c.label}
+                    </button>
+                  ))}
+                </div>
                 <select
                   value={filtroEstado}
                   onChange={(e) => setFiltroEstado(e.target.value)}
@@ -526,20 +727,10 @@ const GrafoVinculos = () => {
                     <option key={uf} value={uf}>{uf === "Todos" ? "Todos estados" : uf}</option>
                   ))}
                 </select>
-                <Button
-                  variant="ghost" size="sm"
-                  onClick={() => setIsSimulating(!isSimulating)}
-                  title={isSimulating ? "Pausar simulação" : "Retomar simulação"}
-                  className="h-8 w-8 p-0"
-                >
+                <Button variant="ghost" size="sm" onClick={() => setIsSimulating(!isSimulating)} title={isSimulating ? "Pausar" : "Retomar"} className="h-8 w-8 p-0">
                   {isSimulating ? <Pause size={14} /> : <Play size={14} />}
                 </Button>
-                <Button
-                  variant="ghost" size="sm"
-                  onClick={() => setMostrarLabels(!mostrarLabels)}
-                  title={mostrarLabels ? "Ocultar labels" : "Mostrar labels"}
-                  className="h-8 w-8 p-0"
-                >
+                <Button variant="ghost" size="sm" onClick={() => setMostrarLabels(!mostrarLabels)} title={mostrarLabels ? "Ocultar labels" : "Mostrar labels"} className="h-8 w-8 p-0">
                   {mostrarLabels ? <Eye size={14} /> : <EyeOff size={14} />}
                 </Button>
                 <Button variant="ghost" size="sm" onClick={() => setZoom((z) => Math.min(2.5, z + 0.25))} className="h-8 w-8 p-0">
@@ -591,27 +782,30 @@ const GrafoVinculos = () => {
                     const isHighlighted = selectedNode && (edge.source === selectedNode || edge.target === selectedNode);
                     const isHovered = hoveredNode && (edge.source === hoveredNode || edge.target === hoveredNode);
                     const isDimmed = (selectedNode || hoveredNode) && !isHighlighted && !isHovered;
+                    const eColor = isHighlighted || isHovered ? edgeColors[edge.tipo] : edgeColorDimmed[edge.tipo];
 
                     return (
                       <g key={`e-${i}`}>
                         <path
                           d={edgePath(src, tgt)}
                           fill="none"
-                          stroke={isHighlighted ? "#8b5cf6" : isHovered ? "#a78bfa" : "#cbd5e1"}
+                          stroke={eColor}
                           strokeWidth={Math.min(5, edge.peso * 1.5 + 0.5)}
-                          opacity={isDimmed ? 0.08 : isHighlighted ? 0.85 : isHovered ? 0.7 : 0.25}
+                          opacity={isDimmed ? 0.06 : isHighlighted ? 0.85 : isHovered ? 0.7 : 0.25}
                           strokeLinecap="round"
+                          strokeDasharray={edge.tipo === "societario" ? "6,3" : edge.tipo === "vinculo_pessoal" ? "3,3" : "none"}
                         />
-                        {mostrarLabels && (isHighlighted || isHovered) && edge.peso > 1 && (
+                        {mostrarLabels && (isHighlighted || isHovered) && (
                           <text
                             x={(src.x + tgt.x) / 2}
                             y={(src.y + tgt.y) / 2 - 8}
-                            fontSize={9}
-                            fill="#7c3aed"
+                            fontSize={8}
+                            fill={edgeColors[edge.tipo]}
                             textAnchor="middle"
                             fontWeight="bold"
+                            style={{ paintOrder: "stroke", stroke: "white", strokeWidth: 2 }}
                           >
-                            {edge.peso}x
+                            {edge.tipo === "projeto" && edge.peso > 1 ? `${edge.peso}x proj.` : edge.label.slice(0, 30)}
                           </text>
                         )}
                       </g>
@@ -624,8 +818,8 @@ const GrafoVinculos = () => {
                     const isHovered = node.id === hoveredNode;
                     const isConnected = connectedNodes.has(node.id);
                     const isDimmed = (selectedNode && !isSelected && !isConnected) || (hoveredNode && !isHovered && hoveredNode !== selectedNode && !connectedNodes.has(node.id));
-                    const r = nodeRadius(node.conexoes, isSelected);
-                    const color = nodeColor(node.score);
+                    const r = nodeRadius(node, isSelected);
+                    const color = nodeColor(node);
 
                     return (
                       <g
@@ -641,60 +835,68 @@ const GrafoVinculos = () => {
                         }}
                         onMouseEnter={() => setHoveredNode(node.id)}
                         onMouseLeave={() => setHoveredNode(null)}
-                        opacity={isDimmed ? 0.15 : 1}
+                        opacity={isDimmed ? 0.12 : 1}
                       >
                         {/* Outer glow for selected */}
                         {isSelected && (
-                          <>
-                            <circle cx={node.x} cy={node.y} r={r + 12} fill={color} opacity={0.08} />
-                            <circle cx={node.x} cy={node.y} r={r + 7} fill={color} opacity={0.12} />
-                          </>
+                          <circle cx={node.x} cy={node.y} r={r + 10} fill={color} opacity={0.1} />
                         )}
                         {/* Hover ring */}
                         {isHovered && !isSelected && (
-                          <circle cx={node.x} cy={node.y} r={r + 5} fill={color} opacity={0.1} />
+                          <circle cx={node.x} cy={node.y} r={r + 5} fill={color} opacity={0.08} />
                         )}
-                        {/* Node circle */}
-                        <circle
-                          cx={node.x} cy={node.y} r={r}
-                          fill="white"
-                          stroke={color}
-                          strokeWidth={isSelected ? 4 : isConnected ? 3 : isHovered ? 3 : 2}
-                          filter={isSelected ? "url(#shadow)" : undefined}
-                        />
-                        {/* Score text */}
+                        {/* Node shape */}
+                        {renderNode(
+                          node, r, color,
+                          isSelected ? 4 : isConnected ? 3 : isHovered ? 3 : 2,
+                          isSelected ? "url(#shadow)" : undefined,
+                        )}
+                        {/* Inner icon/text */}
                         <text
                           x={node.x} y={node.y + 1}
-                          fontSize={r > 24 ? 12 : 10}
+                          fontSize={node.type === "empresa" ? (r > 24 ? 12 : 10) : 9}
                           fontWeight="bold"
                           fill={color}
                           textAnchor="middle"
                           dominantBaseline="middle"
                         >
-                          {node.score}
+                          {node.type === "empresa" ? node.score : (node.type === "pessoa" ? "P" : "G")}
                         </text>
                         {/* Label */}
                         {mostrarLabels && (
                           <>
                             <text
                               x={node.x} y={node.y + r + 13}
-                              fontSize={10}
+                              fontSize={node.type === "empresa" ? 10 : 9}
                               fontWeight="600"
-                              fill="#1e293b"
+                              fill={node.type === "empresa" ? "#1e293b" : "#78350f"}
                               textAnchor="middle"
                               style={{ paintOrder: "stroke", stroke: "white", strokeWidth: 3 }}
                             >
                               {node.label.length > 16 ? node.label.slice(0, 16) + "…" : node.label}
                             </text>
-                            <text
-                              x={node.x} y={node.y + r + 25}
-                              fontSize={8}
-                              fill="#94a3b8"
-                              textAnchor="middle"
-                              style={{ paintOrder: "stroke", stroke: "white", strokeWidth: 2 }}
-                            >
-                              {node.estado} · {node.porte}
-                            </text>
+                            {node.type === "empresa" && (
+                              <text
+                                x={node.x} y={node.y + r + 25}
+                                fontSize={8}
+                                fill="#94a3b8"
+                                textAnchor="middle"
+                                style={{ paintOrder: "stroke", stroke: "white", strokeWidth: 2 }}
+                              >
+                                {node.estado} · {node.porte}
+                              </text>
+                            )}
+                            {node.type !== "empresa" && node.qualificacao && (
+                              <text
+                                x={node.x} y={node.y + r + 24}
+                                fontSize={7}
+                                fill="#92400e"
+                                textAnchor="middle"
+                                style={{ paintOrder: "stroke", stroke: "white", strokeWidth: 2 }}
+                              >
+                                {node.qualificacao.length > 22 ? node.qualificacao.slice(0, 22) + "…" : node.qualificacao}
+                              </text>
+                            )}
                           </>
                         )}
                       </g>
@@ -706,23 +908,41 @@ const GrafoVinculos = () => {
               {/* Tooltip on hover */}
               {hoveredNode && !selectedNode && (() => {
                 const n = nodeMap.get(hoveredNode);
-                const emp = empresas.find((e) => e.id === hoveredNode);
-                if (!n || !emp) return null;
+                if (!n) return null;
+                if (n.type === "empresa") {
+                  const emp = empresas.find((e) => e.id === hoveredNode);
+                  if (!emp) return null;
+                  return (
+                    <div
+                      className="absolute pointer-events-none bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-lg border text-xs z-10"
+                      style={{ left: `${(n.x * zoom + panOffset.x) / 8 + 5}%`, top: `${(n.y * zoom + panOffset.y) / 7}%`, maxWidth: 220 }}
+                    >
+                      <p className="font-bold text-sm flex items-center gap-1.5"><Building2 size={12} />{emp.nome_fantasia}</p>
+                      <p className="text-muted-foreground">{emp.segmentos.join(", ")}</p>
+                      <div className="flex gap-3 mt-1.5">
+                        <span>Score: <strong style={{ color: nodeColor(n) }}>{emp.nota_score}</strong></span>
+                        <span>Vitória: <strong>{emp.taxa_vitoria}%</strong></span>
+                      </div>
+                    </div>
+                  );
+                }
+                // Person/group tooltip
+                const sociosMatch = socios.filter((s) => {
+                  const pid = `p:${s.nome.toLowerCase().replace(/[^a-z0-9]/g, "_").slice(0, 40)}`;
+                  return pid === hoveredNode;
+                });
                 return (
                   <div
                     className="absolute pointer-events-none bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-lg border text-xs z-10"
-                    style={{
-                      left: `${(n.x * zoom + panOffset.x) / 8 + 5}%`,
-                      top: `${(n.y * zoom + panOffset.y) / 7}%`,
-                      maxWidth: 220,
-                    }}
+                    style={{ left: `${(n.x * zoom + panOffset.x) / 8 + 5}%`, top: `${(n.y * zoom + panOffset.y) / 7}%`, maxWidth: 240 }}
                   >
-                    <p className="font-bold text-sm">{emp.nome_fantasia}</p>
-                    <p className="text-muted-foreground">{emp.segmentos.join(", ")}</p>
-                    <div className="flex gap-3 mt-1.5">
-                      <span>Score: <strong style={{ color: nodeColor(emp.nota_score) }}>{emp.nota_score}</strong></span>
-                      <span>Vitória: <strong>{emp.taxa_vitoria}%</strong></span>
-                    </div>
+                    <p className="font-bold text-sm flex items-center gap-1.5">
+                      {n.type === "pessoa" ? <User size={12} /> : <Building2 size={12} />}
+                      {sociosMatch[0]?.nome || n.label}
+                    </p>
+                    {sociosMatch.map((s, i) => (
+                      <p key={i} className="text-muted-foreground mt-0.5">{s.qualificacao} — {s.empresa_nome}</p>
+                    ))}
                   </div>
                 );
               })()}
@@ -730,26 +950,52 @@ const GrafoVinculos = () => {
               {/* Legend */}
               <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-sm text-[0.65rem] space-y-1.5 border">
                 <p className="font-bold text-xs mb-1.5">Legenda</p>
-                {[
-                  { cor: "#10b981", label: "Score 85+" },
-                  { cor: "#3b82f6", label: "Score 70-84" },
-                  { cor: "#f59e0b", label: "Score 50-69" },
-                  { cor: "#ef4444", label: "Score <50" },
-                ].map((l) => (
-                  <div key={l.label} className="flex items-center gap-2">
-                    <div className="w-3.5 h-3.5 rounded-full border-2 bg-white" style={{ borderColor: l.cor }} />
-                    <span>{l.label}</span>
-                  </div>
-                ))}
-                <div className="border-t pt-1.5 mt-1.5">
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 h-[2px] bg-violet-400 rounded" />
-                    <span>Vínculo via projeto</span>
-                  </div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className="w-3.5 h-3.5 rounded-full border border-dashed border-slate-400" />
-                    <span>Tamanho = n° conexões</span>
-                  </div>
+                {camada !== "socios" && (
+                  <>
+                    {[
+                      { cor: "#10b981", label: "Empresa Score 85+" },
+                      { cor: "#3b82f6", label: "Empresa Score 70-84" },
+                      { cor: "#f59e0b", label: "Empresa Score 50-69" },
+                      { cor: "#ef4444", label: "Empresa Score <50" },
+                    ].map((l) => (
+                      <div key={l.label} className="flex items-center gap-2">
+                        <div className="w-3.5 h-3.5 rounded-full border-2 bg-white" style={{ borderColor: l.cor }} />
+                        <span>{l.label}</span>
+                      </div>
+                    ))}
+                  </>
+                )}
+                {camada !== "empresas" && (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3.5 h-3.5 rotate-45 border-2 bg-white" style={{ borderColor: "#f59e0b" }} />
+                      <span>Pessoa Física</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3.5 h-3.5 border-2 bg-white" style={{ borderColor: "#6366f1", clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }} />
+                      <span>Grupo / PJ Acionista</span>
+                    </div>
+                  </>
+                )}
+                <div className="border-t pt-1.5 mt-1.5 space-y-1">
+                  {camada !== "socios" && (
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-[2px] bg-violet-400 rounded" />
+                      <span>Vínculo via projeto</span>
+                    </div>
+                  )}
+                  {camada !== "empresas" && (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-[2px] bg-blue-400 rounded" style={{ borderBottom: "2px dashed #3b82f6" }} />
+                        <span>Vínculo societário</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-[2px] bg-amber-400 rounded" style={{ borderBottom: "2px dotted #f59e0b" }} />
+                        <span>Vínculo pessoal cruzado</span>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -776,7 +1022,7 @@ const GrafoVinculos = () => {
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="p-2.5 bg-muted/50 rounded-lg">
                     <span className="text-muted-foreground block text-[0.6rem]">Score</span>
-                    <p className="font-bold text-lg" style={{ color: nodeColor(selectedEmpresa.nota_score) }}>
+                    <p className="font-bold text-lg" style={{ color: nodeColor({ score: selectedEmpresa.nota_score, type: "empresa" } as GraphNode) }}>
                       {selectedEmpresa.nota_score}
                     </p>
                   </div>
@@ -793,6 +1039,36 @@ const GrafoVinculos = () => {
                     <p className="font-bold text-xs">{selectedEmpresa.volume_total_fmt}</p>
                   </div>
                 </div>
+
+                {/* Sócios da empresa selecionada */}
+                {(() => {
+                  const empSocios = socios.filter((s) => s.empresa_id === selectedEmpresa.id);
+                  if (empSocios.length === 0) return null;
+                  return (
+                    <div>
+                      <p className="text-xs font-semibold mb-2 flex items-center gap-1">
+                        <Users size={12} className="text-blue-500" />
+                        Sócios/Acionistas ({empSocios.length})
+                      </p>
+                      <div className="space-y-1 max-h-28 overflow-y-auto">
+                        {empSocios.map((s, i) => (
+                          <div key={i} className="flex items-center justify-between text-xs p-1.5 rounded-lg bg-blue-50">
+                            <div className="min-w-0">
+                              <span className="font-medium block truncate">{s.nome}</span>
+                              <span className="text-[0.6rem] text-muted-foreground">{s.qualificacao}</span>
+                            </div>
+                            {s.participacao_percentual && (
+                              <span className="text-[0.65rem] font-bold text-blue-600 flex-shrink-0 ml-1">
+                                {s.participacao_percentual}%
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <MapPin size={12} />
                   {selectedEmpresa.cidade_sede}/{selectedEmpresa.estado_sede}
@@ -806,10 +1082,10 @@ const GrafoVinculos = () => {
                   <div>
                     <p className="text-xs font-semibold mb-2 flex items-center gap-1">
                       <Network size={12} className="text-violet-500" />
-                      Empresas Conectadas ({connectedNodes.size})
+                      Empresas Conectadas ({Array.from(connectedNodes).filter((id) => !id.startsWith("p:")).length})
                     </p>
-                    <div className="space-y-1 max-h-32 overflow-y-auto">
-                      {Array.from(connectedNodes).map((id) => {
+                    <div className="space-y-1 max-h-28 overflow-y-auto">
+                      {Array.from(connectedNodes).filter((id) => !id.startsWith("p:")).map((id) => {
                         const emp = empresas.find((e) => e.id === id);
                         if (!emp) return null;
                         return (
@@ -819,36 +1095,70 @@ const GrafoVinculos = () => {
                             onClick={() => setSelectedNode(id)}
                           >
                             <span className="font-medium">{emp.nome_fantasia}</span>
-                            <span className="font-bold" style={{ color: nodeColor(emp.nota_score) }}>{emp.nota_score}</span>
+                            <span className="font-bold" style={{ color: nodeColor({ score: emp.nota_score, type: "empresa" } as GraphNode) }}>{emp.nota_score}</span>
                           </div>
                         );
                       })}
                     </div>
                   </div>
                 )}
-                <Button
-                  size="sm"
-                  className="w-full gap-1.5"
-                  onClick={() => navigate(`/empresas/${selectedEmpresa.id}`)}
-                >
+                <Button size="sm" className="w-full gap-1.5" onClick={() => navigate(`/empresas/${selectedEmpresa.id}`)}>
                   <ArrowRight size={14} /> Ver Dossiê Completo
                 </Button>
+              </CardContent>
+            </Card>
+          ) : selectedPessoa ? (
+            <Card className="border-0 shadow-sm border-l-4 border-l-amber-500 animate-in slide-in-from-right-2 duration-200">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-bold flex items-center gap-2">
+                  <User size={16} className="text-amber-500" />
+                  {selectedPessoa.socios[0]?.nome || selectedPessoa.node.label}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="space-y-2">
+                  {selectedPessoa.socios.map((s, i) => (
+                    <div key={i} className="p-2.5 bg-amber-50 rounded-lg text-xs">
+                      <p className="font-semibold">{s.empresa_nome}</p>
+                      <p className="text-muted-foreground">{s.qualificacao}</p>
+                      {s.participacao_percentual && (
+                        <p className="text-amber-700 font-bold mt-0.5">Participação: {s.participacao_percentual}%</p>
+                      )}
+                      <p className="text-[0.6rem] text-muted-foreground mt-0.5">Desde: {new Date(s.data_entrada).toLocaleDateString("pt-BR")}</p>
+                    </div>
+                  ))}
+                </div>
+                {/* Check if this person appears in vinculosPessoais */}
+                {(() => {
+                  const nome = selectedPessoa.socios[0]?.nome || "";
+                  const vp = vinculosPessoais.find((v) => v.pessoa === nome);
+                  if (!vp) return null;
+                  return (
+                    <div className={`p-2.5 rounded-lg border text-xs ${vp.risco === "alto" ? "bg-red-50 border-red-200" : vp.risco === "medio" ? "bg-amber-50 border-amber-200" : "bg-blue-50 border-blue-200"}`}>
+                      <p className="font-bold flex items-center gap-1">
+                        <AlertTriangle size={12} />
+                        Vínculo Cruzado — Risco {vp.risco}
+                      </p>
+                      <p className="mt-1 leading-relaxed text-muted-foreground">{vp.descricao.slice(0, 200)}{vp.descricao.length > 200 ? "…" : ""}</p>
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
           ) : (
             <Card className="border-0 shadow-sm">
               <CardContent className="p-6 text-center text-muted-foreground">
                 <Network size={36} className="mx-auto mb-3 opacity-20" />
-                <p className="text-sm font-semibold">Selecione uma empresa</p>
+                <p className="text-sm font-semibold">Selecione um nó</p>
                 <p className="text-xs mt-1.5 leading-relaxed">
-                  Clique em um nó do grafo para ver detalhes e conexões.
-                  Arraste para reposicionar.
+                  Clique em uma empresa ou pessoa para ver detalhes e conexões.
+                  Use as abas acima para alternar entre camadas.
                 </p>
               </CardContent>
             </Card>
           )}
 
-          {/* Anomalias de Vínculo */}
+          {/* Anomalias */}
           <Card className="border-0 shadow-sm">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-bold flex items-center gap-2">
@@ -857,7 +1167,7 @@ const GrafoVinculos = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 max-h-[300px] overflow-y-auto">
-              {anomalias.map((a, i) => (
+              {anomalias.slice(0, 15).map((a, i) => (
                 <div
                   key={i}
                   className={`p-2.5 rounded-lg border text-xs transition-all hover:shadow-sm cursor-pointer ${sevColor(a.severidade)}`}
@@ -873,6 +1183,11 @@ const GrafoVinculos = () => {
                   <p className="opacity-80 mt-0.5 leading-relaxed">{a.descricao}</p>
                 </div>
               ))}
+              {anomalias.length > 15 && (
+                <p className="text-center text-[0.65rem] text-muted-foreground py-1">
+                  + {anomalias.length - 15} alertas adicionais
+                </p>
+              )}
             </CardContent>
           </Card>
 
@@ -886,15 +1201,15 @@ const GrafoVinculos = () => {
               <ul className="text-[0.65rem] text-muted-foreground space-y-1 leading-relaxed">
                 <li className="flex items-start gap-1.5">
                   <Shield size={10} className="text-emerald-500 mt-0.5 flex-shrink-0" />
-                  Dados de fontes públicas (PNCP, editais, diários oficiais)
+                  Dados de fontes públicas (PNCP, CVM, Receita Federal QSA)
                 </li>
                 <li className="flex items-start gap-1.5">
                   <Shield size={10} className="text-emerald-500 mt-0.5 flex-shrink-0" />
-                  Apenas dados de PJ — sem dados pessoais sensíveis
+                  Nomes de dirigentes apenas de companhias abertas (Lei 6.404/76)
                 </li>
                 <li className="flex items-start gap-1.5">
                   <Shield size={10} className="text-emerald-500 mt-0.5 flex-shrink-0" />
-                  Base legal: Art. 7°, II da LGPD (obrigação legal/regulatória)
+                  Base legal: Art. 7°, II e IX da LGPD
                 </li>
               </ul>
             </CardContent>
@@ -908,10 +1223,10 @@ const GrafoVinculos = () => {
                 Como funciona
               </p>
               <ul className="text-[0.65rem] text-muted-foreground space-y-1 leading-relaxed">
-                <li>Nós representam empresas — tamanho proporcional às conexões</li>
-                <li>Linhas conectam empresas em projetos compartilhados</li>
-                <li>Layout calculado por simulação de forças (force-directed)</li>
-                <li>Arraste nós para reorganizar · Clique para detalhes</li>
+                <li><strong>Empresas:</strong> Círculos — tamanho proporcional às conexões, cor = score</li>
+                <li><strong>Sócios:</strong> Losangos (PF) e Hexágonos (PJ/Grupo)</li>
+                <li><strong>Linhas:</strong> Violeta = projeto · Azul tracejada = societário · Amarela = vínculo pessoal</li>
+                <li>Arraste nós · Use camadas para alternar visualizações</li>
               </ul>
             </CardContent>
           </Card>
