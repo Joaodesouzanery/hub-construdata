@@ -49,6 +49,7 @@ import { empresas } from "@/data/empresas";
 import { projetos } from "@/data/projetos";
 import { fontesDueDiligence, sancoes } from "@/data/sancoes";
 import { dadosSNIS } from "@/data/snis";
+import { orgaosReguladores } from "@/data/orgaosReguladores";
 
 // ── Indicadores do setor (fonte: SNIS 2023, ANA, IBGE) ──
 const indicadores = [
@@ -715,7 +716,7 @@ const Dashboard = () => {
       {/* Versão da Plataforma */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-[0.6rem] text-muted-foreground/60 pt-2 border-t border-border/50 gap-1">
         <span>ConstruData Hub v4.0 — Inteligência para Engenharia, Saneamento e Infraestrutura</span>
-        <span>{empresas.length} empresas · {projetos.length} projetos · {totalLicitacoes} licitações · {dadosSNIS.length} cidades SNIS · {sancoes.length} sanções · {fontesDueDiligence.length} fontes</span>
+        <span>{empresas.length} empresas · {projetos.length} projetos · {totalLicitacoes} licitações · {dadosSNIS.length} cidades SNIS · {sancoes.length} sanções · {orgaosReguladores.length} órgãos · {fontesDueDiligence.length} fontes</span>
       </div>
     </div>
   );
