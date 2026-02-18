@@ -22,6 +22,8 @@ import GrafoVinculos from "./pages/GrafoVinculos";
 import BuscaInteligente from "./pages/BuscaInteligente";
 import DeteccaoAnomalias from "./pages/DeteccaoAnomalias";
 import EnriquecimentoDados from "./pages/EnriquecimentoDados";
+import ComparativoEstados from "./pages/ComparativoEstados";
+import DashboardSetor from "./pages/DashboardSetor";
 import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
 import NotFound from "./pages/NotFound";
 
@@ -52,6 +54,8 @@ const App = () => (
         <Route path="/busca" element={<BuscaInteligente />} />
         <Route path="/anomalias" element={<DeteccaoAnomalias />} />
         <Route path="/enriquecimento" element={<EnriquecimentoDados />} />
+        <Route path="/comparativo" element={<ComparativoEstados />} />
+        <Route path="/setor" element={<DashboardSetor />} />
         <Route path="/privacidade" element={<PoliticaPrivacidade />} />
         <Route path="*" element={<NotFound />} />
       </Route>

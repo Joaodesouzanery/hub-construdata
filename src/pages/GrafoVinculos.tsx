@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Network, Building2, Users, ZoomIn, ZoomOut, Maximize2,
   AlertTriangle, Eye, EyeOff, Info, MapPin, Play, Pause,
-  Lock, Shield, ArrowRight, User, Layers,
+  Lock, Shield, ArrowRight, User, Layers, Download, Route, X,
 } from "lucide-react";
 import { empresas } from "@/data/empresas";
 import { projetos } from "@/data/projetos";
@@ -374,6 +374,31 @@ function detectAnomalias(): Anomalia[] {
   return anomalias;
 }
 
+// ── BFS shortest path ──
+function findShortestPath(_graphNodes: GraphNode[], edges: GraphEdge[], startId: string, endId: string): string[] | null {
+  const adj: Record<string, { node: string; edge: GraphEdge }[]> = {};
+  edges.forEach((e) => {
+    if (!adj[e.source]) adj[e.source] = [];
+    if (!adj[e.target]) adj[e.target] = [];
+    adj[e.source].push({ node: e.target, edge: e });
+    adj[e.target].push({ node: e.source, edge: e });
+  });
+  const visited = new Set<string>();
+  const queue: { node: string; path: string[] }[] = [{ node: startId, path: [startId] }];
+  visited.add(startId);
+  while (queue.length > 0) {
+    const { node, path } = queue.shift()!;
+    if (node === endId) return path;
+    for (const neighbor of (adj[node] || [])) {
+      if (!visited.has(neighbor.node)) {
+        visited.add(neighbor.node);
+        queue.push({ node: neighbor.node, path: [...path, neighbor.node] });
+      }
+    }
+  }
+  return null;
+}
+
 // ── Colors ──
 function nodeColor(node: GraphNode) {
   if (node.type === "pessoa") return "#f59e0b";
@@ -415,6 +440,9 @@ const GrafoVinculos = () => {
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
   const [camada, setCamada] = useState<CamadaView>("empresas");
+  const [investigationMode, setInvestigationMode] = useState(false);
+  const [invTargets, setInvTargets] = useState<[string | null, string | null]>([null, null]);
+  const [invPath, setInvPath] = useState<string[] | null>(null);
   const panStart = useRef({ x: 0, y: 0 });
   const dragNode = useRef<string | null>(null);
   const dragOffset = useRef({ x: 0, y: 0 });
@@ -480,6 +508,21 @@ const GrafoVinculos = () => {
     });
     return set;
   }, [selectedNode, edges]);
+
+  // Investigation path edge/node sets
+  const invPathEdges = useMemo(() => {
+    if (!invPath || invPath.length < 2) return new Set<string>();
+    const set = new Set<string>();
+    for (let i = 0; i < invPath.length - 1; i++) {
+      set.add([invPath[i], invPath[i + 1]].sort().join("|"));
+    }
+    return set;
+  }, [invPath]);
+
+  const invPathNodes = useMemo(() => {
+    if (!invPath) return new Set<string>();
+    return new Set(invPath);
+  }, [invPath]);
 
   // ── Force-directed animation ──
   useEffect(() => {
@@ -595,6 +638,33 @@ const GrafoVinculos = () => {
     const mx = (src.x + tgt.x) / 2 + dy * 0.08;
     const my = (src.y + tgt.y) / 2 - dx * 0.08;
     return `M ${src.x} ${src.y} Q ${mx} ${my} ${tgt.x} ${tgt.y}`;
+  }, []);
+
+  // ── Export PNG ──
+  const exportPNG = useCallback(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const serializer = new XMLSerializer();
+    const svgStr = serializer.serializeToString(svg);
+    const blob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 1600;
+      canvas.height = 1400;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.fillStyle = "#f8fafc";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const link = document.createElement("a");
+      link.download = `grafo-vinculos-${new Date().toISOString().slice(0, 10)}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
   }, []);
 
   // Node shape renderer
@@ -742,6 +812,26 @@ const GrafoVinculos = () => {
                 <Button variant="ghost" size="sm" onClick={resetView} className="h-8 w-8 p-0" title="Reset view">
                   <Maximize2 size={14} />
                 </Button>
+                {/* Investigation mode */}
+                <Button
+                  variant={investigationMode ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => {
+                    setInvestigationMode(!investigationMode);
+                    setInvTargets([null, null]);
+                    setInvPath(null);
+                    if (investigationMode) setSelectedNode(null);
+                  }}
+                  className={`h-8 px-2 gap-1 text-xs ${investigationMode ? "bg-red-500 hover:bg-red-600 text-white" : ""}`}
+                  title="Modo Investigação"
+                >
+                  <Route size={14} />
+                  {investigationMode ? "Investigação" : ""}
+                </Button>
+                {/* Export PNG */}
+                <Button variant="ghost" size="sm" onClick={exportPNG} className="h-8 w-8 p-0" title="Exportar PNG">
+                  <Download size={14} />
+                </Button>
               </div>
             </div>
           </CardHeader>
@@ -779,10 +869,11 @@ const GrafoVinculos = () => {
                     const src = nodeMap.get(edge.source);
                     const tgt = nodeMap.get(edge.target);
                     if (!src || !tgt) return null;
+                    const isOnInvPath = invPathEdges.has([edge.source, edge.target].sort().join("|"));
                     const isHighlighted = selectedNode && (edge.source === selectedNode || edge.target === selectedNode);
                     const isHovered = hoveredNode && (edge.source === hoveredNode || edge.target === hoveredNode);
                     const isDimmed = (selectedNode || hoveredNode) && !isHighlighted && !isHovered;
-                    const eColor = isHighlighted || isHovered ? edgeColors[edge.tipo] : edgeColorDimmed[edge.tipo];
+                    const eColor = isOnInvPath ? "#ef4444" : isHighlighted || isHovered ? edgeColors[edge.tipo] : edgeColorDimmed[edge.tipo];
 
                     return (
                       <g key={`e-${i}`}>
@@ -790,10 +881,10 @@ const GrafoVinculos = () => {
                           d={edgePath(src, tgt)}
                           fill="none"
                           stroke={eColor}
-                          strokeWidth={Math.min(5, edge.peso * 1.5 + 0.5)}
-                          opacity={isDimmed ? 0.06 : isHighlighted ? 0.85 : isHovered ? 0.7 : 0.25}
+                          strokeWidth={isOnInvPath ? 4 : Math.min(5, edge.peso * 1.5 + 0.5)}
+                          opacity={isOnInvPath ? 0.9 : isDimmed ? 0.06 : isHighlighted ? 0.85 : isHovered ? 0.7 : 0.25}
                           strokeLinecap="round"
-                          strokeDasharray={edge.tipo === "societario" ? "6,3" : edge.tipo === "vinculo_pessoal" ? "3,3" : "none"}
+                          strokeDasharray={isOnInvPath ? "none" : edge.tipo === "societario" ? "6,3" : edge.tipo === "vinculo_pessoal" ? "3,3" : "none"}
                         />
                         {mostrarLabels && (isHighlighted || isHovered) && (
                           <text
@@ -830,7 +921,19 @@ const GrafoVinculos = () => {
                         onClick={(e) => {
                           e.stopPropagation();
                           if (!dragNode.current) {
-                            setSelectedNode(selectedNode === node.id ? null : node.id);
+                            if (investigationMode) {
+                              if (!invTargets[0]) {
+                                setInvTargets([node.id, null]);
+                                setInvPath(null);
+                              } else if (!invTargets[1] && node.id !== invTargets[0]) {
+                                const newTargets: [string, string] = [invTargets[0], node.id];
+                                setInvTargets(newTargets as [string | null, string | null]);
+                                const path = findShortestPath(nodes, edges, newTargets[0], newTargets[1]);
+                                setInvPath(path);
+                              }
+                            } else {
+                              setSelectedNode(selectedNode === node.id ? null : node.id);
+                            }
                           }
                         }}
                         onMouseEnter={() => setHoveredNode(node.id)}
@@ -844,6 +947,13 @@ const GrafoVinculos = () => {
                         {/* Hover ring */}
                         {isHovered && !isSelected && (
                           <circle cx={node.x} cy={node.y} r={r + 5} fill={color} opacity={0.08} />
+                        )}
+                        {/* Investigation path ring */}
+                        {invPathNodes.has(node.id) && (
+                          <>
+                            <circle cx={node.x} cy={node.y} r={r + 8} fill="none" stroke="#ef4444" strokeWidth={3} opacity={0.6} strokeDasharray="4,2" />
+                            <circle cx={node.x} cy={node.y} r={r + 12} fill="#ef4444" opacity={0.08} />
+                          </>
                         )}
                         {/* Node shape */}
                         {renderNode(
@@ -1003,6 +1113,56 @@ const GrafoVinculos = () => {
               <div className="absolute top-3 right-3 text-[0.6rem] text-muted-foreground bg-white/80 backdrop-blur-sm rounded-lg px-2.5 py-1.5 border">
                 Arraste nós · Scroll = zoom · Clique = detalhes
               </div>
+
+              {/* Investigation mode panel */}
+              {investigationMode && (
+                <div className="absolute bg-red-50 border border-red-200 rounded-xl p-3 shadow-lg z-20" style={{ right: 12, maxWidth: 320, top: 12 }}>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-bold text-red-700 flex items-center gap-1.5">
+                      <Route size={14} />
+                      Modo Investigação
+                    </p>
+                    <button
+                      onClick={() => { setInvTargets([null, null]); setInvPath(null); }}
+                      className="text-xs text-red-500 hover:text-red-700"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                  {!invTargets[0] && (
+                    <p className="text-xs text-red-600">Clique na primeira empresa/nó</p>
+                  )}
+                  {invTargets[0] && !invTargets[1] && (
+                    <div>
+                      <p className="text-xs text-red-600 mb-1">
+                        Origem: <strong>{nodeMap.get(invTargets[0])?.label}</strong>
+                      </p>
+                      <p className="text-xs text-red-600">Clique no nó destino</p>
+                    </div>
+                  )}
+                  {invPath && (
+                    <div className="space-y-1">
+                      <p className="text-[0.65rem] font-semibold text-red-700 mb-1.5">
+                        Caminho encontrado ({invPath.length - 1} saltos):
+                      </p>
+                      {invPath.map((nodeId, idx) => {
+                        const n = nodeMap.get(nodeId);
+                        return (
+                          <div key={nodeId} className="flex items-center gap-1.5 text-xs">
+                            {idx > 0 && <ArrowRight size={10} className="text-red-400 flex-shrink-0" />}
+                            <span className={`font-medium ${idx === 0 || idx === invPath.length - 1 ? "text-red-700 font-bold" : "text-red-600"}`}>
+                              {n?.label || nodeId}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {invTargets[0] && invTargets[1] && !invPath && (
+                    <p className="text-xs text-red-600 font-semibold">Nenhum caminho encontrado entre os nós selecionados.</p>
+                  )}
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

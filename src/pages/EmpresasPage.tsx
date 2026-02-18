@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useEmpresas } from "@/hooks/useEmpresas";
 import { projetos } from "@/data/projetos";
+import { BotaoFavorito } from "@/components/FavoritosManager";
 import type { Empresa } from "@/types/database";
 
 const SEGMENTOS = ["Todos", "Saneamento", "Infraestrutura", "Construcao Civil", "Engenharia"];
@@ -81,9 +82,12 @@ const EmpresaCard = ({ empresa }: { empresa: Empresa }) => {
             ))}
           </div>
 
-          <h3 className="text-sm font-bold leading-snug mb-1 group-hover:text-primary transition-colors">
-            {empresa.nome_fantasia}
-          </h3>
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-sm font-bold leading-snug group-hover:text-primary transition-colors">
+              {empresa.nome_fantasia}
+            </h3>
+            <BotaoFavorito tipo="empresa" id={empresa.id} nome={empresa.nome_fantasia} />
+          </div>
           <p className="text-xs text-muted-foreground mb-2">{empresa.razao_social}</p>
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">

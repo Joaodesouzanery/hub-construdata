@@ -16,6 +16,7 @@ import { empresas } from "@/data/empresas";
 import { projetos } from "@/data/projetos";
 import { calcularRiskScore } from "@/lib/riskScore";
 import { consultarSancoes, fontesDueDiligence } from "@/data/sancoes";
+import { BotaoFavorito } from "@/components/FavoritosManager";
 import type { Projeto } from "@/types/database";
 
 function scoreColor(score: number): string {
@@ -302,8 +303,11 @@ const DossieEmpresa = () => {
             <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center">
               <Building2 size={28} className="text-primary" />
             </div>
-            <div>
-              <h1 className="text-xl font-bold">{empresa.nome_fantasia}</h1>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl font-bold">{empresa.nome_fantasia}</h1>
+                <BotaoFavorito tipo="empresa" id={empresa.id} nome={empresa.nome_fantasia} />
+              </div>
               <p className="text-sm text-muted-foreground">{empresa.razao_social}</p>
             </div>
           </div>

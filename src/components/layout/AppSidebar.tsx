@@ -17,8 +17,13 @@ import {
   Network,
   Search,
   AlertTriangle,
+  GitCompare,
+  Layers,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 
 /**
  * Sidebar reorganizado em 4 seções lógicas:
@@ -65,6 +70,8 @@ const navGroups: NavGroup[] = [
       { to: "/noticias", icon: Newspaper, label: "Notícias" },
       { to: "/insights-ia", icon: Brain, label: "Insights IA", badge: "IA" },
       { to: "/indicadores", icon: BarChart3, label: "Indicadores" },
+      { to: "/comparativo", icon: GitCompare, label: "Comparativo UFs" },
+      { to: "/setor", icon: Layers, label: "Dashboard Setor" },
       { to: "/relatorios", icon: Download, label: "Relatórios" },
     ],
   },
@@ -84,6 +91,7 @@ interface AppSidebarProps {
 const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
   const location = useLocation();
   const { isAuthenticated, user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <aside
@@ -186,8 +194,19 @@ const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
         )}
       </NavLink>
 
-      {/* Collapse Toggle + Version */}
+      {/* Dark mode + Collapse Toggle + Version */}
       <div className="border-t border-white/10">
+        {/* Dark mode toggle */}
+        <button
+          onClick={toggleTheme}
+          className={`flex items-center gap-3 w-full px-3 py-2 mx-auto text-white/50 hover:text-white hover:bg-white/10 transition-colors ${collapsed ? "justify-center" : "px-5"}`}
+          title={theme === "dark" ? "Modo claro" : "Modo escuro"}
+        >
+          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+          {!collapsed && (
+            <span className="text-xs">{theme === "dark" ? "Modo Claro" : "Modo Escuro"}</span>
+          )}
+        </button>
         {!collapsed && (
           <div className="px-4 py-1.5 text-[0.5rem] text-white/20 text-center">
             v4.0 · Inteligência para Engenharia

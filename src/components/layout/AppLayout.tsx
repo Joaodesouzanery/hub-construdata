@@ -1,14 +1,59 @@
-import { useState } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { useState, useMemo } from "react";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import AppSidebar from "./AppSidebar";
 import GlobalSearch from "../GlobalSearch";
+import Breadcrumbs from "../Breadcrumbs";
+import type { BreadcrumbItem } from "../Breadcrumbs";
 import { Menu, Sun, Moon, Shield } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
+
+const routeLabels: Record<string, string> = {
+  "/": "Dashboard",
+  "/dashboard": "Dashboard",
+  "/noticias": "Notícias",
+  "/licitacoes": "Licitações",
+  "/mapa": "Mapa do Brasil",
+  "/alertas": "Alertas",
+  "/indicadores": "Indicadores",
+  "/legislacao": "Legislação",
+  "/ferramentas": "Ferramentas",
+  "/eventos": "Eventos",
+  "/contato": "Contato",
+  "/perfil": "Perfil",
+  "/analitico": "Analítico",
+  "/insights-ia": "Insights IA",
+  "/relatorios": "Relatórios",
+  "/empresas": "Dossiês",
+  "/vinculos": "Grafo Vínculos",
+  "/busca": "Busca IA",
+  "/anomalias": "Anomalias",
+  "/enriquecimento": "Enriquecimento",
+  "/comparativo": "Comparativo UFs",
+  "/setor": "Dashboard Setor",
+  "/privacidade": "Privacidade",
+};
 
 const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const location = useLocation();
+
+  const breadcrumbs = useMemo<BreadcrumbItem[]>(() => {
+    const path = location.pathname;
+    if (path === "/" || path === "/dashboard") return [{ label: "Dashboard" }];
+    const parts = path.split("/").filter(Boolean);
+    const items: BreadcrumbItem[] = [{ label: "Dashboard", href: "/" }];
+    let currentPath = "";
+    for (const part of parts) {
+      currentPath += `/${part}`;
+      const label = routeLabels[currentPath] || decodeURIComponent(part);
+      items.push(
+        currentPath === path ? { label } : { label, href: currentPath }
+      );
+    }
+    return items;
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
@@ -88,6 +133,13 @@ const AppLayout = () => {
         <div className="sm:hidden px-4 py-2 border-b border-border bg-background transition-colors">
           <GlobalSearch />
         </div>
+
+        {/* Breadcrumbs */}
+        {breadcrumbs.length > 1 && (
+          <div className="px-4 lg:px-6 pt-3">
+            <Breadcrumbs items={breadcrumbs} />
+          </div>
+        )}
 
         {/* Page Content */}
         <main className="animate-fade-in">
