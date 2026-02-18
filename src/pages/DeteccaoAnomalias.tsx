@@ -39,8 +39,8 @@ function detectarAnomalias(): Anomalia[] {
     if (anos <= 5 && emp.volume_total_contratos > mediaVol) {
       anomalias.push({
         id: `fin-${emp.id}`,
-        titulo: `Volume desproporcional: ${emp.nome_fantasia}`,
-        descricao: `Empresa com apenas ${anos} anos possui volume de contratos acima da média do setor (${emp.volume_total_fmt}). Padrão requer investigação.`,
+        titulo: `Volume acima da média: ${emp.nome_fantasia}`,
+        descricao: `Empresa com ${anos} ano(s) de atividade e volume de contratos de ${emp.volume_total_fmt}, acima da média do setor. Dado estatístico para análise do usuário.`,
         categoria: "financeiro",
         severidade: emp.volume_total_contratos > mediaVol * 2 ? "critica" : "alta",
         empresas: [emp.id],
@@ -50,7 +50,7 @@ function detectarAnomalias(): Anomalia[] {
           "Média setor": `R$ ${(mediaVol / 1e9).toFixed(2)}B`,
           Desvio: `${((emp.volume_total_contratos - mediaVol) / stdVol).toFixed(1)}σ`,
         },
-        recomendacao: "Verificar origem dos contratos, quadro societário e possíveis ligações com empresas estabelecidas.",
+        recomendacao: "Consultar histórico de contratos e composição societária para contextualizar o volume observado.",
       });
     }
   });
@@ -64,8 +64,8 @@ function detectarAnomalias(): Anomalia[] {
     if (emp.taxa_vitoria > mediaTaxa + 2 * stdTaxa && emp.licitacoes_participadas >= 20) {
       anomalias.push({
         id: `taxa-${emp.id}`,
-        titulo: `Taxa de vitória atípica: ${emp.nome_fantasia}`,
-        descricao: `Taxa de ${emp.taxa_vitoria}% está ${((emp.taxa_vitoria - mediaTaxa) / stdTaxa).toFixed(1)} desvios-padrão acima da média (${mediaTaxa.toFixed(1)}%). Possível padrão de direcionamento.`,
+        titulo: `Taxa de vitória acima do padrão: ${emp.nome_fantasia}`,
+        descricao: `Taxa de ${emp.taxa_vitoria}% está ${((emp.taxa_vitoria - mediaTaxa) / stdTaxa).toFixed(1)} desvios-padrão acima da média do setor (${mediaTaxa.toFixed(1)}%). Pode refletir especialização técnica ou outros fatores.`,
         categoria: "operacional",
         severidade: "alta",
         empresas: [emp.id],
@@ -75,7 +75,7 @@ function detectarAnomalias(): Anomalia[] {
           Participações: `${emp.licitacoes_participadas}`,
           Vitórias: `${emp.licitacoes_vencidas}`,
         },
-        recomendacao: "Analisar editais vencidos para identificar possíveis cláusulas direcionadoras ou restrições técnicas.",
+        recomendacao: "Analisar os editais correspondentes para entender os critérios de seleção e o contexto competitivo.",
       });
     }
   });
@@ -89,8 +89,8 @@ function detectarAnomalias(): Anomalia[] {
     if (projsEmp.length >= 3 && estados.size <= 1) {
       anomalias.push({
         id: `geo-${emp.id}`,
-        titulo: `Concentração geográfica: ${emp.nome_fantasia}`,
-        descricao: `Todos os ${projsEmp.length} projetos da empresa estão em ${estados.values().next().value || emp.estado_sede}. Alta dependência regional.`,
+        titulo: `Atuação concentrada em uma UF: ${emp.nome_fantasia}`,
+        descricao: `Os ${projsEmp.length} projetos registrados da empresa estão em ${estados.values().next().value || emp.estado_sede}. Padrão comum em prestadores regionais de saneamento.`,
         categoria: "concentracao",
         severidade: "media",
         empresas: [emp.id],
@@ -99,7 +99,7 @@ function detectarAnomalias(): Anomalia[] {
           Estados: `${estados.size}`,
           Região: estados.values().next().value || emp.estado_sede,
         },
-        recomendacao: "Monitorar diversificação geográfica para reduzir risco de dependência de um único mercado.",
+        recomendacao: "Considerar o contexto de atuação regional ao avaliar a diversificação da empresa.",
       });
     }
   });
@@ -127,17 +127,17 @@ function detectarAnomalias(): Anomalia[] {
       if (emp1 && emp2) {
         anomalias.push({
           id: `vinc-${id1}-${id2}`,
-          titulo: `Vínculo recorrente: ${emp1.nome_fantasia} + ${emp2.nome_fantasia}`,
-          descricao: `Estas empresas participaram juntas em ${count} projetos. Padrão pode indicar relação societária não declarada ou cartel.`,
+          titulo: `Participação conjunta frequente: ${emp1.nome_fantasia} + ${emp2.nome_fantasia}`,
+          descricao: `Estas empresas atuaram juntas em ${count} projeto(s). Consórcios e parcerias são comuns no setor de saneamento e engenharia.`,
           categoria: "vinculo",
-          severidade: count >= 3 ? "critica" : "alta",
+          severidade: count >= 3 ? "alta" : "media",
           empresas: [id1, id2],
           indicadores: {
             "Projetos conjuntos": `${count}`,
             Empresa1: emp1.nome_fantasia,
             Empresa2: emp2.nome_fantasia,
           },
-          recomendacao: "Investigar quadro societário cruzado, endereço fiscal comum e padrão de lances em licitações.",
+          recomendacao: "Verificar se há vínculo societário entre as partes e analisar a complementaridade técnica do consórcio.",
         });
       }
     }
@@ -157,8 +157,8 @@ function detectarAnomalias(): Anomalia[] {
         const emp = empresas.find((e) => e.id === proj.empresa_responsavel_id);
         anomalias.push({
           id: `exec-${proj.id}`,
-          titulo: `Execução crítica: ${proj.titulo.slice(0, 60)}`,
-          descricao: `Projeto com ${percentTempo.toFixed(0)}% do prazo decorrido mas apenas ${proj.percentual_execucao}% de execução. Risco de atraso severo.`,
+          titulo: `Execução abaixo do cronograma: ${proj.titulo.slice(0, 60)}`,
+          descricao: `Projeto com ${percentTempo.toFixed(0)}% do prazo decorrido e ${proj.percentual_execucao}% de execução física registrada. Diferença significativa entre prazo e avanço.`,
           categoria: "temporal",
           severidade: "critica",
           empresas: emp ? [emp.id] : [],
@@ -168,7 +168,7 @@ function detectarAnomalias(): Anomalia[] {
             Valor: proj.valor_contrato_fmt,
             Empresa: proj.empresa_responsavel_nome,
           },
-          recomendacao: "Solicitar relatório de progresso atualizado e avaliar necessidade de intervenção contratual.",
+          recomendacao: "Consultar relatório de progresso mais recente para verificar se houve atualização do cronograma ou aditivo contratual.",
         });
       }
     }
@@ -180,15 +180,15 @@ function detectarAnomalias(): Anomalia[] {
     if (risk.classificacao === "critico" || (risk.scoreGeral < 40 && projetos.some((p) => p.empresa_responsavel_id === emp.id && p.status === "Em Andamento"))) {
       anomalias.push({
         id: `risk-${emp.id}`,
-        titulo: `Risco crítico com contratos ativos: ${emp.nome_fantasia}`,
-        descricao: `Score de risco ${risk.scoreGeral}/100 (${risk.classificacao}). Empresa possui contratos em andamento. ${risk.redFlags.length} alertas de risco identificados.`,
+        titulo: `Score baixo com contratos ativos: ${emp.nome_fantasia}`,
+        descricao: `Score calculado: ${risk.scoreGeral}/100 (${risk.classificacao}). A empresa possui contratos em andamento e ${risk.redFlags.length} ponto(s) de atenção nos indicadores analisados.`,
         categoria: "operacional",
         severidade: "critica",
         empresas: [emp.id],
         indicadores: {
-          "Score risco": `${risk.scoreGeral}`,
+          "Score": `${risk.scoreGeral}`,
           Classificação: risk.classificacao,
-          "Red Flags": `${risk.redFlags.length}`,
+          "Pontos de atenção": `${risk.redFlags.length}`,
           Contratos: `${projetos.filter((p) => p.empresa_responsavel_id === emp.id && p.status === "Em Andamento").length} ativos`,
         },
         recomendacao: risk.resumo,
@@ -250,10 +250,10 @@ const DeteccaoAnomalias = () => {
         <div>
           <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight flex items-center gap-3">
             <AlertTriangle size={28} className="text-red-500" />
-            Detecção de Anomalias
+            Análise de Padrões
           </h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Monitoramento inteligente de padrões atípicos — análise estatística e cruzamento de dados
+            Identificação de padrões estatísticos atípicos — os dados são apresentados para interpretação do analista
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -265,10 +265,10 @@ const DeteccaoAnomalias = () => {
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { label: "Anomalias Detectadas", valor: stats.total, icon: AlertTriangle, cor: "text-red-500", bg: "bg-red-500/10" },
-          { label: "Severidade Crítica", valor: stats.criticas, icon: Activity, cor: "text-red-600", bg: "bg-red-600/10" },
-          { label: "Severidade Alta", valor: stats.altas, icon: TrendingUp, cor: "text-orange-500", bg: "bg-orange-500/10" },
-          { label: "Empresas Afetadas", valor: stats.empresasAfetadas, icon: Building2, cor: "text-blue-500", bg: "bg-blue-500/10" },
+          { label: "Padrões Identificados", valor: stats.total, icon: AlertTriangle, cor: "text-amber-500", bg: "bg-amber-500/10" },
+          { label: "Atenção Elevada", valor: stats.criticas, icon: Activity, cor: "text-red-500", bg: "bg-red-500/10" },
+          { label: "Atenção Moderada", valor: stats.altas, icon: TrendingUp, cor: "text-orange-500", bg: "bg-orange-500/10" },
+          { label: "Empresas Envolvidas", valor: stats.empresasAfetadas, icon: Building2, cor: "text-blue-500", bg: "bg-blue-500/10" },
         ].map((s) => (
           <Card key={s.label} className="border-0 shadow-sm hover:shadow-md transition-shadow duration-200">
             <CardContent className="p-3 flex items-center gap-3">
@@ -476,7 +476,7 @@ const DeteccaoAnomalias = () => {
               </li>
               <li className="flex items-start gap-2">
                 <Shield size={12} className="text-emerald-500 mt-0.5 flex-shrink-0" />
-                <span>Anomalias são indicativos para análise humana — não constituem prova de irregularidade</span>
+                <span><strong>Importante:</strong> Os padrões identificados são indicativos estatísticos para análise do usuário. Não constituem evidência, acusação ou prova de irregularidade de qualquer natureza</span>
               </li>
             </ul>
           </CardContent>

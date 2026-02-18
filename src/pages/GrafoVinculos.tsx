@@ -724,7 +724,7 @@ const GrafoVinculos = () => {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-5">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5">
             {/* SVG Graph */}
             <Card className="border-0 shadow-sm overflow-hidden">
               <CardHeader className="pb-2">
@@ -760,7 +760,7 @@ const GrafoVinculos = () => {
               <CardContent className="p-0">
                 <div
                   className="relative bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden"
-                  style={{ height: 560, cursor: dragNode.current ? "grabbing" : isPanning ? "grabbing" : "grab" }}
+                  style={{ height: "min(560px, 65vh)", cursor: dragNode.current ? "grabbing" : isPanning ? "grabbing" : "grab" }}
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}
                   onMouseUp={handleMouseUp}
