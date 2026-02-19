@@ -4,6 +4,7 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "./components/layout/AppLayout";
 
 // ── Lazy-loaded pages (code-splitting) ──
+const LandingPage = lazy(() => import("./pages/LandingPage"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Noticias = lazy(() => import("./pages/Noticias"));
 const LicitacoesPage = lazy(() => import("./pages/LicitacoesPage"));
@@ -40,8 +41,11 @@ const App = () => (
   <HashRouter>
     <Toaster />
     <Routes>
+      {/* Landing Page — sem sidebar, layout próprio */}
+      <Route path="/" element={<Suspense fallback={<PageLoader />}><LandingPage /></Suspense>} />
+
+      {/* App principal — com sidebar e layout padrão */}
       <Route element={<AppLayout />}>
-        <Route path="/" element={<Suspense fallback={<PageLoader />}><Dashboard /></Suspense>} />
         <Route path="/dashboard" element={<Suspense fallback={<PageLoader />}><Dashboard /></Suspense>} />
         <Route path="/noticias" element={<Suspense fallback={<PageLoader />}><Noticias /></Suspense>} />
         <Route path="/licitacoes" element={<Suspense fallback={<PageLoader />}><LicitacoesPage /></Suspense>} />
