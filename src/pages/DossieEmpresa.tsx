@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,12 +10,13 @@ import {
   Building2, MapPin, Phone, Mail, Globe, Trophy, TrendingUp,
   ArrowLeft, Briefcase, Target, CheckCircle2, Clock, AlertTriangle,
   FileText, Users, BarChart3, Calendar, DollarSign, ExternalLink,
-  Shield, ShieldAlert, Activity, Network,
+  Shield, ShieldAlert, Activity, Network, Loader2, Search,
 } from "lucide-react";
 import { empresas } from "@/data/empresas";
 import { projetos } from "@/data/projetos";
 import { calcularRiskScore } from "@/lib/riskScore";
 import { consultarSancoes, fontesDueDiligence } from "@/data/sancoes";
+import { consultarCNPJ, type DadosReceitaCNPJ } from "@/services/apiGov";
 import { BotaoFavorito } from "@/components/FavoritosManager";
 import type { Projeto } from "@/types/database";
 
@@ -266,6 +267,30 @@ const DossieEmpresa = () => {
     }));
   }, [riskAnalysis]);
 
+  // ── Receita Federal (CNPJ) ──
+  const [dadosReceita, setDadosReceita] = useState<DadosReceitaCNPJ | null>(null);
+  const [buscandoReceita, setBuscandoReceita] = useState(false);
+  const [erroReceita, setErroReceita] = useState<string | null>(null);
+  const [receitaConsultada, setReceitaConsultada] = useState(false);
+
+  const consultarReceitaFederal = useCallback(async () => {
+    if (!empresa || buscandoReceita) return;
+    setBuscandoReceita(true);
+    setErroReceita(null);
+    try {
+      const dados = await consultarCNPJ(empresa.cnpj);
+      setDadosReceita(dados);
+      setReceitaConsultada(true);
+      if (!dados) {
+        setErroReceita("Configure VITE_RECEITA_PROXY_URL no .env para habilitar consultas à Receita Federal.");
+      }
+    } catch (e) {
+      setErroReceita(e instanceof Error ? e.message : "Erro ao consultar Receita Federal");
+    } finally {
+      setBuscandoReceita(false);
+    }
+  }, [empresa, buscandoReceita]);
+
   // ── Timeline ──
   const timeline = useMemo(() => buildTimeline(projetosEmpresa), [projetosEmpresa]);
 
@@ -485,6 +510,125 @@ const DossieEmpresa = () => {
           Dados públicos consultados em bases oficiais do governo federal. Última verificação: {new Date().toLocaleDateString("pt-BR")}.
           Conforme LGPD Art. 7°, II — tratamento para cumprimento de obrigação legal.
         </p>
+      </Card>
+
+      {/* ════════════════════════════════════════════════════════════════
+          Consulta Receita Federal (CNPJ)
+         ════════════════════════════════════════════════════════════════ */}
+      <Card className="p-5 mb-6 border-0 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-bold flex items-center gap-2">
+            <Search size={16} className="text-blue-600" />
+            Receita Federal — Dados Cadastrais
+          </h3>
+          {!receitaConsultada && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={consultarReceitaFederal}
+              disabled={buscandoReceita}
+              className="flex items-center gap-1.5"
+            >
+              {buscandoReceita ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Search size={14} />
+              )}
+              Consultar CNPJ
+            </Button>
+          )}
+        </div>
+
+        {!receitaConsultada && !buscandoReceita && (
+          <div className="text-center py-4 text-muted-foreground">
+            <Search size={24} className="mx-auto mb-2 opacity-30" />
+            <p className="text-xs">Clique em "Consultar CNPJ" para buscar dados na Receita Federal</p>
+            <p className="text-[0.6rem] mt-1 text-muted-foreground/60">
+              CNPJ: {empresa.cnpj}
+            </p>
+          </div>
+        )}
+
+        {buscandoReceita && (
+          <div className="flex items-center justify-center py-6 text-muted-foreground">
+            <Loader2 className="animate-spin mr-2" size={16} />
+            <span className="text-xs">Consultando Receita Federal...</span>
+          </div>
+        )}
+
+        {erroReceita && (
+          <div className="p-3 bg-amber-50 rounded-lg border border-amber-200 text-xs text-amber-700 mb-3">
+            <p className="font-semibold mb-1">Consulta indisponível</p>
+            <p>{erroReceita}</p>
+            <p className="mt-2 text-[0.6rem] text-amber-600">
+              Para habilitar: adicione <code className="bg-amber-100 px-1 rounded">VITE_RECEITA_PROXY_URL=https://seu-proxy.com/cnpj</code> no arquivo .env
+            </p>
+            <p className="mt-1 text-[0.6rem] text-amber-600">
+              APIs compatíveis: receitaws.com.br, cnpj.ws, brasilapi.com.br/api/cnpj/v1
+            </p>
+          </div>
+        )}
+
+        {dadosReceita && (
+          <div className="space-y-4">
+            {/* Dados básicos */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <p className="text-[0.6rem] font-semibold text-muted-foreground uppercase">Razão Social</p>
+                <p className="text-xs font-semibold">{dadosReceita.razao_social}</p>
+              </div>
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <p className="text-[0.6rem] font-semibold text-muted-foreground uppercase">Nome Fantasia</p>
+                <p className="text-xs font-semibold">{dadosReceita.nome_fantasia || "—"}</p>
+              </div>
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <p className="text-[0.6rem] font-semibold text-muted-foreground uppercase">Situação Cadastral</p>
+                <p className={`text-xs font-bold ${
+                  dadosReceita.situacao_cadastral?.toLowerCase().includes("ativa")
+                    ? "text-emerald-600" : "text-red-600"
+                }`}>
+                  {dadosReceita.situacao_cadastral}
+                </p>
+              </div>
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <p className="text-[0.6rem] font-semibold text-muted-foreground uppercase">Natureza Jurídica</p>
+                <p className="text-xs font-semibold">{dadosReceita.natureza_juridica}</p>
+              </div>
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <p className="text-[0.6rem] font-semibold text-muted-foreground uppercase">Porte</p>
+                <p className="text-xs font-semibold">{dadosReceita.porte}</p>
+              </div>
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <p className="text-[0.6rem] font-semibold text-muted-foreground uppercase">Capital Social</p>
+                <p className="text-xs font-bold text-primary">
+                  R$ {dadosReceita.capital_social?.toLocaleString("pt-BR")}
+                </p>
+              </div>
+            </div>
+
+            {/* QSA — Sócios */}
+            {dadosReceita.qsa && dadosReceita.qsa.length > 0 && (
+              <div>
+                <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-2 flex items-center gap-1">
+                  <Users size={12} />
+                  Quadro Societário — QSA ({dadosReceita.qsa.length} sócio{dadosReceita.qsa.length > 1 ? "s" : ""})
+                </h4>
+                <div className="space-y-1">
+                  {dadosReceita.qsa.map((socio, i) => (
+                    <div key={i} className="flex items-center justify-between p-2 bg-gray-50 rounded text-xs">
+                      <span className="font-semibold">{socio.nome}</span>
+                      <span className="text-muted-foreground">{socio.qualificacao}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <p className="text-[0.6rem] text-muted-foreground">
+              Dados públicos da Receita Federal do Brasil. LGPD Art. 7°, II — dados de Pessoa Jurídica.
+            </p>
+          </div>
+        )}
       </Card>
 
       {/* ════════════════════════════════════════════════════════════════

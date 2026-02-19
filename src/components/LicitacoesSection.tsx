@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,8 +13,13 @@ import {
   DollarSign,
   X,
   SlidersHorizontal,
+  Wifi,
+  Database,
+  Globe,
+  AlertCircle,
 } from "lucide-react";
 import { useLicitacoes } from "@/hooks/useLicitacoes";
+import { usePNCP } from "@/hooks/usePNCP";
 import { urlSegura } from "@/lib/utils";
 import type { Licitacao } from "@/types/database";
 
@@ -48,7 +53,13 @@ const REGIOES: Record<string, string[]> = {
   Sul: ["PR", "RS", "SC"],
 };
 
+const TERMOS_RAPIDOS = [
+  "saneamento", "ETA tratamento água", "ETE esgoto", "adutora",
+  "rede de esgoto", "drenagem", "barragem", "reservatório",
+];
+
 type Ordenacao = "recente" | "valor_desc" | "valor_asc";
+type AbaAtiva = "local" | "pncp";
 
 const modalidadeStyles: Record<string, string> = {
   "Concorrência": "bg-blue-100 text-blue-800",
@@ -70,7 +81,7 @@ function formatarDataBR(dataStr: string): string {
   return `${dia}/${mes}/${ano}`;
 }
 
-const LicitacaoCard = ({ lic }: { lic: Licitacao }) => (
+const LicitacaoCard = ({ lic, isPNCP }: { lic: Licitacao; isPNCP?: boolean }) => (
   <a
     href={urlSegura(lic.link)}
     target="_blank"
@@ -91,9 +102,15 @@ const LicitacaoCard = ({ lic }: { lic: Licitacao }) => (
             }`}>
               {lic.categoria}
             </span>
+            {isPNCP && (
+              <span className="text-[0.6rem] font-semibold uppercase px-2 py-0.5 rounded-full bg-green-100 text-green-800 flex items-center gap-1">
+                <Wifi size={8} />
+                PNCP
+              </span>
+            )}
           </div>
 
-          <h3 className="text-sm font-semibold leading-snug mb-2 group-hover:text-primary transition-colors">
+          <h3 className="text-sm font-semibold leading-snug mb-2 group-hover:text-primary transition-colors line-clamp-2">
             {lic.titulo}
           </h3>
 
@@ -129,13 +146,23 @@ const LicitacaoCard = ({ lic }: { lic: Licitacao }) => (
 
 const LicitacoesSection = () => {
   const { dados: licitacoes, carregando } = useLicitacoes();
+  const pncp = usePNCP();
+
+  const [abaAtiva, setAbaAtiva] = useState<AbaAtiva>("local");
   const [busca, setBusca] = useState("");
+  const [buscaPNCP, setBuscaPNCP] = useState("");
+  const [ufPNCP, setUfPNCP] = useState("Todos");
   const [estadoFiltro, setEstadoFiltro] = useState("Todos");
   const [categoriaFiltro, setCategoriaFiltro] = useState("Todas");
   const [regiaoFiltro, setRegiaoFiltro] = useState("Todas");
   const [faixaValor, setFaixaValor] = useState(0);
   const [ordenacao, setOrdenacao] = useState<Ordenacao>("recente");
   const [mostrarFiltros, setMostrarFiltros] = useState(true);
+
+  const handleBuscarPNCP = useCallback(() => {
+    if (!buscaPNCP.trim()) return;
+    pncp.buscar(buscaPNCP, ufPNCP === "Todos" ? undefined : ufPNCP);
+  }, [buscaPNCP, ufPNCP, pncp]);
 
   const filtrosAtivos = useMemo(() => {
     let count = 0;
@@ -183,13 +210,14 @@ const LicitacoesSection = () => {
   }, [licitacoes, busca, estadoFiltro, categoriaFiltro, faixaValor, regiaoFiltro, ordenacao]);
 
   const valorTotalFiltrado = useMemo(() => {
-    const soma = resultados.reduce((acc, l) => acc + (l.valor_estimado || 0), 0);
+    const lista = abaAtiva === "local" ? resultados : pncp.resultados;
+    const soma = lista.reduce((acc, l) => acc + (l.valor_estimado || 0), 0);
     if (soma >= 1e9) return `R$ ${(soma / 1e9).toFixed(1)}B`;
     if (soma >= 1e6) return `R$ ${(soma / 1e6).toFixed(0)}M`;
     return `R$ ${soma.toLocaleString("pt-BR")}`;
-  }, [resultados]);
+  }, [abaAtiva, resultados, pncp.resultados]);
 
-  if (carregando) {
+  if (carregando && abaAtiva === "local") {
     return (
       <div className="flex items-center justify-center py-20 text-muted-foreground">
         <Loader2 className="animate-spin mr-2" size={20} />
@@ -198,114 +226,218 @@ const LicitacoesSection = () => {
     );
   }
 
+  const listaAtual = abaAtiva === "local" ? resultados : pncp.resultados;
+
   return (
     <div>
-      {/* Search + Filter Bar */}
-      <Card className="p-4 mb-5 border-0 shadow-sm">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-            <Input
-              type="text"
-              placeholder="Buscar por palavra-chave, órgão, estado..."
-              value={busca}
-              onChange={(e) => setBusca(e.target.value)}
-              className="pl-9 text-sm"
-            />
+      {/* Tabs: Local vs PNCP */}
+      <div className="flex gap-2 mb-4">
+        <Button
+          variant={abaAtiva === "local" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setAbaAtiva("local")}
+          className="flex items-center gap-1.5"
+        >
+          <Database size={14} />
+          Base Local
+          <span className="ml-1 text-[0.6rem] opacity-70">({licitacoes.length})</span>
+        </Button>
+        <Button
+          variant={abaAtiva === "pncp" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setAbaAtiva("pncp")}
+          className="flex items-center gap-1.5"
+        >
+          <Globe size={14} />
+          PNCP Tempo Real
+          {pncp.resultados.length > 0 && (
+            <span className="ml-1 text-[0.6rem] opacity-70">({pncp.totalRegistros})</span>
+          )}
+        </Button>
+      </div>
+
+      {/* PNCP Search Bar */}
+      {abaAtiva === "pncp" && (
+        <Card className="p-4 mb-5 border-0 shadow-sm border-l-4 border-l-green-500">
+          <div className="flex items-center gap-2 mb-3">
+            <Wifi size={14} className="text-green-500" />
+            <span className="text-xs font-semibold text-green-700">
+              Busca em tempo real no Portal Nacional de Contratações Públicas
+            </span>
           </div>
-          <div className="flex gap-2">
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+              <Input
+                type="text"
+                placeholder="Ex: saneamento, ETA, esgoto, adutora..."
+                value={buscaPNCP}
+                onChange={(e) => setBuscaPNCP(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleBuscarPNCP()}
+                className="pl-9 text-sm"
+              />
+            </div>
+            <select
+              value={ufPNCP}
+              onChange={(e) => setUfPNCP(e.target.value)}
+              className="h-9 px-3 rounded-md border border-input bg-background text-sm w-full sm:w-28"
+            >
+              {ESTADOS.map((uf) => (
+                <option key={uf} value={uf}>{uf === "Todos" ? "Todos UFs" : uf}</option>
+              ))}
+            </select>
             <Button
-              variant={mostrarFiltros ? "default" : "outline"}
               size="sm"
-              onClick={() => setMostrarFiltros(!mostrarFiltros)}
+              onClick={handleBuscarPNCP}
+              disabled={pncp.buscando || !buscaPNCP.trim()}
               className="flex items-center gap-1.5"
             >
-              <SlidersHorizontal size={14} />
-              Filtros
-              {filtrosAtivos > 0 && (
-                <span className="ml-1 w-5 h-5 rounded-full bg-white/20 text-[0.6rem] font-bold flex items-center justify-center">
-                  {filtrosAtivos}
-                </span>
-              )}
+              {pncp.buscando ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
+              Buscar PNCP
             </Button>
-            {filtrosAtivos > 0 && (
-              <Button variant="ghost" size="sm" onClick={limparFiltros} className="text-xs">
-                <X size={14} className="mr-1" />
-                Limpar
-              </Button>
-            )}
           </div>
-        </div>
 
-        {/* Smart Filters */}
-        {mostrarFiltros && (
-          <div className="mt-4 pt-4 border-t border-border grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <div>
-              <label className="text-[0.65rem] font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">
-                Região
-              </label>
-              <select
-                value={regiaoFiltro}
-                onChange={(e) => { setRegiaoFiltro(e.target.value); setEstadoFiltro("Todos"); }}
-                className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm"
+          {/* Quick search chips */}
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            <span className="text-[0.6rem] text-muted-foreground mr-1 self-center">Busca rápida:</span>
+            {TERMOS_RAPIDOS.map((t) => (
+              <button
+                key={t}
+                onClick={() => { setBuscaPNCP(t); pncp.buscar(t, ufPNCP === "Todos" ? undefined : ufPNCP); }}
+                className="text-[0.6rem] px-2 py-0.5 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer"
               >
-                <option value="Todas">Todas as regiões</option>
-                {Object.keys(REGIOES).map((r) => (
-                  <option key={r} value={r}>{r}</option>
-                ))}
-              </select>
+                {t}
+              </button>
+            ))}
+          </div>
+
+          {pncp.erro && (
+            <div className="flex items-center gap-2 mt-3 text-xs text-amber-600 bg-amber-50 p-2 rounded">
+              <AlertCircle size={14} />
+              <span>API PNCP indisponível no momento. Tente novamente em alguns minutos.</span>
             </div>
-            <div>
-              <label className="text-[0.65rem] font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">
-                Estado
-              </label>
-              <select
-                value={estadoFiltro}
-                onChange={(e) => setEstadoFiltro(e.target.value)}
-                className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm"
-              >
-                {ESTADOS.map((uf) => (
-                  <option key={uf} value={uf}>{uf}</option>
-                ))}
-              </select>
+          )}
+
+          {pncp.totalRegistros > 0 && (
+            <p className="text-xs text-muted-foreground mt-2">
+              Mostrando {pncp.resultados.length} de {pncp.totalRegistros.toLocaleString("pt-BR")} resultados no PNCP
+            </p>
+          )}
+        </Card>
+      )}
+
+      {/* Local Search + Filter Bar */}
+      {abaAtiva === "local" && (
+        <Card className="p-4 mb-5 border-0 shadow-sm">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+              <Input
+                type="text"
+                placeholder="Buscar por palavra-chave, órgão, estado..."
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+                className="pl-9 text-sm"
+              />
             </div>
-            <div>
-              <label className="text-[0.65rem] font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">
-                Categoria
-              </label>
-              <select
-                value={categoriaFiltro}
-                onChange={(e) => setCategoriaFiltro(e.target.value)}
-                className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm"
+            <div className="flex gap-2">
+              <Button
+                variant={mostrarFiltros ? "default" : "outline"}
+                size="sm"
+                onClick={() => setMostrarFiltros(!mostrarFiltros)}
+                className="flex items-center gap-1.5"
               >
-                {CATEGORIAS.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="text-[0.65rem] font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">
-                Faixa de Valor
-              </label>
-              <select
-                value={faixaValor}
-                onChange={(e) => setFaixaValor(Number(e.target.value))}
-                className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm"
-              >
-                {FAIXAS_VALOR.map((f, i) => (
-                  <option key={i} value={i}>{f.label}</option>
-                ))}
-              </select>
+                <SlidersHorizontal size={14} />
+                Filtros
+                {filtrosAtivos > 0 && (
+                  <span className="ml-1 w-5 h-5 rounded-full bg-white/20 text-[0.6rem] font-bold flex items-center justify-center">
+                    {filtrosAtivos}
+                  </span>
+                )}
+              </Button>
+              {filtrosAtivos > 0 && (
+                <Button variant="ghost" size="sm" onClick={limparFiltros} className="text-xs">
+                  <X size={14} className="mr-1" />
+                  Limpar
+                </Button>
+              )}
             </div>
           </div>
-        )}
-      </Card>
+
+          {/* Smart Filters */}
+          {mostrarFiltros && (
+            <div className="mt-4 pt-4 border-t border-border grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div>
+                <label className="text-[0.65rem] font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">
+                  Região
+                </label>
+                <select
+                  value={regiaoFiltro}
+                  onChange={(e) => { setRegiaoFiltro(e.target.value); setEstadoFiltro("Todos"); }}
+                  className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm"
+                >
+                  <option value="Todas">Todas as regiões</option>
+                  {Object.keys(REGIOES).map((r) => (
+                    <option key={r} value={r}>{r}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-[0.65rem] font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">
+                  Estado
+                </label>
+                <select
+                  value={estadoFiltro}
+                  onChange={(e) => setEstadoFiltro(e.target.value)}
+                  className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm"
+                >
+                  {ESTADOS.map((uf) => (
+                    <option key={uf} value={uf}>{uf}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-[0.65rem] font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">
+                  Categoria
+                </label>
+                <select
+                  value={categoriaFiltro}
+                  onChange={(e) => setCategoriaFiltro(e.target.value)}
+                  className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm"
+                >
+                  {CATEGORIAS.map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-[0.65rem] font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">
+                  Faixa de Valor
+                </label>
+                <select
+                  value={faixaValor}
+                  onChange={(e) => setFaixaValor(Number(e.target.value))}
+                  className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm"
+                >
+                  {FAIXAS_VALOR.map((f, i) => (
+                    <option key={i} value={i}>{f.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* Results Summary */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
         <div className="flex items-center gap-3">
           <p className="text-sm text-muted-foreground">
-            <span className="font-bold text-foreground">{resultados.length}</span> licitações encontradas
+            <span className="font-bold text-foreground">{listaAtual.length}</span> licitações
+            {abaAtiva === "pncp" && pncp.totalRegistros > 0 && (
+              <span className="text-xs"> de {pncp.totalRegistros.toLocaleString("pt-BR")}</span>
+            )}
           </p>
           <span className="text-xs text-muted-foreground">·</span>
           <p className="text-sm text-muted-foreground flex items-center gap-1">
@@ -313,22 +445,40 @@ const LicitacoesSection = () => {
             Total: <span className="font-bold text-foreground">{valorTotalFiltrado}</span>
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <ArrowUpDown size={13} className="text-muted-foreground" />
-          <select
-            value={ordenacao}
-            onChange={(e) => setOrdenacao(e.target.value as Ordenacao)}
-            className="h-8 px-2 rounded-md border border-input bg-background text-xs"
-          >
-            <option value="recente">Mais recentes</option>
-            <option value="valor_desc">Maior valor</option>
-            <option value="valor_asc">Menor valor</option>
-          </select>
-        </div>
+        {abaAtiva === "local" && (
+          <div className="flex items-center gap-2">
+            <ArrowUpDown size={13} className="text-muted-foreground" />
+            <select
+              value={ordenacao}
+              onChange={(e) => setOrdenacao(e.target.value as Ordenacao)}
+              className="h-8 px-2 rounded-md border border-input bg-background text-xs"
+            >
+              <option value="recente">Mais recentes</option>
+              <option value="valor_desc">Maior valor</option>
+              <option value="valor_asc">Menor valor</option>
+            </select>
+          </div>
+        )}
       </div>
 
       {/* Results List */}
-      {resultados.length === 0 ? (
+      {abaAtiva === "pncp" && pncp.buscando ? (
+        <div className="flex items-center justify-center py-20 text-muted-foreground">
+          <Loader2 className="animate-spin mr-2" size={20} />
+          Buscando no PNCP...
+        </div>
+      ) : abaAtiva === "pncp" && pncp.resultados.length === 0 && !pncp.buscando ? (
+        <div className="text-center py-16 text-muted-foreground">
+          <Globe size={40} className="mx-auto mb-3 opacity-30" />
+          <p className="font-semibold">Busque licitações em tempo real</p>
+          <p className="text-sm mt-1">
+            Digite um termo acima e clique em "Buscar PNCP" para consultar o portal oficial.
+          </p>
+          <p className="text-xs mt-3 text-muted-foreground/60">
+            Fonte: pncp.gov.br — Portal Nacional de Contratações Públicas
+          </p>
+        </div>
+      ) : listaAtual.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
           <Search size={40} className="mx-auto mb-3 opacity-30" />
           <p className="font-semibold">Nenhuma licitação encontrada</p>
@@ -341,8 +491,12 @@ const LicitacoesSection = () => {
         </div>
       ) : (
         <div className="space-y-3">
-          {resultados.map((lic, index) => (
-            <LicitacaoCard key={lic.numero_controle || lic.link + index} lic={lic} />
+          {listaAtual.map((lic, index) => (
+            <LicitacaoCard
+              key={lic.numero_controle || lic.link + index}
+              lic={lic}
+              isPNCP={abaAtiva === "pncp"}
+            />
           ))}
         </div>
       )}
