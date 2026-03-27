@@ -1,338 +1,428 @@
 [
   {
-    "titulo": "Cursos populares podem se inscrever em rede do MEC até o dia 27",
-    "link": "https://agenciabrasil.ebc.com.br/educacao/noticia/2026-02/cursos-populares-podem-se-inscrever-em-rede-do-mec-ate-o-dia-27",
-    "resumo": "Representantes de cursinhos populares e comunitários podem se inscrever até sexta-feira (27) para participar da segunda edição da Rede Nacional de Cursinhos Populares (CPOP), gerida pelo Ministério da Educação (MEC). As adesões devem ser feitas eletronicamente pelo Sistema da Rede Nacional de Cursin",
-    "data_publicacao": "Tue, 24 Feb 2026 15:20:00 -0300",
+    "titulo": "Flamengo derrota Juventude por 3 a 1 no Brasileiro Feminino",
+    "link": "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-03/flamengo-derrota-juventude-por-3-1-no-brasileiro-feminino",
+    "resumo": "Em partida transmitida ao vivo pela TV Brasil, o Flamengo derrotou o Juventude pelo placar de 3 a 1, na noite desta quinta-feira (26) no estádio Alfredo Jaconi, em Caxias do Sul, pela 5ª rodada da Série A1 do Campeonato Brasileiro de futebol feminino. Com o triunfo fora de casa, as Meninas da Gávea ",
+    "data_publicacao": "Thu, 26 Mar 2026 23:13:00 -0300",
     "fonte": "Agência Brasil",
     "autor": "Agência Brasil",
     "categorias": [
-      "Educação",
-      "MEC",
-      "Cursinhos Populares",
-      "inscrições"
+      "Esportes",
+      "esportes",
+      "Futebol Feminino",
+      "TV Brasil"
     ],
     "imagem": ""
   },
   {
-    "titulo": "Justiça mantém condenação da Volkswagen por trabalho escravo",
-    "link": "https://agenciabrasil.ebc.com.br/direitos-humanos/noticia/2026-02/justica-mantem-condenacao-da-volkswagen-por-trabalho-escravo",
-    "resumo": "O Tribunal Regional do Trabalho da 8ª Região (TRT8) manteve a condenação da Volkswagen por praticar trabalho escravo contemporâneo durante a ditadura civil-militar, na Fazenda Vale do Rio Cristalino, em Santana do Araguaia (PA). Com a decisão, proferida durante sessão ordinária realizada hoje (24), ",
-    "data_publicacao": "Tue, 24 Feb 2026 15:06:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Direitos Humanos",
-      "Justiça",
-      "Volkswagen",
-      "trabalho escravo"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Representação Brasileira do Parlasul aprova acordo Mercosul-UE",
-    "link": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-02/representacao-brasileira-do-parlasul-aprova-acordo-mercosul-ue",
-    "resumo": "A Representação Brasileira no Parlamento do Mercosul (Parlasul) aprovou nesta terça-feira (24) por unanimidade o Acordo de comércio entre o Mercosul e a União Europeia. O debate sobre o texto começou no dia 10 de fevereiro, quando o deputado Arlindo Chinaglia (PT-SP) leu seu relatório sobre o acordo",
-    "data_publicacao": "Tue, 24 Feb 2026 14:47:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Economia",
-      "Parlasul",
-      "acordo Mercosul-UE",
-      "multimídia"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "PF combate venda de diesel para garimpos ilegais em terra indígena",
-    "link": "https://agenciabrasil.ebc.com.br/geral/noticia/2026-02/pf-combate-venda-ilegal-de-diesel-para-garimpos-em-terra-indigena",
-    "resumo": "Um grupo criminoso responsável pela comercialização de combustível que abastecem garimpos ilegais na Terra Indígena Sararé, em Mato Grosso (MT), é alvo de operação da Polícia Federal nesta terça-feira (24). As investigações apuraram que a organização criminosa adquiriu para revenda mais de 4 milhões",
-    "data_publicacao": "Tue, 24 Feb 2026 14:41:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Geral",
-      "Polícia Federal",
-      "PF",
-      "Terra Indígena Sararé"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "País tem menor área queimada para janeiro dos dois últimos anos",
-    "link": "https://agenciabrasil.ebc.com.br/meio-ambiente/noticia/2026-02/pais-tem-menor-area-queimada-para-janeiro-dos-dois-ultimos-anos",
-    "resumo": "O Brasil registrou em janeiro deste ano 437 mil hectares de área queimada, o território atingido é 36% menor para mesmo mês em 2025 e diminuiu 58% na comparação com janeiro de 2024. Apesar do dado geral positivo, em comparação com 2025, houve crescimento de fogo no Pantanal, Caatinga e Mata Atlântic",
-    "data_publicacao": "Tue, 24 Feb 2026 14:18:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Meio Ambiente",
-      "Amazônia",
-      "queimada",
-      "Cerrado"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Litoral de São Paulo está em alerta de grande perigo para chuvas",
-    "link": "https://agenciabrasil.ebc.com.br/meio-ambiente/noticia/2026-02/litoral-de-sao-paulo-esta-em-alerta-de-grande-perigo-para-chuvas",
-    "resumo": "O Instituto Nacional de Meteorologia (Inmet) emitiu, nesta terça-feira (24), um alerta de grande perigo para a região sudeste do país devido ao acúmulo de chuva. A passagem de uma frente fria criará condições favoráveis para chuvas contínuas até sexta-feira (27). No estado de São Paulo, a maior part",
-    "data_publicacao": "Tue, 24 Feb 2026 13:51:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Meio Ambiente",
-      "meteorologia",
-      "Chuva",
-      "São Paulo"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Parceria permitirá regularizar terras da União, diz ministro",
-    "link": "https://agenciabrasil.ebc.com.br/geral/noticia/2026-02/parceria-permitira-regularizar-terras-da-uniao-diz-ministro",
-    "resumo": "O ministro das Cidades, Jader Filho, reafirmou hoje (24) que o governo federal pretende regularizar a situação de milhares de famílias que vivem em áreas da União. Segundo o ministro, além de doar parte das terras da União já ocupada, o governo estuda pagar as eventuais despesas familiares com cartó",
-    "data_publicacao": "Tue, 24 Feb 2026 13:33:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Geral",
-      "Ministério das Cidades",
-      "SPU",
-      "MGI"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "PGR pede condenação de cinco acusados do assassinato de Marielle",
-    "link": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-02/pgr-pede-condenacao-de-cinco-acusados-do-assassinato-de-marielle",
-    "resumo": "O vice-procurador-geral da república Hindemburgo Chateaubriand pediu a condenação dos cinco acusados do assassinato da vereadora Marielle Franco e do motorista Anderson Gomes. O julgamento teve início nesta terça-feira (24), na Primeira Turma do Supremo Tribunal Federal (STF). Os acusados de partici",
-    "data_publicacao": "Tue, 24 Feb 2026 13:12:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Justiça",
-      "Marielle Franco",
-      "Anderson Gomes",
-      "Irmãos Brazão"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Senadores cobram CVM por suposta omissão no caso do Banco Master",
-    "link": "https://agenciabrasil.ebc.com.br/politica/noticia/2026-02/senadores-cobram-cvm-por-suposta-omissao-no-caso-do-banco-master",
-    "resumo": "A Comissão do Banco Master do Senado cobrou, nessa terça-feira (24), o presidente interino da Comissão de Valores Mobiliários (CVM), João Carlos Accioly, por suposta omissão da instituição na fiscalização do Banco Master, acusado de fraude bilionária no mercado de capitais. O líder do MDB no Senado,",
-    "data_publicacao": "Tue, 24 Feb 2026 13:12:00 -0300",
+    "titulo": "TRE-RJ marca para terça recontagem de votos após cassação de Bacellar",
+    "link": "https://agenciabrasil.ebc.com.br/politica/noticia/2026-03/tre-rj-marca-para-terca-recontagem-de-votos-apos-cassacao-de-bacellar",
+    "resumo": "O presidente do Tribunal Regional Eleitoral do Rio de Janeiro (TRE-RJ), Claudio de Mello Tavares, marcou para a próxima terça-feira (31), às 15h, sessão que irá recontar os votos para o cargo de deputado estadual nas eleições de 2022. A medida é para cumprir decisão do Tribunal Superior Eleitoral (T",
+    "data_publicacao": "Thu, 26 Mar 2026 22:11:00 -0300",
     "fonte": "Agência Brasil",
     "autor": "Agência Brasil",
     "categorias": [
       "Política",
-      "Banco Master",
-      "Senado",
-      "CVM"
+      "Rodrigo Bacellar",
+      "TRE-RJ",
+      "Alerj"
     ],
     "imagem": ""
   },
   {
-    "titulo": "Governo federal reconhece estado de calamidade em Juiz de Fora",
-    "link": "https://agenciabrasil.ebc.com.br/geral/noticia/2026-02/governo-federal-reconhece-estado-de-calamidade-em-juiz-de-fora",
-    "resumo": "O governo federal reconheceu na manhã desta terça-feira (24) o estado de calamidade pública em Juiz de Fora, Minas Gerais. A decisão possibilita o início imediato dos trabalhos de socorro e ajuda humanitária à população afetada. O Ministério da Integração e do Desenvolvimento Regional (MIDR) garanti",
-    "data_publicacao": "Tue, 24 Feb 2026 12:55:00 -0300",
+    "titulo": "Ancelotti diz que Brasil pode competir com melhores equipes do mundo",
+    "link": "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-03/ancelotti-diz-que-brasil-pode-competir-com-melhores-equipes-do-mundo",
+    "resumo": "O técnico italiano Carlo Ancelotti afirmou, nesta quinta-feira (26) após a derrota de 2 a 1 para a França em amistoso preparatório para a Copa do Mundo, que a seleção brasileira mostrou que pode competir com as melhores equipes do mundo. “O jogo de hoje deixa muito claro para mim: podemos competir c",
+    "data_publicacao": "Thu, 26 Mar 2026 21:56:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Esportes",
+      "esportes",
+      "futebol",
+      "Copa do Mundo"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Mega-Sena acumula e prêmio principal vai para R$ 40 milhões",
+    "link": "https://agenciabrasil.ebc.com.br/geral/noticia/2026-03/mega-sena-acumula-e-premio-principal-vai-para-r-40-milhoes",
+    "resumo": "Nenhum apostador acertou as seis dezenas do concurso 2.988 da Mega-Sena, realizado nesta quinta-feira (26). O prêmio acumulou e está estimado em R$ 40 milhões para o próximo sorteio. Os números sorteados são: 06 - 14 - 28 - 31 - 56 - 59 44 apostas acertaram cinco dezenas e irão receber R$ 33.183,44 ",
+    "data_publicacao": "Thu, 26 Mar 2026 21:31:00 -0300",
     "fonte": "Agência Brasil",
     "autor": "Agência Brasil",
     "categorias": [
       "Geral",
-      "chuvas",
-      "Juiz de Fora",
-      "Minas Gerais"
+      "Mega-Sena",
+      "Loterias",
+      "Caixa"
     ],
     "imagem": ""
   },
   {
-    "titulo": "Quem escreveu as regras do Alto-Mar?",
-    "link": "https://oeco.org.br/colunas/quem-escreveu-as-regras-do-alto-mar/",
-    "resumo": "Novo tratado da ONU mostra que a América Latina não foi apenas espectadora, mas atuou de forma decisiva na construção de uma governança mais inclusiva para o oceano",
-    "data_publicacao": "Tue, 24 Feb 2026 13:05:00 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
+    "titulo": "Prefeitura de SP perde recurso e deve retomar serviço de aborto legal",
+    "link": "https://agenciabrasil.ebc.com.br/saude/noticia/2026-03/prefeitura-de-sp-perde-recurso-e-deve-retomar-servico-de-aborto-legal",
+    "resumo": "A prefeiturade São Paulo perdeu um recurso de apelação e terá de retomar o serviço de aborto legal no Hospital e Maternidade Municipal Vila Nova Cachoeirinha. A unidade realizava interrupções previstas em lei em gestações com mais de 22 semanas. O hospital é localizado na zona norte da cidade e cons",
+    "data_publicacao": "Thu, 26 Mar 2026 21:20:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
     "categorias": [
-      "Colunas",
-      "negociações internacionais",
-      "oceanos",
-      "política ambiental"
+      "Saúde",
+      "aborto legal",
+      "Hospital e Maternidade Municipal Vila Nova Cachoeirinha"
     ],
     "imagem": ""
   },
   {
-    "titulo": "Seca no Acre revela recifes de ostra da água doce e um habitat aquático inédito",
-    "link": "https://oeco.org.br/reportagens/seca-no-acre-revela-recifes-de-ostra-da-agua-doce-e-um-habitat-aquatico-inedito/",
-    "resumo": "Formações inéditas foram identificadas no rio Muru durante a estiagem de 2024 e acendem alerta sobre impactos das mudanças climáticas na biodiversidade aquática amazônica",
-    "data_publicacao": "Tue, 24 Feb 2026 12:25:00 +0000",
+    "titulo": "Itália vence e continua viva na luta por vaga para a Copa do Mundo",
+    "link": "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-03/italia-vence-e-continua-vivo-na-luta-por-vaga-para-copa-do-mundo",
+    "resumo": "O sonho da Itália de retornar à Copa do Mundo continua vivo. Jogando nesta quinta-feira (26) em Bérgamo, a Squadra Azzurra derrotou a Irlanda do Norte pelo placar de 2 a 0 na repescagem das Eliminatórias da Europa. ⏱️ 𝐑𝐈𝐒𝐔𝐋𝐓𝐀𝐓𝐎 𝐅𝐈𝐍𝐀𝐋𝐄#ItaliaIrlandaDelNord 2️⃣-0️⃣ 56’ #Tonali; 80’ #Kea",
+    "data_publicacao": "Thu, 26 Mar 2026 20:57:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Esportes",
+      "esportes",
+      "Futebol",
+      "eliminatórias da europa"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Justiça do EUA mantém acusação de narcotráfico contra Maduro",
+    "link": "https://agenciabrasil.ebc.com.br/internacional/noticia/2026-03/justica-do-eua-mantem-acusacao-de-narcotrafico-contra-maduro",
+    "resumo": "A Justiça dos Estados Unidos decidiu manter nesta quinta-feira (26) as acusações de narcotráfico contra o ex-presidente da Venezuela Nicolás Maduro. A defesa de Maduro tentou derrubar o processo alegando dificuldades em custear os advogados por causa das sanções norte-americanas a fundos venezuelano",
+    "data_publicacao": "Thu, 26 Mar 2026 20:49:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Internacional",
+      "venezuela",
+      "Nicolás Maduro",
+      "Trump"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "CMN reduz juros de financiamentos a cooperativas rurais pelo Pronaf",
+    "link": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-03/cmn-reduz-juros-de-financiamentos-cooperativas-rurais-pelo-pronaf",
+    "resumo": "As cooperativas da agricultura familiar terão acesso a juros mais baixos nos financiamentos à bovinocultura. O Conselho Monetário Nacional (CMN) aprovou nesta quinta-feira (26) a redução, de 8% para 3% ao ano, da taxa de juros do Programa Nacional de Fortalecimento da Agricultura Familiar (Pronaf), ",
+    "data_publicacao": "Thu, 26 Mar 2026 20:40:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Economia",
+      "pecuária",
+      "CMN",
+      "Pronaf"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "FAT poderá destinar mais recursos para financiar inovação",
+    "link": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-03/fat-podera-destinar-mais-recursos-para-financiar-inovacao",
+    "resumo": "O Fundo de Amparo ao Trabalhador (FAT) poderá usar mais recursos para financiar projetos de inovação em 2026 por meio do Banco Nacional de Desenvolvimento Econômico e Social (BNDES). O Conselho Monetário Nacional (CMN) aprovou nesta quinta-feira (24) a elevação do limite que pode ser destinado a ess",
+    "data_publicacao": "Thu, 26 Mar 2026 20:28:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Economia",
+      "FAT",
+      "CMN",
+      "Inovação"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "CPI do INSS: após revés no STF, Viana quer votar relatório nesta sexta",
+    "link": "https://agenciabrasil.ebc.com.br/politica/noticia/2026-03/cpi-do-inss-apos-reves-no-stf-viana-quer-votar-relatorio-nesta-sexta",
+    "resumo": "O senador Carlos Viana (Podemos-MG) pretende ler e votar o relatório final da Comissão Parlamentar Mista de Inquérito (CPMI) do INSS nesta sexta-feira (27). O presidente da CPMI falou da decisão nesta quinta-feira (26) depois de o Supremo Tribunal Federal (STF) rejeitar a prorrogação da investigação",
+    "data_publicacao": "Thu, 26 Mar 2026 20:22:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Política",
+      "CPMI do INSS",
+      "Senado",
+      "carlos viana"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Após pressão, prefeitura do Rio veta licença para derrubada de 900 árvores na Barra da Tijuca",
+    "link": "https://oeco.org.br/salada-verde/apos-pressao-prefeitura-do-rio-veta-licenca-para-derrubada-de-900-arvores-na-barra-da-tijuca/",
+    "resumo": "Área próxima à Lagoa de Jacarepaguá era alvo de projeto imobiliário para construção de mega-condomínio residencial",
+    "data_publicacao": "Thu, 26 Mar 2026 21:45:25 +0000",
     "fonte": "O Eco",
     "autor": "O Eco",
     "categorias": [
-      "Reportagens",
+      "Salada Verde",
+      "mata atlântica",
+      "política ambiental",
+      "rio de janeiro"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Marina Silva associa impasses da BR-319 a descumprimento de regras ambientais",
+    "link": "https://oeco.org.br/salada-verde/marina-silva-associa-impasses-da-br-319-a-descumprimento-de-regras-ambientais/",
+    "resumo": "Ministra do Meio Ambiente cita descumprimento de condicionantes, pressão sobre a floresta e judicialização como entraves ao avanço da rodovia",
+    "data_publicacao": "Thu, 26 Mar 2026 21:05:22 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Salada Verde",
       "amazônia",
-      "conservação",
+      "br 319",
       "ICS"
     ],
     "imagem": ""
   },
   {
-    "titulo": "Nova trilha une Ceará e Piauí em encontro único de biomas e pessoas",
-    "link": "https://oeco.org.br/reportagens/nova-trilha-une-ceara-e-piaui-em-encontro-unico-de-biomas-e-pessoas/",
-    "resumo": "Caminhos da Ibiapaba, com 185 km, conecta parques nacionais de Ubajara e Sete Cidades, entre paisagens de Mata Atlântica, Caatinga e Cerrado",
-    "data_publicacao": "Tue, 24 Feb 2026 10:02:00 +0000",
+    "titulo": "Marina Silva anuncia PSA pirarucu e portaria para manejo sustentável, em Manaus",
+    "link": "https://oeco.org.br/noticias/marina-silva-anuncia-psa-pirarucu-e-portaria-para-manejo-sustentavel-em-manaus/",
+    "resumo": "Programa do MMA deve atender 5,5 mil pessoas em 41 áreas e mobilizar R$ 15 milhões, com pagamento por manejo e certificação do pescado sustentável",
+    "data_publicacao": "Thu, 26 Mar 2026 20:24:30 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Notícias",
+      "amazonas",
+      "amazônia",
+      "ICS"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Governança colaborativa e inovação urbana ganham destaque em encontro com especialista internacional em Rio Preto",
+    "link": "https://sindusconsp.com.br/governanca-colaborativa-e-inovacao-urbana-ganham-destaque-em-encontro-com-especialista-internacional-em-rio-preto/",
+    "resumo": "Evento reuniu lideranças e setor produtivo para discutir estratégias de desenvolvimento sustentável, com base no modelo de Barcelona São José do Rio Preto foi palco, na última segunda-feira (23), de um encontro estratégico para o futuro da cidade e da região. Promovido pelo Comitê de Governança Cola",
+    "data_publicacao": "Thu, 26 Mar 2026 20:12:35 +0000",
+    "fonte": "SindusCon-SP",
+    "autor": "SindusCon-SP",
+    "categorias": [
+      "Institucional",
+      "Notícias",
+      "Destaque Regional",
+      "Destaque Tema"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Na COP15, países lançam iniciativa global contra captura ilegal de espécies migratórias",
+    "link": "https://oeco.org.br/noticias/na-cop15-paises-lancam-iniciativa-global-contra-captura-ilegal-de-especies-migratorias/",
+    "resumo": "Iniciativa busca coibir comércio doméstico de espécies migratórias, antes que pressões se intensifiquem em exploração comercial de larga escala ou comércio internacional",
+    "data_publicacao": "Thu, 26 Mar 2026 19:02:10 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Notícias",
+      "conservação",
+      "COP 15 - CMS",
+      "espécies migratórias"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Campinas realiza Rodada de Negócios",
+    "link": "https://sindusconsp.com.br/campinas-realiza-rodada-de-negocios/",
+    "resumo": "Evento também apresentou inovações tecnológicas A Regional Campinas do SindusCon-SP realizou Rodada de Negócios em 24 de março, no Coco Bambu do Shopping Iguatemi Campinas. O evento fomentou a geração de negócios entre as empresas participantes e também foi uma oportunidade para o conhecimento de so",
+    "data_publicacao": "Thu, 26 Mar 2026 19:00:27 +0000",
+    "fonte": "SindusCon-SP",
+    "autor": "SindusCon-SP",
+    "categorias": [
+      "Notícias",
+      "Tecnologia e Qualidade",
+      "Destaque",
+      "Destaque Regional"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Redução do 6X1 prejudicaria a construção",
+    "link": "https://sindusconsp.com.br/reducao-do-6x1-prejudicaria-a-construcao/",
+    "resumo": "Assista a entrevista de Yorki Estefan à CNN Os prejuízos que a indústria da construção civil sofreria, se for aprovada a redução da escala de trabalho 6X1, foram relatados pelo presidente do SindusCon-SP, Yorki Estefan, em entrevista à CNN, no evento CNN Talks – o Futuro da Jornada de Trabalho no Br",
+    "data_publicacao": "Thu, 26 Mar 2026 18:54:18 +0000",
+    "fonte": "SindusCon-SP",
+    "autor": "SindusCon-SP",
+    "categorias": [
+      "Capital e Trabalho",
+      "Notícias",
+      "Destaque",
+      "Destaque Regional"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "A construção da identidade ambiental da Juventude Amazônida",
+    "link": "https://oeco.org.br/colunas/a-construcao-da-identidade-ambiental-da-juventude-amazonida/",
+    "resumo": "Consolidar uma identidade ambiental entre os jovens da Amazônia Legal torna-se, portanto, uma tarefa que ultrapassa o campo simbólico e alcança a esfera da governança territorial",
+    "data_publicacao": "Thu, 26 Mar 2026 15:15:00 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Colunas",
+      "amazônia",
+      "ICS",
+      "juventude"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Senai-SP e CDHU abrem licitações",
+    "link": "https://sindusconsp.com.br/senai-sp-e-cdhu-abrem-licitacoes-2/",
+    "resumo": "Obras serão em cidades do Interior O Senai-SP abriu o Processo de Seleção com Disputa Forma Fechada nº 110/2026, destinado à contratação de empresa para execução de reforma de reservatório elevado nas Escolas Senai em Itu e Sorocaba, no valor total de R$ 1.162.291,49. O edital, denominado Chamamento",
+    "data_publicacao": "Thu, 26 Mar 2026 13:56:04 +0000",
+    "fonte": "SindusCon-SP",
+    "autor": "SindusCon-SP",
+    "categorias": [
+      "Infraestrutura",
+      "Notícias",
+      "Destaque",
+      "Destaque Regional"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "CNI: setor está há 15 meses sem confiança",
+    "link": "https://sindusconsp.com.br/cni-setor-esta-ha-15-meses-sem-confianca/",
+    "resumo": "Expectativas e intenção de investir declinam O Índice de Confiança do Empresário Industrial (Icei) da Indústria da Construção apresentou queda de 2,1 pontos na passagem de fevereiro para março, recuando para 46,5 pontos. Com o resultado, os empresários da construção completaram 15 meses de falta de ",
+    "data_publicacao": "Thu, 26 Mar 2026 13:52:05 +0000",
+    "fonte": "SindusCon-SP",
+    "autor": "SindusCon-SP",
+    "categorias": [
+      "Economia",
+      "Notícias",
+      "Destaque",
+      "Destaque Regional"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Construção mostra-se menos pessimista",
+    "link": "https://sindusconsp.com.br/construcao-mostra-se-menos-pessimista/",
+    "resumo": "Percepções melhoraram, apura o FGV-Ibre O Índice de Confiança da Construção (ICST) subiu 2,1 pontos em março, para 93,6 pontos, recuperando parte da queda de fevereiro (-2,5 pontos). Na média móvel trimestral, o índice cresceu 0,8 ponto. Os dados são da Sondagem da Construção do FGV Ibre (Instituto ",
+    "data_publicacao": "Thu, 26 Mar 2026 13:15:05 +0000",
+    "fonte": "SindusCon-SP",
+    "autor": "SindusCon-SP",
+    "categorias": [
+      "Economia",
+      "Notícias",
+      "Destaque",
+      "Destaque Regional"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Avanço de monoculturas pressiona comunidades na Chapada do Araripe",
+    "link": "https://oeco.org.br/reportagens/avanco-de-monoculturas-pressiona-comunidades-na-chapada-do-araripe/",
+    "resumo": "Disputas por terra e recursos hídricos estão no centro das ocorrências, que incluem ameaças de morte; ((o))eco conversou com exclusividade com lideranças ameaçadas",
+    "data_publicacao": "Thu, 26 Mar 2026 12:00:00 +0000",
     "fonte": "O Eco",
     "autor": "O Eco",
     "categorias": [
       "Reportagens",
-      "caatinga",
-      "ceará",
-      "icmbio"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Após mobilizações em Santarém, governo revoga decreto e suspende dragagens no Tapajós",
-    "link": "https://oeco.org.br/salada-verde/apos-mobilizacoes-em-santarem-governo-revoga-decreto-e-suspende-dragagens-no-tapajos/",
-    "resumo": "Recuo do governo ocorre após semanas de pressão indígena contra obras de dragagem, com críticas à falta de consulta prévia e aos impactos sobre os rios e modos de vida na Amazônia",
-    "data_publicacao": "Mon, 23 Feb 2026 22:24:32 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Salada Verde",
-      "fiscalização ambiental",
-      "hidrovia",
-      "ICS"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Prioridade para os pequenos agricultores",
-    "link": "https://oeco.org.br/colunas/prioridade-para-os-pequenos-agricultores/",
-    "resumo": "Por que precisamos olhar para a maioria dos produtores rurais, com menos recursos técnicos, acesso a crédito e apoio social",
-    "data_publicacao": "Mon, 23 Feb 2026 21:26:41 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Colunas",
-      "agricultura",
-      "política ambiental"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Vitória nas entrelinhas",
-    "link": "https://oeco.org.br/colunas/vitoria-nas-entrelinhas/",
-    "resumo": "Extinção de processos judiciais sobre retaludamento evidencia que pressão popular e ciência evitaram a demolição do morro do Portão do Inferno, no PN Chapada dos Guimarães",
-    "data_publicacao": "Mon, 23 Feb 2026 20:31:40 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Colunas",
-      "dnit",
-      "ibama",
-      "mato grosso"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "BNDES inicia mapeamento nacional de recifes de coral com investimento de R$ 5,5 milhões",
-    "link": "https://oeco.org.br/salada-verde/bndes-inicia-mapeamento-nacional-de-recifes-de-coral-com-investimento-de-r-55-milhoes/",
-    "resumo": "Projeto financiado com recursos públicos vai monitorar recifes em oito estados e apoiar ações de restauração e gestão ambiental",
-    "data_publicacao": "Mon, 23 Feb 2026 12:27:00 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Salada Verde",
-      "bndes",
+      "chapada do araripe",
       "ICS",
       "política ambiental"
     ],
     "imagem": ""
   },
   {
-    "titulo": "Três anos após tragédia, 203 hectares de encostas em São Sebastião seguem em recuperação",
-    "link": "https://oeco.org.br/noticias/tres-anos-apos-tragedia-203-hectares-de-encostas-em-sao-sebastiao-seguem-em-recuperacao/",
-    "resumo": "Deslizamentos ocorridos em fevereiro de 2023 deixaram 853 cicatrizes de desmatamento na cidade. Cerca de 70% da área já está recoberta de vegetação",
-    "data_publicacao": "Fri, 20 Feb 2026 18:12:18 +0000",
+    "titulo": "Congresso avança para limitar embargo remoto e coloca em risco política de combate ao desmatamento",
+    "link": "https://oeco.org.br/analises/congresso-avanca-para-limitar-embargo-remoto-e-coloca-em-risco-politica-de-combate-ao-desmatamento/",
+    "resumo": "O que a proposta faz é dificultar a imposição do embargo, reduzindo a capacidade de atuação imediata do Estado",
+    "data_publicacao": "Thu, 26 Mar 2026 11:07:00 +0000",
     "fonte": "O Eco",
     "autor": "O Eco",
     "categorias": [
-      "Notícias",
+      "Análises",
+      "amazônia",
       "conservação",
-      "deslizamento",
       "desmatamento"
     ],
     "imagem": ""
   },
   {
-    "titulo": "Disputas e contradições continuam após a COP30",
-    "link": "https://oeco.org.br/colunas/disputas-e-contradicoes-continuam-apos-a-cop30/",
-    "resumo": "Plano Clima indica desafios de implementação; evitar mudanças profundas continua sendo uma linha de ação que envolve greenwashing, lobby e circulação de desinformação",
-    "data_publicacao": "Fri, 20 Feb 2026 15:42:18 +0000",
+    "titulo": "Certificação participativa avança no Amazonas e fortalece agroecologia familiar",
+    "link": "https://oeco.org.br/reportagens/certificacao-participativa-avanca-no-amazonas-e-fortalece-agroecologia-familiar/",
+    "resumo": "Sistema baseado em avaliação entre pares cresce com apoio público e amplia acesso a mercados para agricultores familiares",
+    "data_publicacao": "Wed, 25 Mar 2026 20:58:39 +0000",
     "fonte": "O Eco",
     "autor": "O Eco",
     "categorias": [
-      "Colunas",
+      "Reportagens",
+      "agroecologia",
       "amazônia",
-      "COP 30",
-      "mudanças climáticas"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Como transformar a meta 30×30 de um slogan político para uma realidade ecológica",
-    "link": "https://oeco.org.br/externo/como-transformar-a-meta-30x30-de-um-slogan-politico-para-uma-realidade-ecologica/",
-    "resumo": "O recém-aprovado Tratado do Alto-Mar oferece uma oportunidade de proteger o oceano como nunca antes",
-    "data_publicacao": "Fri, 20 Feb 2026 10:54:00 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Análises",
-      "Externo",
-      "conservação",
-      "Meta 30x30"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Você sabe qual foi a primeira lei ambiental do Brasil?",
-    "link": "https://oeco.org.br/noticias/voce-sabe-qual-foi-a-primeira-lei-ambiental-do-brasil/",
-    "resumo": "Norma remonta ao período colonial e não tem cunho puramente preservacionista. Confira lista das principais leis ambientais do país",
-    "data_publicacao": "Fri, 20 Feb 2026 10:39:00 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Notícias",
-      "história ambiental",
-      "legislação ambiental",
-      "pau brasil"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Licença da Belo Sun é restabelecida, mas disputa judicial segue aberta no Xingu",
-    "link": "https://oeco.org.br/noticias/licenca-da-belo-sun-e-restabelecida-mas-disputa-judicial-segue-aberta-no-xingu/",
-    "resumo": "Decisão do TRF1 libera instalação do projeto, enquanto Ministério Público Federal e órgãos técnicos contestam estudos e consulta indígena",
-    "data_publicacao": "Thu, 19 Feb 2026 22:01:00 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Notícias",
-      "belo sun",
-      "Funai",
       "ICS"
     ],
     "imagem": ""
   },
   {
-    "titulo": "O Prêmio Jovem da Água de Estocolmo celebra 10 anos de incentivo à ciência jovem e à sustentabilidade",
-    "link": "https://abes-dn.org.br/o-premio-jovem-da-agua-de-estocolmo-celebra-10-anos-de-incentivo-a-ciencia-jovem-e-a-sustentabilidade/",
-    "resumo": "Em 2026, o Prêmio Jovem da Água de Estocolmo (Stockholm Junior Water Prize &#8211; SJWP) completa 10 anos de história, uma trajetória marcada pelo protagonismo juvenil, pela inovação científica e Leia Mais",
-    "data_publicacao": "Fri, 30 Jan 2026 13:52:36 +0000",
+    "titulo": "Em meio à alta na conta de luz, uso de energia solar cresce em Roraima",
+    "link": "https://oeco.org.br/reportagens/em-meio-a-alta-na-conta-de-luz-uso-de-energia-solar-cresce-em-roraima/",
+    "resumo": "Nos bairros nobres da capital do estado, opção pela energia solar virou tendência. Mas mudança ainda é cara para se popularizar e esbarra na conexão à rede",
+    "data_publicacao": "Wed, 25 Mar 2026 19:51:41 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Reportagens",
+      "amazônia",
+      "energia solar",
+      "ICS"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Museu Itinerante da Amazônia realiza exposição no Rio de Janeiro",
+    "link": "https://oeco.org.br/salada-verde/museu-itinerante-da-amazonia-realiza-exposicao-no-rio-de-janeiro/",
+    "resumo": "Mostra reúne obras que abordam questões como justiça climática, ancestralidade e urbanização; Exposição fica em cartaz até o dia 7 de abril",
+    "data_publicacao": "Wed, 25 Mar 2026 16:44:16 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Salada Verde",
+      "agenda",
+      "amazônia",
+      "conservação"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Senado aprova incentivos fiscais à reciclagem após seis anos de articulação",
+    "link": "https://oeco.org.br/salada-verde/senado-aprova-incentivos-fiscais-a-reciclagem-apos-seis-anos-de-articulacao/",
+    "resumo": "Texto aprovado prevê créditos tributários e isenções para estimular o mercado de recicláveis no país; Projeto vai à sanção",
+    "data_publicacao": "Wed, 25 Mar 2026 16:28:02 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Salada Verde",
+      "ICS",
+      "política ambiental",
+      "reciclagem"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "O impacto da poluição por combustíveis fósseis nos oceanos traz custos enormes",
+    "link": "https://oeco.org.br/externo/o-impacto-da-poluicao-por-combustiveis-fosseis-nos-oceanos-traz-custos-enormes/",
+    "resumo": "Um novo estudo detalha o preço que a sociedade está pagando pela queima de carvão, petróleo e gás",
+    "data_publicacao": "Tue, 24 Mar 2026 21:00:00 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Externo",
+      "combustíveis fósseis",
+      "mudanças climáticas",
+      "oceano"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "ABES-AM celebra 52 anos com homenagem na Assembleia Legislativa do Amazonas",
+    "link": "https://abes-dn.org.br/abes-am-celebra-52-anos-com-homenagem-na-assembleia-legislativa-do-amazonas/",
+    "resumo": "Solenidade destacou trajetória da entidade e sua contribuição para o saneamento, meio ambiente e saúde pública no estado Leia Mais",
+    "data_publicacao": "Tue, 24 Mar 2026 14:38:15 +0000",
     "fonte": "ABES",
     "autor": "ABES",
     "categorias": [
@@ -341,82 +431,10 @@
     "imagem": ""
   },
   {
-    "titulo": "Pré-candidaturas ao Congresso de 2029",
-    "link": "https://abes-dn.org.br/pre-candidaturas-ao-congresso-de-2029/",
-    "resumo": "Às Seções Estaduais da ABES: Como acordado na última reunião do Conselho Diretor da ABES, em 28 de maio de 2025, durante o Congresso Nacional em Brasília, seguem as regras Leia Mais",
-    "data_publicacao": "Thu, 15 Jan 2026 13:16:58 +0000",
-    "fonte": "ABES",
-    "autor": "ABES",
-    "categorias": [
-      "Notícias"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Lançamento do edital do Prêmio Jovem da Água de Estocolmo 2026",
-    "link": "https://abes-dn.org.br/lancamento-do-edital-do-premio-jovem-da-agua-de-estocolmo-2026/",
-    "resumo": "O edital da 10ª edição do Prêmio Jovem da Água de Estocolmo (Stockholm Junior Water Prize – SJWP) no Brasil foi oficialmente lançado, marcando o início do período de inscrições Leia Mais",
-    "data_publicacao": "Mon, 12 Jan 2026 13:15:00 +0000",
-    "fonte": "ABES",
-    "autor": "ABES",
-    "categorias": [
-      "Notícias"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "O Prêmio Jovem da Água de Estocolmo vai abrir inscrições para sua 10ª edição",
-    "link": "https://abes-dn.org.br/o-premio-jovem-da-agua-de-estocolmo-vai-abrir-inscricoes-para-sua-10a-edicao/",
-    "resumo": "As inscrições para a 10ª edição do Prêmio Jovem da Água de Estocolmo (Stockholm Junior Water Prize – SJWP) no Brasil serão abertas no próximo dia 10 de janeiro de Leia Mais",
-    "data_publicacao": "Tue, 06 Jan 2026 15:07:46 +0000",
-    "fonte": "ABES",
-    "autor": "ABES",
-    "categorias": [
-      "Notícias"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "ABES divulga Nota Técnica sobre sustentabilidade tarifária e universalização do saneamento básico",
-    "link": "https://abes-dn.org.br/abes-divulga-nota-tecnica-sobre-sustentabilidade-tarifaria-e-universalizacao-do-saneamento-basico/",
-    "resumo": "A Associação Brasileira de Engenharia Sanitária e Ambiental (ABES), por meio da sua Câmara Temática de Regulação e Tarifa, divulgou uma Nota Técnica que contribui para o debate nacional sobre Leia Mais",
-    "data_publicacao": "Thu, 11 Dec 2025 23:41:00 +0000",
-    "fonte": "ABES",
-    "autor": "ABES",
-    "categorias": [
-      "Notícias"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Painel discute Soluções Tecnológicas e Eficiência Operacional, reforçando a integração entre fornecedores e operadoras no PNQS 2025",
-    "link": "https://abes-dn.org.br/painel-discute-solucoes-tecnologicas-e-eficiencia-operacional-reforcando-a-integracao-entre-fornecedores-e-operadoras-no-pnqs-2025/",
-    "resumo": "Dando sequência à programação do PNQS em Campinas, a manhã desta quinta-feira (27) avançou para mais um bloco de alto impacto com o Painel de Soluções Tecnológicas e Eficiência Operacional, Leia Mais",
-    "data_publicacao": "Thu, 27 Nov 2025 19:19:05 +0000",
-    "fonte": "ABES",
-    "autor": "ABES",
-    "categorias": [
-      "Notícias"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Painel de benchmarking do PNQS reforça o intercâmbio de excelência entre companhias de saneamento",
-    "link": "https://abes-dn.org.br/painel-de-benchmarking-do-pnqs-reforca-o-intercambio-de-excelencia-entre-companhias-de-saneamento/",
-    "resumo": "Dando sequência ao benchmarking iniciado nesta quarta-feira (26), no PNQS, a programação contou com outro momento central do ciclo com mais um Painel Benchmarking na Prática, dedicado à troca direta Leia Mais",
-    "data_publicacao": "Thu, 27 Nov 2025 15:00:56 +0000",
-    "fonte": "ABES",
-    "autor": "ABES",
-    "categorias": [
-      "Notícias"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Benchmarking na prática marca painel inédito do PNQS 2025 e reforça a força coletiva do saneamento brasileiro",
-    "link": "https://abes-dn.org.br/benchmarking-na-pratica-marca-painel-inedito-do-pnqs-2025-e-reforca-a-forca-coletiva-do-saneamento-brasileiro/",
-    "resumo": "O PNQS 2025 estreou um dos momentos aguardados da programação deste ano: o painel de benchmarking na prática, um espaço totalmente dedicado à troca de experiências reais entre companhias de Leia Mais",
-    "data_publicacao": "Thu, 27 Nov 2025 14:59:54 +0000",
+    "titulo": "Governador João Azevêdo recebe delegação da ABES e confirma apoio do Governo da Paraíba ao maior congresso de saneamento do Brasil em 2027",
+    "link": "https://abes-dn.org.br/governador-joao-azevedo-recebe-delegacao-da-abes-e-confirma-apoio-do-governo-da-paraiba-ao-maior-congresso-de-saneamento-do-brasil-em-2027/",
+    "resumo": "A Associação Brasileira de Engenharia Sanitária e Ambiental (ABES) realizou nesta quinta-feira (19) reunião estratégica com o Governador do Estado da Paraíba, João Azevêdo, para apresentar a proposta de João Leia Mais",
+    "data_publicacao": "Fri, 20 Mar 2026 14:15:59 +0000",
     "fonte": "ABES",
     "autor": "ABES",
     "categorias": [
