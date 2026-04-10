@@ -1,5 +1,5 @@
 /**
- * Arquivo gerado automaticamente por coletor.js em 2026-04-09T07:48:19.645Z
+ * Arquivo gerado automaticamente por coletor.js em 2026-04-10T07:52:16.979Z
  * Para atualizar: node coletor.js
  */
 
@@ -12,70 +12,124 @@ export interface Noticia {
 
 const noticias: Noticia[] = [
   {
-    titulo: "Flamengo inicia Copa Libertadores com vitória na altitude de Cusco",
-    link: "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-04/flamengo-inicia-copa-libertadores-com-vitoria-na-altitude-de-cusco",
-    data_publicacao: "Wed, 08 Apr 2026 23:51:00 -0300",
+    titulo: "Corinthians derrota Platense na Libertadores na estreia de Diniz",
+    link: "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-04/corinthians-derrota-platense-na-libertadores-na-estreia-de-diniz",
+    data_publicacao: "Thu, 09 Apr 2026 23:09:00 -0300",
     fonte: "Agência Brasil",
   },
   {
-    titulo: "Hall da Fama do COB celebra ídolos do esporte olímpico brasileiro",
-    link: "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-04/hall-da-fama-do-cob-celebra-idolos-do-esporte-olimpico-brasileiro",
-    data_publicacao: "Wed, 08 Apr 2026 22:46:00 -0300",
+    titulo: "Câmara derruba mudanças do Senado na MP do Seguro-Defeso",
+    link: "https://agenciabrasil.ebc.com.br/economia/noticia/2026-04/camara-derruba-mudancas-do-senado-na-mp-do-seguro-defeso",
+    data_publicacao: "Thu, 09 Apr 2026 22:32:00 -0300",
     fonte: "Agência Brasil",
   },
   {
-    titulo: "Incêndio no Velódromo do Rio é controlado; pista não teve impacto",
-    link: "https://agenciabrasil.ebc.com.br/geral/noticia/2026-04/incendio-no-velodromo-no-rio-e-controlado-pista-nao-teve-impacto",
-    data_publicacao: "Wed, 08 Apr 2026 22:35:00 -0300",
+    titulo: "Após pane, Aeroporto de Congonhas vai operar até meia-noite",
+    link: "https://agenciabrasil.ebc.com.br/geral/noticia/2026-04/apos-pane-aeroporto-de-congonhas-vai-operar-ate-meia-noite",
+    data_publicacao: "Thu, 09 Apr 2026 22:07:00 -0300",
     fonte: "Agência Brasil",
   },
   {
-    titulo: "Alckmin: biodiesel reduz exposição do Brasil à geopolítica mundial",
-    link: "https://agenciabrasil.ebc.com.br/economia/noticia/2026-04/alckmin-biodiesel-reduz-exposicao-do-brasil-geopolitica-mundial",
-    data_publicacao: "Wed, 08 Apr 2026 20:55:00 -0300",
+    titulo: "Mega-Sena acumula e prêmio principal vai para R\$ 40 milhões",
+    link: "https://agenciabrasil.ebc.com.br/geral/noticia/2026-04/mega-sena-acumula-e-premio-principal-vai-para-r-40-milhoes",
+    data_publicacao: "Thu, 09 Apr 2026 21:32:00 -0300",
     fonte: "Agência Brasil",
   },
   {
-    titulo: "JUBs Futebol contam com campo exclusivo para o futebol feminino",
-    link: "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-04/jubs-futebol-contam-com-campo-exclusivo-para-o-futebol-feminino",
-    data_publicacao: "Wed, 08 Apr 2026 20:23:00 -0300",
+    titulo: "Em carta, indígenas veem avanços, mas cobram demarcações e proteção",
+    link: "https://agenciabrasil.ebc.com.br/direitos-humanos/noticia/2026-04/em-carta-indigenas-veem-avancos-mas-cobram-demarcacoes-e-protecao",
+    data_publicacao: "Thu, 09 Apr 2026 21:24:00 -0300",
     fonte: "Agência Brasil",
   },
   {
-    titulo: "Reportagem da TV Brasil conquista 2º lugar no Prêmio MOL de Jornalismo",
-    link: "https://agenciabrasil.ebc.com.br/direitos-humanos/noticia/2026-04/reportagem-da-tv-brasil-conquista-2o-lugar-no-premio-mol-de-jornalismo",
-    data_publicacao: "Wed, 08 Apr 2026 20:02:00 -0300",
+    titulo: "Museu da Imagem e do Som no Rio faz primeira exposição",
+    link: "https://agenciabrasil.ebc.com.br/cultura/noticia/2026-04/museu-da-imagem-e-do-som-no-rio-faz-primeira-exposicao",
+    data_publicacao: "Thu, 09 Apr 2026 21:00:00 -0300",
     fonte: "Agência Brasil",
+  },
+  {
+    titulo: "Porto de Santos prioriza desembarque de caminhões com gasolina",
+    link: "https://agenciabrasil.ebc.com.br/economia/noticia/2026-04/porto-de-santos-prioriza-desembarque-de-caminhoes-com-gasolina",
+    data_publicacao: "Thu, 09 Apr 2026 20:38:00 -0300",
+    fonte: "Agência Brasil",
+  },
+  {
+    titulo: "Professores estaduais e municipais do Rio fazem paralisação de 24h",
+    link: "https://agenciabrasil.ebc.com.br/educacao/noticia/2026-04/professores-estaduais-e-municipais-do-rio-fazem-paralisacao-de-24h",
+    data_publicacao: "Thu, 09 Apr 2026 20:36:00 -0300",
+    fonte: "Agência Brasil",
+  },
+  {
+    titulo: "Centro de desenvolvimento da CBF recebe jogos dos JUBsFut",
+    link: "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-04/centro-de-desenvolvimento-da-cbf-recebe-jogos-dos-jubsfut",
+    data_publicacao: "Thu, 09 Apr 2026 20:29:00 -0300",
+    fonte: "Agência Brasil",
+  },
+  {
+    titulo: "Indígenas levam a Itamaraty proposta de áreas livres de petróleo e gás",
+    link: "https://agenciabrasil.ebc.com.br/meio-ambiente/noticia/2026-04/indigenas-levam-itamaraty-proposta-de-areas-livres-de-petroleo-e-gas",
+    data_publicacao: "Thu, 09 Apr 2026 20:15:00 -0300",
+    fonte: "Agência Brasil",
+  },
+  {
+    titulo: "ATL: Indígenas tomam as ruas de Brasília pedido demarcação",
+    link: "https://oeco.org.br/noticias/atl-indigenas-tomam-as-ruas-de-brasilia-pedido-demarcacao/",
+    data_publicacao: "Thu, 09 Apr 2026 22:00:00 +0000",
+    fonte: "O Eco",
+  },
+  {
+    titulo: "O capitão Kirk e o papagaio engaiolado",
+    link: "https://oeco.org.br/colunas/o-capitao-kirk-e-o-papagaio-engaiolado/",
+    data_publicacao: "Thu, 09 Apr 2026 21:32:00 +0000",
+    fonte: "O Eco",
+  },
+  {
+    titulo: "Povos indígenas propõem plano global para eliminação dos combustíveis fósseis durante ATL",
+    link: "https://oeco.org.br/salada-verde/povos-indigenas-propoem-plano-global-para-eliminacao-dos-combustiveis-fosseis-durante-atl/",
+    data_publicacao: "Thu, 09 Apr 2026 20:38:49 +0000",
+    fonte: "O Eco",
+  },
+  {
+    titulo: "SindusCon-SP: FGTS não pode ser usado para diminuir o endividamento",
+    link: "https://sindusconsp.com.br/sinduscon-sp-fgts-nao-pode-ser-usado-para-diminuir-o-endividamento/",
+    data_publicacao: "Thu, 09 Apr 2026 18:25:31 +0000",
+    fonte: "SindusCon-SP",
+  },
+  {
+    titulo: "MPF recomenda suspensão imediata da certificação e venda de créditos de carbono no Pará",
+    link: "https://oeco.org.br/salada-verde/mpf-recomenda-suspensao-imediata-da-certificacao-e-venda-de-creditos-de-carbono-no-para/",
+    data_publicacao: "Thu, 09 Apr 2026 18:23:52 +0000",
+    fonte: "O Eco",
+  },
+  {
+    titulo: "Vote no SindusCon-SP para o Conselho Deliberativo da ABNT",
+    link: "https://sindusconsp.com.br/vote-no-sinduscon-sp-para-o-conselho-deliberativo-da-abnt/",
+    data_publicacao: "Thu, 09 Apr 2026 18:20:00 +0000",
+    fonte: "SindusCon-SP",
+  },
+  {
+    titulo: "Explicando o forte ingresso de capitais estrangeiros",
+    link: "https://sindusconsp.com.br/explicando-o-forte-ingresso-de-capitais-estrangeiros/",
+    data_publicacao: "Thu, 09 Apr 2026 18:10:38 +0000",
+    fonte: "SindusCon-SP",
+  },
+  {
+    titulo: "Construção civil cria mais de 9 mil vagas em fevereiro nas regionais do SindusCon-SP",
+    link: "https://sindusconsp.com.br/construcao-civil-cria-mais-de-9-mil-vagas-em-fevereiro-nas-regionais-do-sinduscon-sp/",
+    data_publicacao: "Thu, 09 Apr 2026 17:21:16 +0000",
+    fonte: "SindusCon-SP",
+  },
+  {
+    titulo: "Contra aumentos descabidos dos materiais",
+    link: "https://sindusconsp.com.br/contra-aumentos-descabidos-dos-materiais/",
+    data_publicacao: "Thu, 09 Apr 2026 14:50:24 +0000",
+    fonte: "SindusCon-SP",
   },
   {
     titulo: "Lobby da mineração avança sobre terras indígenas, aponta relatório da APIB",
     link: "https://oeco.org.br/noticias/lobby-da-mineracao-avanca-sobre-terras-indigenas-aponta-relatorio-da-apib/",
     data_publicacao: "Wed, 08 Apr 2026 22:54:55 +0000",
     fonte: "O Eco",
-  },
-  {
-    titulo: "Lula sanciona lei que regulamenta a profissão de doula",
-    link: "https://agenciabrasil.ebc.com.br/saude/noticia/2026-04/lula-sanciona-lei-que-regulamenta-profissao-de-doula",
-    data_publicacao: "Wed, 08 Apr 2026 19:43:00 -0300",
-    fonte: "Agência Brasil",
-  },
-  {
-    titulo: "João Fonseca se garante nas oitavas do Masters 1000 de Monte Carlo",
-    link: "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-04/joao-fonseca-se-garante-nas-oitavas-do-masters-1000-de-monte-carlo",
-    data_publicacao: "Wed, 08 Apr 2026 19:41:00 -0300",
-    fonte: "Agência Brasil",
-  },
-  {
-    titulo: "Serviço de telefonia fixa da operadora Oi é vendido por R\$ 60 milhões",
-    link: "https://agenciabrasil.ebc.com.br/economia/noticia/2026-04/servico-de-telefonia-fixa-da-operadora-oi-e-vendido-por-r-60-milhoes",
-    data_publicacao: "Wed, 08 Apr 2026 19:39:00 -0300",
-    fonte: "Agência Brasil",
-  },
-  {
-    titulo: "Dólar cai a R\$ 5,10 e Bolsa bate recorde com trégua entre EUA e Irã",
-    link: "https://agenciabrasil.ebc.com.br/economia/noticia/2026-04/dolar-cai-a-r-510-e-bolsa-bate-recorde-com-tregua-entre-eua-e-ira",
-    data_publicacao: "Wed, 08 Apr 2026 19:13:00 -0300",
-    fonte: "Agência Brasil",
   },
   {
     titulo: "Que Macaco é Esse? Aplicativo ajuda a identificar primatas de SP",
@@ -114,30 +168,6 @@ const noticias: Noticia[] = [
     fonte: "O Eco",
   },
   {
-    titulo: "Opinião – Cidades que avançam: modernizar a legislação urbana é indispensável",
-    link: "https://sindusconsp.com.br/opiniao-cidades-que-avancam-modernizar-a-legislacao-urbana-e-indispensavel/",
-    data_publicacao: "Tue, 07 Apr 2026 17:51:56 +0000",
-    fonte: "SindusCon-SP",
-  },
-  {
-    titulo: "Rio Preto avança na aprovação de loteamentos e traz agilidade ao segmento de incorporação imobiliária com adesão ao Graprohab Integra",
-    link: "https://sindusconsp.com.br/rio-preto-avanca-na-aprovacao-de-loteamentos-e-traz-agilidade-ao-segmento-de-incorporacao-imobiliaria-com-adesao-ao-graprohab-integra/",
-    data_publicacao: "Tue, 07 Apr 2026 16:28:41 +0000",
-    fonte: "SindusCon-SP",
-  },
-  {
-    titulo: "Empresas deverão informar sobre câncer",
-    link: "https://sindusconsp.com.br/empresas-deverao-informar-sobre-cancer/",
-    data_publicacao: "Tue, 07 Apr 2026 15:10:49 +0000",
-    fonte: "SindusCon-SP",
-  },
-  {
-    titulo: "Capital tem novos valores para cálculo do ISS",
-    link: "https://sindusconsp.com.br/capital-tem-novos-valores-para-calculo-do-iss/",
-    data_publicacao: "Tue, 07 Apr 2026 15:08:10 +0000",
-    fonte: "SindusCon-SP",
-  },
-  {
     titulo: "Poluição por plásticos: esforços por um tratado global e o Brasil",
     link: "https://oeco.org.br/analises/poluicao-por-plasticos-esforcos-por-um-tratado-global-e-o-brasil/",
     data_publicacao: "Tue, 07 Apr 2026 14:58:18 +0000",
@@ -150,40 +180,10 @@ const noticias: Noticia[] = [
     fonte: "O Eco",
   },
   {
-    titulo: "Há 80% de chance de um El Niño na segunda metade de 2026, diz Cemaden",
-    link: "https://oeco.org.br/salada-verde/ha-80-de-chance-de-um-el-nino-na-segunda-metade-de-2026-diz-cemaden/",
-    data_publicacao: "Mon, 06 Apr 2026 20:33:00 +0000",
-    fonte: "O Eco",
-  },
-  {
-    titulo: "((o))eco realiza 1º encontro de membros nesta terça",
-    link: "https://oeco.org.br/salada-verde/oeco-realiza-1o-encontro-de-membros-nesta-terca/",
-    data_publicacao: "Mon, 06 Apr 2026 19:54:59 +0000",
-    fonte: "O Eco",
-  },
-  {
-    titulo: "Rodrigo Agostinho deixa o Ibama após 3 anos",
-    link: "https://oeco.org.br/salada-verde/rodrigo-agostinho-deixa-o-ibama-apos-3-anos/",
-    data_publicacao: "Mon, 06 Apr 2026 19:49:53 +0000",
-    fonte: "O Eco",
-  },
-  {
-    titulo: "Sensor nacional mira “ar invisível” da Amazônia e reforça monitoramento em terras indígenas",
-    link: "https://oeco.org.br/noticias/sensor-nacional-mira-ar-invisivel-da-amazonia-e-reforca-monitoramento-em-terras-indigenas/",
-    data_publicacao: "Mon, 06 Apr 2026 18:53:05 +0000",
-    fonte: "O Eco",
-  },
-  {
     titulo: "WaterLoss 2026 coloca o Brasil no centro do debate global sobre perdas de água",
     link: "https://abes-dn.org.br/waterloss-2026-coloca-o-brasil-no-centro-do-debate-global-sobre-perdas-de-agua/",
     data_publicacao: "Mon, 06 Apr 2026 17:52:20 +0000",
     fonte: "ABES",
-  },
-  {
-    titulo: "Seconci-SP destaca cuidado preventivo da saúde",
-    link: "https://sindusconsp.com.br/seconci-sp-destaca-cuidado-preventivo-da-saude/",
-    data_publicacao: "Mon, 06 Apr 2026 12:57:31 +0000",
-    fonte: "SindusCon-SP",
   },
   {
     titulo: "ABES-AM E ABES-RR PARTICIPAM DE EVENTO DE RECURSOS HÍDRICOS EM MANAUS",

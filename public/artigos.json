@@ -1,91 +1,278 @@
 [
   {
-    "titulo": "Flamengo inicia Copa Libertadores com vitória na altitude de Cusco",
-    "link": "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-04/flamengo-inicia-copa-libertadores-com-vitoria-na-altitude-de-cusco",
-    "resumo": "O Flamengo iniciou sua caminhada edição 2026 da Copa Libertadores com uma vitória de 2 a 0 sobre o Cusco (Peru), na noite desta quarta-feira (8) no Estádio Inca Garcilaso de la Veja. Com o triunfo, que contou com transmissão ao vivo da Rádio Nacional, o Rubro-Negro da Gávea lidera o Grupo A da compe",
-    "data_publicacao": "Wed, 08 Apr 2026 23:51:00 -0300",
+    "titulo": "Corinthians derrota Platense na Libertadores na estreia de Diniz",
+    "link": "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-04/corinthians-derrota-platense-na-libertadores-na-estreia-de-diniz",
+    "resumo": "Na partida que marcou a estreia do técnico Fernando Diniz, o Corinthians derrotou o Platense (Argentina) por 2 a 0, na noite desta quinta-feira (9) no estádio Estádio Ciudad de Vicente López, em Buenos Aires, pela primeira rodada da fase de grupos da Copa Libertadores da América. 🦅 Vitória, @Corint",
+    "data_publicacao": "Thu, 09 Apr 2026 23:09:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Esportes",
+      "esportes",
+      "futebol",
+      "Corinthians"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Câmara derruba mudanças do Senado na MP do Seguro-Defeso",
+    "link": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-04/camara-derruba-mudancas-do-senado-na-mp-do-seguro-defeso",
+    "resumo": "A Câmara dos Deputados rejeitou nesta quinta-feira (9) as mudanças feitas pelos senadores na Medida Provisória 1323/25, que trata das regras para o pagamento do seguro-defeso. Com isso, fica mantida a versão aprovada pelos deputados na terça-feira (7). O texto vai agora para sanção presidencial. O s",
+    "data_publicacao": "Thu, 09 Apr 2026 22:32:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Economia",
+      "seguro-defeso",
+      "pescador artesanal"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Após pane, Aeroporto de Congonhas vai operar até meia-noite",
+    "link": "https://agenciabrasil.ebc.com.br/geral/noticia/2026-04/apos-pane-aeroporto-de-congonhas-vai-operar-ate-meia-noite",
+    "resumo": "A Aena, concessionária que opera o Aeroporto de Congonhas, informou que irá operar até meia-noite desta quinta-feira (9). A medida foi adotada após uma pane técnica na manhã de hoje ter provocado o cancelamento de pousos e decolagens no aeroporto, localizado na zona sul de São Paulo. O problema ocor",
+    "data_publicacao": "Thu, 09 Apr 2026 22:07:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Geral",
+      "Aeroporto de Congonhas",
+      "pane técnica"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Mega-Sena acumula e prêmio principal vai para R$ 40 milhões",
+    "link": "https://agenciabrasil.ebc.com.br/geral/noticia/2026-04/mega-sena-acumula-e-premio-principal-vai-para-r-40-milhoes",
+    "resumo": "Nenhum apostador acertou as seis dezenas do concurso 2.994 da Mega-Sena, realizado nesta qinta-feira (9). O prêmio acumulou e está estimado em R$ 40 milhões para o próximo sorteio. Os números sorteados são: 01 - 10 - 23 - 31 - 40 - 55 47 apostas acertaram cinco dezenas e irão receber R$ 33.985,84 ca",
+    "data_publicacao": "Thu, 09 Apr 2026 21:32:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Geral",
+      "Mega-Sena",
+      "Loterias",
+      "Caixa"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Em carta, indígenas veem avanços, mas cobram demarcações e proteção",
+    "link": "https://agenciabrasil.ebc.com.br/direitos-humanos/noticia/2026-04/em-carta-indigenas-veem-avancos-mas-cobram-demarcacoes-e-protecao",
+    "resumo": "Os representantes da Articulação dos Povos Indígenas do Brasil (Apib), entidade que coordena o Acampamento Terra Livre em Brasília (DF), levaram, nesta quinta-feira (9), para a Secretaria-Geral da Presidência e para o Ministério das Minas e Energia, uma carta de sete páginas que reconhece avanços na",
+    "data_publicacao": "Thu, 09 Apr 2026 21:24:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Direitos Humanos",
+      "Povos Indígenas",
+      "Abril Indígena",
+      "Acampamento Terra Livre"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Museu da Imagem e do Som no Rio faz primeira exposição",
+    "link": "https://agenciabrasil.ebc.com.br/cultura/noticia/2026-04/museu-da-imagem-e-do-som-no-rio-faz-primeira-exposicao",
+    "resumo": "O Museu da Imagem e do Som (MIS), no Rio de Janeiro, inaugurou nesta quinta-feira (9), o início gradual das atividades culturais, com a exposição temporária Arquitetura em Cena: o MIS Copa antes da Imagem e do Som. A mostra faz parte da abertura parcial do espaço, exibindo os bastidores da obra, fot",
+    "data_publicacao": "Thu, 09 Apr 2026 21:00:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Cultura",
+      "MIS",
+      "Museu da Imagem e do Som",
+      "Copacabana"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Porto de Santos prioriza desembarque de caminhões com gasolina",
+    "link": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-04/porto-de-santos-prioriza-desembarque-de-caminhoes-com-gasolina",
+    "resumo": "A Autoridade Portuária de Santos (APS) informou que vai priorizar o trânsito de navios de combustível, a fim de diminuir o impacto da crise energética causada pela guerra entre Estados Unidos e Irã. A medida é consequência do parecer da Agência Nacional de Petróleo (ANP), que indicou risco de desaba",
+    "data_publicacao": "Thu, 09 Apr 2026 20:38:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Economia",
+      "porto de santos",
+      "gasolina",
+      "ANP"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Professores estaduais e municipais do Rio fazem paralisação de 24h",
+    "link": "https://agenciabrasil.ebc.com.br/educacao/noticia/2026-04/professores-estaduais-e-municipais-do-rio-fazem-paralisacao-de-24h",
+    "resumo": "Professores e funcionários administrativos das redes de educação municipal e estadual do Rio de Janeiro realizaram nesta quinta-feira (9) uma paralisação de 24 horas para cobrar recomposição salarial e melhorias nas condições de trabalho. Segundo a coordenadora do Sindicato Estadual dos Profissionai",
+    "data_publicacao": "Thu, 09 Apr 2026 20:36:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Educação",
+      "professores",
+      "greve de professores",
+      "Rio de Janeiro"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Centro de desenvolvimento da CBF recebe jogos dos JUBsFut",
+    "link": "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-04/centro-de-desenvolvimento-da-cbf-recebe-jogos-dos-jubsfut",
+    "resumo": "As partidas dos Jogos Universitários Brasileiros de Futebol (JUBsFut) também estão sendo disputadas em Barra dos Coqueiros, cidade próxima a Aracaju, no primeiro Centro de Desenvolvimento do Futebol do Nordeste. Essa estrutura, idealizada pela Confederação Brasileira de Futebol (CBF) e inaugurada em",
+    "data_publicacao": "Thu, 09 Apr 2026 20:29:00 -0300",
     "fonte": "Agência Brasil",
     "autor": "Agência Brasil",
     "categorias": [
       "Esportes",
       "esportes",
       "Futebol",
-      "Copa Libertadores"
+      "Jogos Universitários Brasileiros de Futebol"
     ],
     "imagem": ""
   },
   {
-    "titulo": "Hall da Fama do COB celebra ídolos do esporte olímpico brasileiro",
-    "link": "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-04/hall-da-fama-do-cob-celebra-idolos-do-esporte-olimpico-brasileiro",
-    "resumo": "Em cerimônia realizada na noite desta quarta-feira (8) no hotel Copacabana Palace, no Rio de Janeiro, o Comitê Olímpico do Brasil (COB) eternizou cinco grandes ídolos olímpicos em seu Hall da Fama. Os homenageados foram Alex Welter e Lars Björkström, da vela, Ricardo Santos e Emanuel Rego, do vôlei ",
-    "data_publicacao": "Wed, 08 Apr 2026 22:46:00 -0300",
+    "titulo": "Indígenas levam a Itamaraty proposta de áreas livres de petróleo e gás",
+    "link": "https://agenciabrasil.ebc.com.br/meio-ambiente/noticia/2026-04/indigenas-levam-itamaraty-proposta-de-areas-livres-de-petroleo-e-gas",
+    "resumo": "Lideranças indígenas presentes no Acampamento Terra Livre, em Brasília, entregaram, nesta quinta (9), a representantes do Ministério das Relações Exteriores um documento que propõe a criação de zonas livres de exploração de petróleo e gás. Os líderes também defendem que os territórios indígenas deve",
+    "data_publicacao": "Thu, 09 Apr 2026 20:15:00 -0300",
     "fonte": "Agência Brasil",
     "autor": "Agência Brasil",
     "categorias": [
-      "Esportes",
-      "esportes",
-      "COB",
-      "Hall da Fama"
+      "Meio Ambiente",
+      "ATL",
+      "Acampamento Terra Livre",
+      "indígenas"
     ],
     "imagem": ""
   },
   {
-    "titulo": "Incêndio no Velódromo do Rio é controlado; pista não teve impacto",
-    "link": "https://agenciabrasil.ebc.com.br/geral/noticia/2026-04/incendio-no-velodromo-no-rio-e-controlado-pista-nao-teve-impacto",
-    "resumo": "Depois de 14 horas de trabalho, o Corpo de Bombeiros controlou na noite desta quarta-feira (8) o incêndio que atingiu o Velódromo do Parque Olímpico, na Barra da Tijuca, durante a madrugada. O trabalho de limpeza do local foi encerrado. O fogo foi rapidamente controlado, ficando restrito à lona que ",
-    "data_publicacao": "Wed, 08 Apr 2026 22:35:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
+    "titulo": "ATL: Indígenas tomam as ruas de Brasília pedido demarcação",
+    "link": "https://oeco.org.br/noticias/atl-indigenas-tomam-as-ruas-de-brasilia-pedido-demarcacao/",
+    "resumo": "Segunda marcha do Acampamento Terra Livre 2026 reuniu povos indígenas de todo o país nesta quinta-feira (09); Veja fotos",
+    "data_publicacao": "Thu, 09 Apr 2026 22:00:00 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
     "categorias": [
-      "Geral",
-      "incêndio",
-      "velódromo",
-      "Rio de Janeiro"
+      "Notícias",
+      "ATL",
+      "Demarcação",
+      "ICS"
     ],
     "imagem": ""
   },
   {
-    "titulo": "Alckmin: biodiesel reduz exposição do Brasil à geopolítica mundial",
-    "link": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-04/alckmin-biodiesel-reduz-exposicao-do-brasil-geopolitica-mundial",
-    "resumo": "O vice-presidente da República, Geraldo Alckmin participou no início da noite em Brasília do lançamento da Aliança Biodiesel, formada pela Associação dos Produtores de Biocombustíveis do Brasil (Aprobio) com a Associação Brasileira das Indústrias de Óleos Vegetais (Abiove). Juntas, as duas entidades",
-    "data_publicacao": "Wed, 08 Apr 2026 20:55:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
+    "titulo": "O capitão Kirk e o papagaio engaiolado",
+    "link": "https://oeco.org.br/colunas/o-capitao-kirk-e-o-papagaio-engaiolado/",
+    "resumo": "A morte do cão Orelha causou indignação nacional. Estamos maduros para falar da morte e cativeiro de milhares de papagaios e outros bichos?",
+    "data_publicacao": "Thu, 09 Apr 2026 21:32:00 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Colunas",
+      "conservação",
+      "fauna",
+      "política ambiental"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Povos indígenas propõem plano global para eliminação dos combustíveis fósseis durante ATL",
+    "link": "https://oeco.org.br/salada-verde/povos-indigenas-propoem-plano-global-para-eliminacao-dos-combustiveis-fosseis-durante-atl/",
+    "resumo": "Documento apresentado durante mobilização em Brasília propõe zonas livres de exploração e coloca territórios tradicionais no centro da estratégia climática global",
+    "data_publicacao": "Thu, 09 Apr 2026 20:38:49 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Salada Verde",
+      "ATL",
+      "combustíveis fósseis",
+      "ICS"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "SindusCon-SP: FGTS não pode ser usado para diminuir o endividamento",
+    "link": "https://sindusconsp.com.br/sinduscon-sp-fgts-nao-pode-ser-usado-para-diminuir-o-endividamento/",
+    "resumo": "O SindusCon-SP manifesta enorme preocupação com relação à intenção do governo federal de dispor dos recursos do FGTS para o refinanciamento ou a quitação de dívidas. Cumpre lembrar que os recursos do FGTS têm como base os depósitos dos trabalhadores e dos empregadores, visando primordialmente que es",
+    "data_publicacao": "Thu, 09 Apr 2026 18:25:31 +0000",
+    "fonte": "SindusCon-SP",
+    "autor": "SindusCon-SP",
+    "categorias": [
+      "Notícias"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "MPF recomenda suspensão imediata da certificação e venda de créditos de carbono no Pará",
+    "link": "https://oeco.org.br/salada-verde/mpf-recomenda-suspensao-imediata-da-certificacao-e-venda-de-creditos-de-carbono-no-para/",
+    "resumo": "Órgão argumenta que certificação só pode ter continuidade com conclusão da ação civil pública; Para os procuradores, estado não finalizou consulta pública dos povos tradicionais",
+    "data_publicacao": "Thu, 09 Apr 2026 18:23:52 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Salada Verde",
+      "créditos de carbono",
+      "MPF",
+      "pará"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Vote no SindusCon-SP para o Conselho Deliberativo da ABNT",
+    "link": "https://sindusconsp.com.br/vote-no-sinduscon-sp-para-o-conselho-deliberativo-da-abnt/",
+    "resumo": "Prezado Associado da ABNT Caso ainda não tenha registrado seu voto na eleição para o Conselho Deliberativo da ABNT, peço a gentileza do seu apoio ao SindusCon-SP (Sócio Contribuinte). O SindusCon-SP participa ativamente da elaboração e da atualização de normas técnicas da construção. Sua atuação abr",
+    "data_publicacao": "Thu, 09 Apr 2026 18:20:00 +0000",
+    "fonte": "SindusCon-SP",
+    "autor": "SindusCon-SP",
+    "categorias": [
+      "Notícias"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Explicando o forte ingresso de capitais estrangeiros",
+    "link": "https://sindusconsp.com.br/explicando-o-forte-ingresso-de-capitais-estrangeiros/",
+    "resumo": "ConstruCarta analisa trajetória da taxa de câmbio A volatilidade da taxa de câmbio não é a novidade, pois boa parte dos ingressos de capital estrangeiro se devem ao diferencial de juros interno-externo. A grande surpresa fica por conta dos ingressos de capital em bolsa, analisa o ConstruCarta. Segun",
+    "data_publicacao": "Thu, 09 Apr 2026 18:10:38 +0000",
+    "fonte": "SindusCon-SP",
+    "autor": "SindusCon-SP",
     "categorias": [
       "Economia",
-      "Geraldo Alckmin",
-      "Biodiesel",
-      "Aliança Biodiesel"
+      "Notícias",
+      "Destaque",
+      "Destaque Regional"
     ],
     "imagem": ""
   },
   {
-    "titulo": "JUBs Futebol contam com campo exclusivo para o futebol feminino",
-    "link": "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-04/jubs-futebol-contam-com-campo-exclusivo-para-o-futebol-feminino",
-    "resumo": "No gramado da Arena Delas, apenas chuteiras calçadas por mulheres podem jogar. O local fica dentro do Parque da Sementeira, em uma área pública gerida pela Prefeitura de Aracaju, mas naquele palco apenas o futebol feminino pode ser praticado. Tal estrutura foi um dos atrativos para a Confederação Br",
-    "data_publicacao": "Wed, 08 Apr 2026 20:23:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
+    "titulo": "Construção civil cria mais de 9 mil vagas em fevereiro nas regionais do SindusCon-SP",
+    "link": "https://sindusconsp.com.br/construcao-civil-cria-mais-de-9-mil-vagas-em-fevereiro-nas-regionais-do-sinduscon-sp/",
+    "resumo": "Levantamento aponta capital na liderança e interior com desempenho positivo, apesar de quedas pontuais Em fevereiro de 2026, a construção civil apresentou desempenho positivo nas principais cidades do estado de São Paulo, com a criação de cerca de 9.537 postos de trabalho. O setor passou a empregar ",
+    "data_publicacao": "Thu, 09 Apr 2026 17:21:16 +0000",
+    "fonte": "SindusCon-SP",
+    "autor": "SindusCon-SP",
     "categorias": [
-      "Esportes",
-      "esportes",
-      "Futebol Feminino",
-      "jubs futebol"
+      "Economia",
+      "Destaque",
+      "Destaque Regional",
+      "Destaque Tema"
     ],
     "imagem": ""
   },
   {
-    "titulo": "Reportagem da TV Brasil conquista 2º lugar no Prêmio MOL de Jornalismo",
-    "link": "https://agenciabrasil.ebc.com.br/direitos-humanos/noticia/2026-04/reportagem-da-tv-brasil-conquista-2o-lugar-no-premio-mol-de-jornalismo",
-    "resumo": "A jornalista Flávia Grossi e equipe, da TV Brasil, conquistaram o segundo lugar no Prêmio MOL de Jornalismo para a Solidariedade, na categoria “Jornalismo Tradicional – Vídeo”. A cerimônia de anúncio dos vencedores foi realizada na terça-feira (7), no Auditório da Fecap, em São Paulo. Mais de 200 tr",
-    "data_publicacao": "Wed, 08 Apr 2026 20:02:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
+    "titulo": "Contra aumentos descabidos dos materiais",
+    "link": "https://sindusconsp.com.br/contra-aumentos-descabidos-dos-materiais/",
+    "resumo": "SindusCon-SP definiu providências na reunião do CTQ O SindusCon-SP tomará providências para o enfrentamento das tentativas de aumentos de preços pretendidos pelos fabricantes de materiais de construção. A primeira delas é a publicação de um posicionamento contundente na coluna Entre Aspas, no jornal",
+    "data_publicacao": "Thu, 09 Apr 2026 14:50:24 +0000",
+    "fonte": "SindusCon-SP",
+    "autor": "SindusCon-SP",
     "categorias": [
-      "Direitos Humanos",
-      "TV Brasil",
-      "EBC",
-      "caminhos da reportagem"
+      "Notícias",
+      "Tecnologia e Qualidade",
+      "Destaque",
+      "Destaque Regional"
     ],
     "imagem": ""
   },
@@ -101,66 +288,6 @@
       "amazônia",
       "ICS",
       "mineração em terras indígenas"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Lula sanciona lei que regulamenta a profissão de doula",
-    "link": "https://agenciabrasil.ebc.com.br/saude/noticia/2026-04/lula-sanciona-lei-que-regulamenta-profissao-de-doula",
-    "resumo": "O presidente Luiz Inácio Lula da Silva sancionou nesta quarta-feira (8) o projeto de lei que regulamenta o exercício da profissão de doula, que é a profissional que oferece apoio físico, emocional e informacional à gestante, especialmente durante o parto normal. O texto foi aprovado no mês passado p",
-    "data_publicacao": "Wed, 08 Apr 2026 19:43:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Saúde",
-      "doula",
-      "parto",
-      "Lula"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "João Fonseca se garante nas oitavas do Masters 1000 de Monte Carlo",
-    "link": "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-04/joao-fonseca-se-garante-nas-oitavas-do-masters-1000-de-monte-carlo",
-    "resumo": "O tenista brasileiro João Fonseca se classificou para as oitavas de final do Masters 1000 de Monte Carlo. A vaga veio com uma vitória por 2 sest a 1 (parciais de 7/5, 4/6 e 6/3) sobre o francês Arthur Rinderknech nesta quarta-feira (8). O carioca de 19 anos de idade estreou na competição na última s",
-    "data_publicacao": "Wed, 08 Apr 2026 19:41:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Esportes",
-      "esportes",
-      "tênis",
-      "João Fonseca"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Serviço de telefonia fixa da operadora Oi é vendido por R$ 60 milhões",
-    "link": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-04/servico-de-telefonia-fixa-da-operadora-oi-e-vendido-por-r-60-milhoes",
-    "resumo": "A Justiça do Rio aprovou, em audiência pública, nesta quarta-feira (8), a venda dos serviços de telefonia fixa da Oi. A decisão é da 7ª Vara Empresarial do Rio de Janeiro. A empresa Método Telecom foi declarada vencedora do leilão para assumir a chamada Unidade Produtiva Isolada (UPI) Serviços Telef",
-    "data_publicacao": "Wed, 08 Apr 2026 19:39:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Economia",
-      "serviço de telefonia fixa",
-      "Operadora Oi",
-      "leilão"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Dólar cai a R$ 5,10 e Bolsa bate recorde com trégua entre EUA e Irã",
-    "link": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-04/dolar-cai-a-r-510-e-bolsa-bate-recorde-com-tregua-entre-eua-e-ira",
-    "resumo": "O dólar caiu ao menor nível em quase dois anos e o Ibovespa renovou recordes nesta quarta-feira (8), em um dia marcado pela melhora do apetite ao risco global após o anúncio de um cessar-fogo temporário entre Estados Unidos e Irã. A trégua, anunciada na noite de terça-feira (7) pelo presidente norte",
-    "data_publicacao": "Wed, 08 Apr 2026 19:13:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Economia",
-      "dólar",
-      "bolsa",
-      "trégua"
     ],
     "imagem": ""
   },
@@ -255,66 +382,6 @@
     "imagem": ""
   },
   {
-    "titulo": "Opinião – Cidades que avançam: modernizar a legislação urbana é indispensável",
-    "link": "https://sindusconsp.com.br/opiniao-cidades-que-avancam-modernizar-a-legislacao-urbana-e-indispensavel/",
-    "resumo": "A modernização da legislação urbana se consolidou como estratégia central de desenvolvimento. Regras mais simples e atualizadas organizam melhor o território, direcionam o crescimento para áreas com infraestrutura e elevam a qualidade de vida. A evidência é concreta. Boas revisões regulatórias destr",
-    "data_publicacao": "Tue, 07 Apr 2026 17:51:56 +0000",
-    "fonte": "SindusCon-SP",
-    "autor": "SindusCon-SP",
-    "categorias": [
-      "Habitação",
-      "Notícias",
-      "Destaque",
-      "Destaque Regional"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Rio Preto avança na aprovação de loteamentos e traz agilidade ao segmento de incorporação imobiliária com adesão ao Graprohab Integra",
-    "link": "https://sindusconsp.com.br/rio-preto-avanca-na-aprovacao-de-loteamentos-e-traz-agilidade-ao-segmento-de-incorporacao-imobiliaria-com-adesao-ao-graprohab-integra/",
-    "resumo": "A medida, resultado da articulação da Regional do SindusCon-SP, permite mais agilidade e eficiência aos processos A Regional do SindusCon-SP em São José do Rio Preto comemora mais um avanço importante para o setor da construção civil e imobiliário. Como resultado do diálogo contínuo com a prefeitura",
-    "data_publicacao": "Tue, 07 Apr 2026 16:28:41 +0000",
-    "fonte": "SindusCon-SP",
-    "autor": "SindusCon-SP",
-    "categorias": [
-      "Habitação",
-      "Notícias",
-      "Destaque",
-      "Destaque Regional"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Empresas deverão informar sobre câncer",
-    "link": "https://sindusconsp.com.br/empresas-deverao-informar-sobre-cancer/",
-    "resumo": "Lei determina conscientizar trabalhadores O presidente Luiz Inácio Lula da Silva sancionou a Lei nº 15.377, de 2 de abril (DOU de 6/4/2026,) que alterou a Consolidação das Leis do Trabalho (CLT) para determinar que as empresas disponibilizem a seus empregados informações sobre campanhas oficiais de ",
-    "data_publicacao": "Tue, 07 Apr 2026 15:10:49 +0000",
-    "fonte": "SindusCon-SP",
-    "autor": "SindusCon-SP",
-    "categorias": [
-      "Notícias",
-      "Responsabilidade Social",
-      "Destaque",
-      "Destaque Regional"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Capital tem novos valores para cálculo do ISS",
-    "link": "https://sindusconsp.com.br/capital-tem-novos-valores-para-calculo-do-iss/",
-    "resumo": "Confira portaria da Secretaria Municipal da Fazenda A Secretaria Municipal da Fazenda de São Paulo, por meio da Portaria nº 78, de 31 de março (DOU de 1/4/2026), fixou os preços por metro quadrado a serem utilizados a partir de 1º de abril na apuração do valor mínimo de mão de obra aplicada na const",
-    "data_publicacao": "Tue, 07 Apr 2026 15:08:10 +0000",
-    "fonte": "SindusCon-SP",
-    "autor": "SindusCon-SP",
-    "categorias": [
-      "Imobiliário",
-      "Notícias",
-      "Destaque",
-      "Destaque Regional"
-    ],
-    "imagem": ""
-  },
-  {
     "titulo": "Poluição por plásticos: esforços por um tratado global e o Brasil",
     "link": "https://oeco.org.br/analises/poluicao-por-plasticos-esforcos-por-um-tratado-global-e-o-brasil/",
     "resumo": "É necessário que, ao desenvolver o seu Mapa do Caminho com vistas à redução da dependência de combustíveis fósseis, o Brasil inclua a redução da produção de plástico",
@@ -344,66 +411,6 @@
     "imagem": ""
   },
   {
-    "titulo": "Há 80% de chance de um El Niño na segunda metade de 2026, diz Cemaden",
-    "link": "https://oeco.org.br/salada-verde/ha-80-de-chance-de-um-el-nino-na-segunda-metade-de-2026-diz-cemaden/",
-    "resumo": "Última ocorrência, entre 2023 e 2024, fez o país registrar seca extrema no Norte e chuvas torrenciais no Sul. Segundo previsão, El Niño teria intensidade entre moderada e forte",
-    "data_publicacao": "Mon, 06 Apr 2026 20:33:00 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Salada Verde",
-      "Cemaden",
-      "conservação",
-      "el nino"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "((o))eco realiza 1º encontro de membros nesta terça",
-    "link": "https://oeco.org.br/salada-verde/oeco-realiza-1o-encontro-de-membros-nesta-terca/",
-    "resumo": "Evento online, exclusivo aos apoiadores de ((o))eco, será oportunidade de conhecer bastidores, discutir a cobertura ambiental e ter um diálogo direto com repórter",
-    "data_publicacao": "Mon, 06 Apr 2026 19:54:59 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Salada Verde",
-      "#ApoieOEco",
-      "agenda",
-      "financiamento"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Rodrigo Agostinho deixa o Ibama após 3 anos",
-    "link": "https://oeco.org.br/salada-verde/rodrigo-agostinho-deixa-o-ibama-apos-3-anos/",
-    "resumo": "Saída ocorre em meio ao calendário eleitoral e encerra ciclo iniciado em 2023; Gestão teve foco no fortalecimento da fiscalização ambiental do órgão",
-    "data_publicacao": "Mon, 06 Apr 2026 19:49:53 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Salada Verde",
-      "ibama",
-      "ICS",
-      "política ambiental"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Sensor nacional mira “ar invisível” da Amazônia e reforça monitoramento em terras indígenas",
-    "link": "https://oeco.org.br/noticias/sensor-nacional-mira-ar-invisivel-da-amazonia-e-reforca-monitoramento-em-terras-indigenas/",
-    "resumo": "Tecnologia de baixo custo quer ampliar dados sobre poluição do ar em territórios indígenas, onde queimadas já comprometem saúde e expectativa de vida",
-    "data_publicacao": "Mon, 06 Apr 2026 18:53:05 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Notícias",
-      "amazônia",
-      "ICS",
-      "mudanças climáticas"
-    ],
-    "imagem": ""
-  },
-  {
     "titulo": "WaterLoss 2026 coloca o Brasil no centro do debate global sobre perdas de água",
     "link": "https://abes-dn.org.br/waterloss-2026-coloca-o-brasil-no-centro-do-debate-global-sobre-perdas-de-agua/",
     "resumo": "Evento internacional reunirá especialistas no Rio de Janeiro para discutir soluções, inovação e segurança hídrica Leia Mais",
@@ -412,21 +419,6 @@
     "autor": "ABES",
     "categorias": [
       "Notícias"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Seconci-SP destaca cuidado preventivo da saúde",
-    "link": "https://sindusconsp.com.br/seconci-sp-destaca-cuidado-preventivo-da-saude/",
-    "resumo": "Clínico recomenda organizar agenda para o ano todo O grande desafio para a manutenção da saúde durante todo o ano, para além de manter a regularidade de bons hábitos em alimentação e atividade física, é não procurar o médico somente na doença, mas agir preventivamente, fazendo consultas e checkups p",
-    "data_publicacao": "Mon, 06 Apr 2026 12:57:31 +0000",
-    "fonte": "SindusCon-SP",
-    "autor": "SindusCon-SP",
-    "categorias": [
-      "Notícias",
-      "Responsabilidade Social",
-      "Destaque",
-      "Destaque Regional"
     ],
     "imagem": ""
   },
