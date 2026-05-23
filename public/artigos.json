@@ -1,174 +1,309 @@
 [
   {
-    "titulo": "Remo vence Botafogo de virada no Nilton Santos pelo Brasileirão",
-    "link": "https://agenciabrasil.ebc.com.br/esportes/noticia/2026-05/remo-vence-botafogo-de-virada-no-nilton-santos-pelo-brasileirao",
-    "resumo": "O Remo derrotou de virada o Botafogo por 2 a 1 no Estádio Nilton Santos, no Rio de Janeiro, quebrando a série invicta de nove jogos do Alvinegro. Na partida de abertura das 14ª rodada do Campeonato Brasileiro, foram os donos da casa que abriram o placar com Ferraresi no primeiro tempo. No entanto, v",
-    "data_publicacao": "Sat, 02 May 2026 20:24:00 -0300",
+    "titulo": "Justiça do Paraná reduz pena de homem que ateou fogo na companheira",
+    "link": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-05/justica-do-parana-reduz-pena-de-homem-que-ateou-fogo-na-companheira",
+    "resumo": "Uma decisão do Tribunal de Justiça do Paraná acolheu o pedido da defesa de José Rodrigo Bandura e mudou o tipo de crime pelo qual ele é acusado. O réu, que está preso, responde por ter ateado fogo em sua companheira, em junho de 2025. Em seu processo, responderia por tentativa de homicídio, mas pass",
+    "data_publicacao": "Fri, 22 May 2026 20:33:00 -0300",
     "fonte": "Agência Brasil",
     "autor": "Agência Brasil",
     "categorias": [
-      "Esportes",
-      "remo",
-      "Brasileirão",
-      "Botafogo"
+      "Justiça",
+      "violência contra a mulher",
+      "direitos das mulheres",
+      "Justiça do Paraná"
     ],
     "imagem": ""
   },
   {
-    "titulo": "TV Brasil exibe neste domingo quatro filmes nacionais inéditos",
-    "link": "https://agenciabrasil.ebc.com.br/cultura/noticia/2026-05/tv-brasil-exibe-neste-domingo-quatro-filmes-nacionais-ineditos",
-    "resumo": "A TV Brasil exibe quatro produções nacionais inéditas da sétima arte na sessão de filmes deste domingo (3). Todas as novidades ficam disponíveis no app TV Brasil Play, após a exibição. A programação começa às 16h com a comédia Porópopo (2020). Notícias relacionadas:TV Brasil transmite jogos do Brasi",
-    "data_publicacao": "Sat, 02 May 2026 19:11:00 -0300",
+    "titulo": "Brasil propõe pacto regional contra feminicídio no Mercosul",
+    "link": "https://agenciabrasil.ebc.com.br/internacional/noticia/2026-05/brasil-propoe-pacto-regional-contra-feminicidio-no-mercosul",
+    "resumo": "O governo federal propôs nesta sexta-feira (22) a criação de um pacto regional contra o feminicídio no Mercosul, inspirado no modelo brasileiro de articulação entre os Três Poderes. A iniciativa foi apresentada pela ministra das Mulheres, Márcia Lopes, durante a 26ª Reunião de Ministras e Altas Auto",
+    "data_publicacao": "Fri, 22 May 2026 20:14:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Internacional",
+      "Mercosul",
+      "RMAAM",
+      "Márcia Lopes"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "\"Vamos ver quem é quem\", diz Lula sobre redução da jornada de trabalho",
+    "link": "https://agenciabrasil.ebc.com.br/politica/noticia/2026-05/vamos-ver-quem-e-quem-diz-lula-sobre-reducao-da-jornada-de-trabalho",
+    "resumo": "O presidente Luiz Inácio Lula da Silva criticou nesta sexta-feira (22), em entrevista ao programa Sem Censura, da TV Brasil, a possibilidade de período de transição para a adoção da redução da jornada de trabalho, de 44 horas para 40 horas semanais, e o fim da escala 6x1, aquela em que o empregado t",
+    "data_publicacao": "Fri, 22 May 2026 19:40:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Política",
+      "Lula",
+      "Sem Censura",
+      "TV Brasil"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Festival pan-africano Akwaaba reúne cultura e ciência política em SP",
+    "link": "https://agenciabrasil.ebc.com.br/cultura/noticia/2026-05/festival-pan-africano-akwaaba-reune-cultura-e-ciencia-politica-em-sp",
+    "resumo": "A primeira edição do Festival Akwaaba foi aberta na tarde desta sexta-feira (22) no Museu Afro Brasil Emanoel Araujo, no Parque do Ibirapuera, na capital paulista. Inspirado na palavra de origem akan, que significa “bem-vindo”, o Akwaaba pretende ser o primeiro passo de uma plataforma de intercâmbio",
+    "data_publicacao": "Fri, 22 May 2026 19:35:00 -0300",
     "fonte": "Agência Brasil",
     "autor": "Agência Brasil",
     "categorias": [
       "Cultura",
-      "TV Brasil",
-      "cinema",
+      "Dia Mundial da África",
+      "Dia da África",
+      "Fundação Palmares"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Zambelli é libertada na Itália após tribunal negar extradição",
+    "link": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-05/zambelli-e-libertada-na-italia-apos-tribunal-negar-extradicao",
+    "resumo": "A ex-deputada Carla Zambelli foi libertada na noite desta sexta-feira (22), após a Corte de Cassação da Itália negar o pedido do governo brasileiro para extraditá-la. Ao deixar a prisão, Zambelli publicou um vídeo nas redes sociais do advogado Pieremilio Sammarco, profissional italiano que cuida de ",
+    "data_publicacao": "Fri, 22 May 2026 19:08:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Justiça",
+      "Itália",
+      "Carla Zambelli",
+      "Extradição"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Lula diz que monitora preço dos combustíveis todos os dias",
+    "link": "https://agenciabrasil.ebc.com.br/politica/noticia/2026-05/lula-diz-que-monitora-preco-dos-combustiveis-todos-os-dias",
+    "resumo": "O presidente Luiz Inácio Lula da Silva afirmou nesta sexta-feira (22), em entrevista ao programa Sem Censura, da TV Brasil, que o governo está empenhado em garantir o controle de preços dos combustíveis no país. Ele defendeu que a fiscalização do poder público seja rigorosa contra reajustes abusivos",
+    "data_publicacao": "Fri, 22 May 2026 19:06:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Política",
+      "Sem Censura",
+      "Luiz Inácio Lula da Silva",
+      "Combustíveis"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Fim de semana será de temporal no Sudeste e chuva intensa no Norte",
+    "link": "https://agenciabrasil.ebc.com.br/geral/noticia/2026-05/fim-de-semana-sera-de-temporal-no-sudeste-e-chuva-intensa-no-norte",
+    "resumo": "O fim de semana deverá ser marcado por muita chuva em grande parte do país. Segundo o Instituto Nacional de Meteorologia (Inmet), sábado (23) e domingo (24) serão marcados por temporais nas regiões Sul e Sudeste e por chuva intensa em parte dos estados do Norte e do Nordeste. Para este sábado, segun",
+    "data_publicacao": "Fri, 22 May 2026 18:45:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Geral",
+      "Inmet",
+      "previsão de temporal",
+      "alerta em São Paulo"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "A uma semana do fim do prazo, mais de 30 mi enviaram declaração do IR",
+    "link": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-05/uma-semana-do-fim-do-prazo-mais-de-30-mi-enviaram-declaracao-do-ir",
+    "resumo": "A uma semana do fim do prazo, mais de 30 milhões de contribuintes acertaram as contas com o Leão. Até as 17h49 desta sexta-feira (22), a Receita Federal recebeu 30.011.986 Declarações do Imposto de Renda Pessoa Física 2026 (ano-base 2025). O número equivale a 68,2% do total de declarações previstas ",
+    "data_publicacao": "Fri, 22 May 2026 18:18:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Economia",
+      "Receita Federal",
+      "fisco",
+      "Imposto de Renda"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "EBC conquista Selo Pró-Equidade de Gênero e Raça pela terceira vez",
+    "link": "https://agenciabrasil.ebc.com.br/direitos-humanos/noticia/2026-05/ebc-conquista-selo-pro-equidade-de-genero-e-raca-pela-terceira-vez",
+    "resumo": "A Empresa Brasil de Comunicação (EBC) foi reconhecida com o Selo Pró-Equidade de Gênero e Raça, concedido pelo Ministério das Mulheres no âmbito da 7ª edição do Programa Pró-Equidade de Gênero e Raça. A cerimônia de entrega será no dia 25 de maio, em Brasília, consolidando o compromisso da empresa p",
+    "data_publicacao": "Fri, 22 May 2026 18:15:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Direitos Humanos",
+      "EBC",
+      "Selo Pró-Equidade de Gênero e Raça",
+      "Ministério das Mulheres"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Inscrições para o 17º Festival de Música Rádio Nacional começam sexta",
+    "link": "https://agenciabrasil.ebc.com.br/cultura/noticia/2026-05/inscricoes-para-o-17o-festival-de-musica-radio-nacional-comecam-sexta",
+    "resumo": "Começam na sexta-feira (29) as inscrições para o 17º Festival de Música Rádio Nacional 2026. A iniciativa da Empresa Brasil de Comunicação (EBC) abre espaço na programação da Rádio Nacional FM para divulgar gravações de obras musicais inéditas e valorizar a produção de cantores, compositores, instru",
+    "data_publicacao": "Fri, 22 May 2026 18:04:00 -0300",
+    "fonte": "Agência Brasil",
+    "autor": "Agência Brasil",
+    "categorias": [
+      "Cultura",
+      "Rádio Nacional",
+      "Festival de Música",
       "EBC"
     ],
     "imagem": ""
   },
   {
-    "titulo": "A menos de um mês do fim do prazo, 59% não enviaram declaração do IR",
-    "link": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-05/menos-de-um-mes-do-fim-do-prazo-59-nao-enviaram-declaracao-do-ir",
-    "resumo": "A menos de um mês do fim do prazo, quase 60% dos contribuintes ainda não acertaram as contas com o Leão. Até às 17h27 deste sábado (3), a Receita Federal recebeu 18.380.905 Declarações do Imposto de Renda Pessoa Física 2026 (ano-base 2025). O número equivale a 41,8% do total de declarações previstas",
-    "data_publicacao": "Sat, 02 May 2026 18:02:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Economia",
-      "Imposto de Renda",
-      "Receita Federal",
-      "Pessoa Física"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Inscrições de estudantes na Obmep Mirim ficam abertas até 8 de junho",
-    "link": "https://agenciabrasil.ebc.com.br/educacao/noticia/2026-04/inscricoes-de-estudantes-na-obmep-mirim-ficam-abertas-ate-8-de-junho",
-    "resumo": "As escolas públicas e privadas de todo o Brasil têm até o dia 8 de junho para inscrever alunos do 2º ao 5º ano do ensino fundamental na Olimpíada de Matemática Mirim (Obmep Mirim), promovida pelo Instituto de Matemática Pura e Aplicada (Impa). No caso de instituições de ensino públicas, as inscriçõe",
-    "data_publicacao": "Sat, 02 May 2026 17:53:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Educação",
-      "Matemática",
-      "Obmep Mirim",
-      "Ensino Fundamental"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Iniciativa aposta no protagonismo social em escolas de Petrópolis",
-    "link": "https://agenciabrasil.ebc.com.br/educacao/noticia/2026-04/iniciativa-aposta-no-protagonismo-social-em-escolas-de-petropolis",
-    "resumo": "Cerca de 100 alunos de escolas públicas da região do Alto da Independência, em Petrópolis, estão participando de um projeto educacional que busca estimular a ação e a cooperação de crianças e adolescentes em suas comunidades. O projeto conta com três frentes principais: educação ambiental; leitura e",
-    "data_publicacao": "Sat, 02 May 2026 17:52:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Educação",
-      "escola pública",
-      "educação pública",
-      "Petrópolis"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Pernambuco confirma sexta morte relacionada a temporais",
-    "link": "https://agenciabrasil.ebc.com.br/geral/noticia/2026-05/pernambuco-confirma-sexta-morte-relacionada-temporais",
-    "resumo": "Subiu para seis o número de mortos em Pernambuco por causa das fortes chuvas que atingem o estado. Nesta tarde, o Corpo de Bombeiros Militar informou ter encontrado o corpo de um homem de 34 anos desaparecido desde a noite de sexta-feira (1º). A vítima foi localizada no bairro Capibaribe, em São Lou",
-    "data_publicacao": "Sat, 02 May 2026 17:37:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Geral",
-      "Chuvas",
-      "Pernambuco",
-      "Paraíba"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Prêmio destina R$ 3,6 milhões a startups lideradas por mulheres",
-    "link": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-04/premio-destina-r-36-milhoes-startups-lideradas-por-mulheres",
-    "resumo": "O Prêmio Mulheres Inovadoras está com inscrições abertas e destinará R$ 3,6 milhões a 50 startups lideradas por mulheres. Serão selecionadas dez empresas vencedoras de cada região do país. As inscrições podem ser feitas até dia 4 de maio, no site da Financiadora de Estudos e Projetos (Finep). Notíci",
-    "data_publicacao": "Sat, 02 May 2026 17:19:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Economia",
-      "inovação",
-      "startup",
-      "empreendedorismo"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Flávio Dino mantém afastamento de vice-prefeito de Macapá",
-    "link": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-05/flavio-dino-mantem-afastamento-de-vice-prefeito-de-macapa",
-    "resumo": "O ministro do Supremo Tribunal Federal (STF) Flávio Dino manteve, por tempo indeterminado, o afastamento do vice-prefeito de Macapá, Mário Neto (Podemos), investigado por suspeitas de fraude em licitações e desvio de recursos da saúde. A decisão foi tomada neste sábado (2) em caráter monocrático, se",
-    "data_publicacao": "Sat, 02 May 2026 16:38:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Justiça",
-      "stf",
-      "Flávio Dino",
-      "Afastamento"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Cinco presos fogem de Alcaçuz no Rio Grande do Norte",
-    "link": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-05/cinco-presos-fogem-de-alcacuz-no-rio-grande-do-norte",
-    "resumo": "A Secretaria de Estado da Administração Penitenciária do Rio Grande do Norte (Seap/RN) informou, no início da tarde deste sábado (2), a fuga de cinco presos da Penitenciária Estadual de Alcaçuz, localizada no município de Nísia Floresta (RN), na região metropolitana de Natal. A Secretaria de Estado ",
-    "data_publicacao": "Sat, 02 May 2026 16:21:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Justiça",
-      "penitenciária de Alcaçuz",
-      "presidiários",
-      "Nísia Floresta"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Rádio MEC transmite concerto da Orquestra Sinfônica de SP no domingo",
-    "link": "https://agenciabrasil.ebc.com.br/cultura/noticia/2026-05/radio-mec-transmite-concerto-da-orquestra-sinfonica-de-sp-no-domingo",
-    "resumo": "Neste domingo (3), às 11h, a Rádio MEC FM apresenta mais uma edição do programa Plateia. A atração transmite o concerto de abertura da temporada de 2026 da Orquestra Sinfônica do Estado de São Paulo. O repertório será a Sinfonia nº 9 - Coral, de Beethoven. Esta é mais uma parceria entre o veículo da",
-    "data_publicacao": "Sat, 02 May 2026 16:10:00 -0300",
-    "fonte": "Agência Brasil",
-    "autor": "Agência Brasil",
-    "categorias": [
-      "Cultura",
-      "Rádio MEC",
-      "Orquestra Sinfônica de SP",
-      "Osesp"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Entrando no Clima #73 – Santa Marta e a força da coalizão",
-    "link": "https://oeco.org.br/podcast/entrando-no-clima-73-santa-marta-e-a-forca-da-coalizao/",
-    "resumo": "Sem acordo global, Conferência Global para a Transição para Longe dos Combustíveis Fósseis aposta no multilateralismo para tirar o petróleo do centro da economia",
-    "data_publicacao": "Fri, 01 May 2026 11:04:00 +0000",
+    "titulo": "O papel das pessoas na recuperação de um rio",
+    "link": "https://oeco.org.br/podcast/o-papel-das-pessoas-na-recuperacao-de-um-rio/",
+    "resumo": "A transformação do Córrego Tiquatira de esgoto a céu aberto a parque, repleto de gente e atividades revela um componente essencial: o pertenciment",
+    "data_publicacao": "Fri, 22 May 2026 21:01:00 +0000",
     "fonte": "O Eco",
     "autor": "O Eco",
     "categorias": [
       "Podcast",
-      "clima",
-      "Entrando no Clima",
-      "ICS"
+      "bolsa-reportagem",
+      "O Oásis da Leste",
+      "Recursos hídricos"
     ],
     "imagem": ""
   },
   {
-    "titulo": "5×2 prejudica a construção e seus clientes",
-    "link": "https://sindusconsp.com.br/5x2-prejudica-a-construcao-e-seus-clientes/",
-    "resumo": "Redução da escala de trabalho desprovida de mais produtividade elevaria custos em 20% É bastante prejudicial a proposta de adoção da escala de trabalho de 5 dias de trabalho por 2 de descanso na construção, mesmo que limitada a 40 horas de trabalho semanais (em vez de 36, como propõe a igualmente pr",
-    "data_publicacao": "Fri, 01 May 2026 10:30:00 +0000",
+    "titulo": "STF valida redução de área protegida no Pará para abrir caminho à Ferrogrão",
+    "link": "https://oeco.org.br/salada-verde/stf-valida-reducao-de-area-protegida-no-para-para-abrir-caminho-a-ferrograo/",
+    "resumo": "Supremo considera constitucional mudança nos limites do Parque Nacional do Jamanxim, em decisão que favorece projeto ferroviário alvo de críticas socioambientais",
+    "data_publicacao": "Fri, 22 May 2026 19:03:54 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Salada Verde",
+      "ferrogrão",
+      "ICS",
+      "Parque Nacional do Jamanxim"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Arborização urbana esbarra na falta de continuidade das prefeituras",
+    "link": "https://oeco.org.br/reportagens/arborizacao-urbana-esbarra-na-falta-de-continuidade-das-prefeituras/",
+    "resumo": "Metas e dispositivos legais existem, mas a falta de coordenação, orçamento próprio e problemas de gestão figuram como grandes empecilhos",
+    "data_publicacao": "Fri, 22 May 2026 18:54:59 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Reportagens",
+      "adaptação climática",
+      "arborização urbana",
+      "Fortaleza"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Observatório do Clima vê risco de captura regulatória em PL pró-agro",
+    "link": "https://oeco.org.br/salada-verde/observatorio-do-clima-ve-risco-de-captura-regulatoria-em-pl-pro-agro/",
+    "resumo": "Organização critica projeto aprovado na Câmara durante a “Semana do Agro” e alerta para risco de interferência do agronegócio sobre decisões ambientais e sanitárias",
+    "data_publicacao": "Fri, 22 May 2026 18:52:00 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Salada Verde",
+      "Congresso",
+      "ICS",
+      "OC"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "IPAM e UNODC lançam guia para proteção de terras indígenas",
+    "link": "https://oeco.org.br/salada-verde/ipam-e-unodc-lancam-guia-para-protecao-de-terras-indigenas/",
+    "resumo": "Documento defende o protagonismo indígena na proteção territorial e reúne práticas para enfrentar invasões, garimpo e desmatamento ilegal",
+    "data_publicacao": "Fri, 22 May 2026 14:02:00 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Salada Verde",
+      "biblioteca",
+      "ICS",
+      "política ambiental"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Diretoria Adjunta de Incorporação da Regional Campinas apresentou agenda positiva para o mercado imobiliário",
+    "link": "https://sindusconsp.com.br/diretoria-adjunta-de-incorporacao-da-regional-campinas-apresentou-agenda-positiva-para-o-mercado-imobiliario/",
+    "resumo": "Sugestões para prefeito, secretários e presidente da Câmara Com as presenças do prefeito de Campinas, Dário Saadi, seus secretários das áreas de urbanismo, habitação e desenvolvimento econômico e o presidente da Câmara Municipal, Luiz Rossini, a nova Diretoria Adjunta de Incorporação da Regional Cam",
+    "data_publicacao": "Fri, 22 May 2026 13:12:02 +0000",
+    "fonte": "SindusCon-SP",
+    "autor": "SindusCon-SP",
+    "categorias": [
+      "Imobiliário",
+      "Notícias",
+      "Destaque Regional",
+      "Destaque Tema"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Programa Mãos Que Constroem, Protegem na Regional Campinas do SindusCon-SP",
+    "link": "https://sindusconsp.com.br/programa-maos-que-constroem-protegem-na-regional-campinas-do-sinduscon-sp/",
+    "resumo": "Contra violência sexual em crianças e adolescentes A construção civil paulista amplia as ações de enfrentamento à violência sexual contra crianças e adolescentes durante o Maio Laranja. O SindusCon-SP inicia a segunda fase do programa&#160;“Mãos Que Constroem, Protegem”, realizado em parceria com o ",
+    "data_publicacao": "Fri, 22 May 2026 13:07:23 +0000",
+    "fonte": "SindusCon-SP",
+    "autor": "SindusCon-SP",
+    "categorias": [
+      "Notícias",
+      "Responsabilidade Social",
+      "Destaque Regional",
+      "Destaque Tema"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Rodada em São José dos Campos: sucesso",
+    "link": "https://sindusconsp.com.br/rodada-em-sao-jose-dos-campos-sucesso/",
+    "resumo": "Evento mostrou inovações de fornecedores Rodada de Negócios do SindusCon-SP em São José dos Campos, realizada em 21 de maio, obteve pleno sucesso, reunindo representantes de grandes fornecedores que apresentaram produtos e sistemas construtivos inovadores às empresas associadas ao sindicato. O event",
+    "data_publicacao": "Fri, 22 May 2026 12:53:12 +0000",
+    "fonte": "SindusCon-SP",
+    "autor": "SindusCon-SP",
+    "categorias": [
+      "Notícias",
+      "Tecnologia e Qualidade",
+      "Destaque",
+      "Destaque Regional"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Racismo ambiental: quem fica de fora da discussão climática no Brasil?",
+    "link": "https://oeco.org.br/reportagens/racismo-ambiental-quem-fica-de-fora-da-discussao-climatica-no-brasil/",
+    "resumo": "Agendas como a transição energética e planos climáticos avançam sem incluir populações periféricas, indígenas e tradicionais nas decisões",
+    "data_publicacao": "Fri, 22 May 2026 11:53:00 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Reportagens",
+      "amazônia",
+      "ICS",
+      "mudanças climáticas"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Mudanças climáticas encurralam aves nas montanhas da Chapada Diamantina",
+    "link": "https://oeco.org.br/noticias/mudancas-climaticas-encurralam-aves-nas-montanhas-da-chapada-diamantina/",
+    "resumo": "Aumento da temperatura global pode comprometer a sobrevivência de espécies de distribuição mais restrita ao topo das montanhas, como o beija-flor-de-gravata-vermelha",
+    "data_publicacao": "Fri, 22 May 2026 11:30:00 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Notícias",
+      "aves",
+      "bahia",
+      "biodiversidade"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "Pré-construção, necessidade premente",
+    "link": "https://sindusconsp.com.br/pre-construcao-necessidade-premente/",
+    "resumo": "Seminário mostrará três cases de sucesso em 26 de maio Em tempos de alta de custos, construtoras e incorporadoras precisam adotar procedimentos que otimizem finanças, logística e técnicas. Uma delas é a pré-construção, etapa preparatória estratégica que antecede a execução de uma obra. Consiste em e",
+    "data_publicacao": "Fri, 22 May 2026 10:30:00 +0000",
     "fonte": "SindusCon-SP",
     "autor": "SindusCon-SP",
     "categorias": [
@@ -177,209 +312,89 @@
     "imagem": ""
   },
   {
-    "titulo": "Maior evento de observação de aves do mundo contará com etapa no norte do Paraná",
-    "link": "https://oeco.org.br/salada-verde/maior-evento-de-observacao-de-aves-do-mundo-contara-com-etapa-no-norte-do-parana/",
-    "resumo": "Global Big Day promove a observação de aves como ferramenta para conservação; movimento no Brasil ganha força com o turismo de natureza na região norte do Paraná",
-    "data_publicacao": "Thu, 30 Apr 2026 22:56:41 +0000",
+    "titulo": "Câmara proíbe embargo remoto de área desmatada sem vistoria prévia",
+    "link": "https://oeco.org.br/noticias/camara-proibe-embargo-remoto-de-area-desmatada-sem-vistoria-previa/",
+    "resumo": "Projeto restringe medidas cautelares usadas por Ibama e ICMBio e proíbe a queima de maquinários flagrados pela fiscalização ambiental",
+    "data_publicacao": "Thu, 21 May 2026 21:24:38 +0000",
     "fonte": "O Eco",
     "autor": "O Eco",
     "categorias": [
-      "Salada Verde",
-      "aves",
-      "conservação",
-      "Global Big Day"
+      "Notícias",
+      "crime ambiental",
+      "embargo",
+      "ibama"
     ],
     "imagem": ""
   },
   {
-    "titulo": "Santa Marta encerra conferência com avanço político e pressão por tratado dos fósseis",
-    "link": "https://oeco.org.br/reportagens/santa-marta-encerra-conferencia-com-avanco-politico-e-pressao-por-tratado-dos-fosseis/",
-    "resumo": "Sem acordos vinculantes, conferência articula coalizão internacional e pressiona por saída dos combustíveis fósseis",
-    "data_publicacao": "Thu, 30 Apr 2026 20:25:34 +0000",
+    "titulo": "Da nascente ao deságue no Tietê, uma jornada pelo córrego Tiquatira",
+    "link": "https://oeco.org.br/podcast/da-nascente-ao-desague-no-tiete-uma-jornada-pelo-corrego-tiquatira/",
+    "resumo": "O plantio de árvores nas margens do rio é apenas uma etapa no longo e complexo processo para tentar recuperar um curso d’água em plena metrópole paulistana",
+    "data_publicacao": "Thu, 21 May 2026 21:01:00 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "Podcast",
+      "bolsa reportagem",
+      "O Oásis da Leste",
+      "Recursos hídricos"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "How São Paulo’s sugarcane burning ban drove economic and social development",
+    "link": "https://oeco.org.br/english/how-sao-paulos-sugarcane-burning-ban-drove-economic-and-social-development/",
+    "resumo": "A groundbreaking study shows that well-designed environmental regulations can accelerate innovation and push supply chains toward more efficient models",
+    "data_publicacao": "Thu, 21 May 2026 20:16:00 +0000",
+    "fonte": "O Eco",
+    "autor": "O Eco",
+    "categorias": [
+      "English",
+      "cana de açúcar",
+      "cerrado",
+      "são paulo"
+    ],
+    "imagem": ""
+  },
+  {
+    "titulo": "O legado do CBUC e um recomeço programado para junho",
+    "link": "https://oeco.org.br/reportagens/o-legado-do-cbuc-e-um-recomeco-programado-para-junho/",
+    "resumo": "Por duas décadas, o Congresso Brasileiro de Unidades de Conservação foi o palco para encontros que ajudaram a ditar os rumos da conservação no Brasil. Agora, é a vez da UCBIO",
+    "data_publicacao": "Thu, 21 May 2026 20:12:24 +0000",
     "fonte": "O Eco",
     "autor": "O Eco",
     "categorias": [
       "Reportagens",
-      "1ª Conferência Internacional sobre Transição para Longe dos Combustíveis Fósseis",
-      "colômbia",
-      "combustíveis fósseis"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "A distância também adoece: o acesso à saúde em comunidades remotas da Amazônia",
-    "link": "https://oeco.org.br/colunas/a-distancia-tambem-adoece-o-acesso-a-saude-em-comunidades-remotas-da-amazonia/",
-    "resumo": "Garantir um acesso contínuo e digno à saúde na Amazônia exige atuação conjunta. Nenhuma instituição, isoladamente, dará conta dessa complexidade",
-    "data_publicacao": "Thu, 30 Apr 2026 19:43:28 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Colunas",
-      "amazônia",
-      "conservação",
-      "política ambiental"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Falta de formação em gestão ainda desafia área da conservação no Brasil",
-    "link": "https://oeco.org.br/analises/falta-de-formacao-em-gestao-ainda-desafia-area-da-conservacao-no-brasil/",
-    "resumo": "Imersão realizada na Grande Reserva Mata Atlântica reuniu profissionais de diferentes biomas, conectou experiência internacional e reforçou a necessidade de integrar gestão, território e pessoas",
-    "data_publicacao": "Thu, 30 Apr 2026 18:00:33 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Análises",
-      "conservação",
-      "Grande Reserva da Mata Atlântica",
+      "Congresso Brasileiro de Unidades de Conservação",
+      "UCBio",
       "unidades de conservação"
     ],
     "imagem": ""
   },
   {
-    "titulo": "Construção cria 38 mil empregos em março",
-    "link": "https://sindusconsp.com.br/construcao-cria-38-mil-empregos-em-marco/",
-    "resumo": "SindusCon-SP prevê redução do ritmo de contratações A indústria da construção gerou 38.316 novos empregos em março no país, uma variação de 1,27% em relação ao número de empregados no setor em fevereiro. No primeiro trimestre deste ano, o setor abriu 120.547 vagas com carteira assinada (+4,10%); no ",
-    "data_publicacao": "Thu, 30 Apr 2026 13:46:19 +0000",
-    "fonte": "SindusCon-SP",
-    "autor": "SindusCon-SP",
-    "categorias": [
-      "Economia",
-      "Notícias",
-      "Destaque",
-      "Destaque Regional"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Reforma tributária: CBS é regulamentada",
-    "link": "https://sindusconsp.com.br/reforma-tributaria-cbs-e-regulamentada/",
-    "resumo": "Construção civil tem regime específico A Presidência da República, por meio do Decreto nº 12.955/2026, de 29 de abril (DOU de 30/4/2026), regulamentando a Contribuição Social sobre Bens e Serviços (CBS), instituída pela Lei Complementar nº 214/2025, no âmbito da reforma tributária. O decreto estabel",
-    "data_publicacao": "Thu, 30 Apr 2026 13:32:12 +0000",
-    "fonte": "SindusCon-SP",
-    "autor": "SindusCon-SP",
-    "categorias": [
-      "Jurídico",
-      "Notícias",
-      "Destaque",
-      "Destaque Regional"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Governo Trump ordena o desmantelamento do Serviço Florestal dos EUA",
-    "link": "https://oeco.org.br/externo/governo-trump-ordena-o-desmantelamento-do-servico-florestal-dos-eua/",
-    "resumo": "A sede sairá de Washington DC para Utah. Todos os escritórios regionais estão sendo fechados e o programa de pesquisa está sendo destruído",
-    "data_publicacao": "Thu, 30 Apr 2026 11:03:00 +0000",
+    "titulo": "O Brasil da crise climática urbana",
+    "link": "https://oeco.org.br/colunas/o-brasil-da-crise-climatica-urbana/",
+    "resumo": "Em poucas décadas, o Brasil deixou de ser rural para se tornar majoritariamente urbano. Mas nossas cidades cresceram sem incorporar critérios ecológicos estruturantes",
+    "data_publicacao": "Thu, 21 May 2026 18:11:57 +0000",
     "fonte": "O Eco",
     "autor": "O Eco",
     "categorias": [
-      "Externo",
-      "eua",
-      "política ambiental",
-      "Trump"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Filha de Marina Silva rebate senador e nega vínculo com ação que suspendeu licitações da BR-319",
-    "link": "https://oeco.org.br/salada-verde/filha-de-marina-silva-rebate-senador-e-nega-vinculo-com-acao-que-suspendeu-licitacoes-da-br-319/",
-    "resumo": "Eduardo Braga declarou que advogada é ligada a escritório que tentou barrar editais da BR-319; Moara Silva e Vaz pede retratação do parlamentar",
-    "data_publicacao": "Wed, 29 Apr 2026 23:29:03 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Salada Verde",
-      "amazônia",
-      "br 319",
-      "ICS"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Por que a natureza é a infraestrutura mais inteligente que as cidades podem ter?",
-    "link": "https://oeco.org.br/analises/por-que-a-natureza-e-a-infraestrutura-mais-inteligente-que-as-cidades-podem-ter/",
-    "resumo": "Conservar áreas naturais deixou de ser uma pauta ambiental e passou a ser uma decisão estratégica de planejamento urbano, gestão de riscos e desenvolvimento econômico de longo prazo",
-    "data_publicacao": "Wed, 29 Apr 2026 20:55:38 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Análises",
+      "Colunas",
+      "adaptação climática",
       "cidades",
-      "conservação",
-      "paraná"
+      "clima"
     ],
     "imagem": ""
   },
   {
-    "titulo": "Tuvalu tenta levar ao Pacífico articulação internacional para fim dos fósseis",
-    "link": "https://oeco.org.br/salada-verde/tuvalu-tenta-levar-ao-pacifico-articulacao-internacional-para-fim-dos-fosseis/",
-    "resumo": "A proposta apresentada em Santa Marta busca transformar conferência paralela às COPs em articulação política por regras para reduzir petróleo, gás e carvão",
-    "data_publicacao": "Wed, 29 Apr 2026 20:10:33 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Salada Verde",
-      "1ª Conferência Internacional sobre Transição para Longe dos Combustíveis Fósseis",
-      "combustíveis fósseis",
-      "mudanças climáticas"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Alerta severo: a infraestrutura de vitrine não protege as periferias de Belém",
-    "link": "https://oeco.org.br/colunas/alerta-severo-a-infraestrutura-de-vitrine-nao-protege-as-periferias-de-belem/",
-    "resumo": "Com 225 decretos de emergência, os belenenses enfrentam o paradoxo de ter sediado o debate global enquanto suas periferias pagam o preço de uma urbanização que ignora as bacias hidrográficas da cidade",
-    "data_publicacao": "Wed, 29 Apr 2026 19:40:10 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Colunas",
-      "amazônia",
-      "chuvas",
-      "ICS"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "TRF1 derruba liminar, libera licitações da BR-319 e amplia alcance da decisão",
-    "link": "https://oeco.org.br/salada-verde/trf1-derruba-liminar-libera-licitacoes-da-br-319-e-amplia-alcance-da-decisao/",
-    "resumo": "Decisão do Tribunal Regional Federal da 1ª Região restabelece pregões de R$678 milhões no trecho do meio da rodovia e mantêm disputa",
-    "data_publicacao": "Wed, 29 Apr 2026 14:18:00 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Salada Verde",
-      "amazônia",
-      "br 319",
-      "desmatamento"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "O jeito inglês de matar subsídios agrícolas",
-    "link": "https://oeco.org.br/colunas/o-jeito-ingles-de-matar-subsidios-agricolas/",
-    "resumo": "Subsídios agrícolas viciam e podem levar ao ecosuicídio. Os conservadores ingleses criaram uma alternativa",
-    "data_publicacao": "Wed, 29 Apr 2026 11:44:00 +0000",
-    "fonte": "O Eco",
-    "autor": "O Eco",
-    "categorias": [
-      "Colunas",
-      "agropecuária",
-      "orçamento",
-      "plano safra"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "CNI mostra insatisfação das construtoras",
-    "link": "https://sindusconsp.com.br/cni-mostra-insatisfacao-das-construtoras/",
-    "resumo": "Atividade está em alta; expectativas, em baixa O índice de satisfação com a situação financeira das empresas da construção apresentou queda de 4,5 pontos na passagem do quarto trimestre de 2025 para o primeiro trimestre de 2026: recuou de 49,5 pontos para 45 pontos, indicando claro cenário de insati",
-    "data_publicacao": "Tue, 28 Apr 2026 19:09:59 +0000",
+    "titulo": "Fiesp recebe entidades da construção do Rio",
+    "link": "https://sindusconsp.com.br/fiesp-recebe-forum-da-construcao-do-rio/",
+    "resumo": "Yorki Estefan, do SindusCon-SP, conduziu o encontro Em reunião-almoço de relações institucionais conduzido por Yorki Estefan, presidente do SindusCon-SP, a Fiesp recebeu em 21 de maio representantes de entidades do setor da construção do Rio de Janeiro. Pelo SindusCon-SP, participaram do encontro os",
+    "data_publicacao": "Thu, 21 May 2026 16:57:02 +0000",
     "fonte": "SindusCon-SP",
     "autor": "SindusCon-SP",
     "categorias": [
-      "Economia",
+      "Institucional",
       "Notícias",
       "Destaque",
       "Destaque Regional"
@@ -387,54 +402,39 @@
     "imagem": ""
   },
   {
-    "titulo": "Custos em alta e confiança em baixa",
-    "link": "https://sindusconsp.com.br/custos-em-alta-e-confianca-em-baixa/",
-    "resumo": "Sondagem capta efeitos do aumento dos insumos Em abril, o INCC-M deu um salto, analisa o ConstruCarta. A taxa de 1,04% representou um acréscimo de 0,68 ponto percentual em relação ao resultado de março, configurando a maior taxa mensal desde julho de 2022. Segundo a publicação, a aceleração era espe",
-    "data_publicacao": "Tue, 28 Apr 2026 16:35:01 +0000",
+    "titulo": "SindusCon-SP protagoniza debate sobre jornada e escala 6×1 no ENIC 2026",
+    "link": "https://sindusconsp.com.br/sinduscon-sp-protagoniza-debate-sobre-jornada-e-escala-6x1-no-enic-2026/",
+    "resumo": "Painel discutiu impactos da proposta sobre custos, produtividade, empregos e competitividade do setor da construção O SindusCon-SP esteve à frente de um dos principais debates do Encontro Internacional da Indústria da Construção (ENIC 2026), realizado em 20/05, com a participação de representantes d",
+    "data_publicacao": "Thu, 21 May 2026 14:29:45 +0000",
     "fonte": "SindusCon-SP",
     "autor": "SindusCon-SP",
     "categorias": [
       "Economia",
+      "Institucional",
       "Notícias",
-      "Destaque",
-      "Destaque Regional"
+      "David Fratel"
     ],
     "imagem": ""
   },
   {
-    "titulo": "INCC-M sobe 1,04% em abril",
-    "link": "https://sindusconsp.com.br/incc-m-sobe-104-em-abril/",
-    "resumo": "ICC-SP variou 0,91% no mês e 7,08% em 12 meses A variação do Índice Nacional de Custo da Construção – M (INCC-M) acelerou para 1,04% em abril, após registrar alta de 0,36% em março. No acumulado de 12 meses, o índice subiu 6,28%, mostrando desaceleração em relação a abril de 2025, quando acumulava a",
-    "data_publicacao": "Tue, 28 Apr 2026 16:33:30 +0000",
-    "fonte": "SindusCon-SP",
-    "autor": "SindusCon-SP",
-    "categorias": [
-      "Economia",
-      "Notícias",
-      "Destaque",
-      "Destaque Regional"
-    ],
-    "imagem": ""
-  },
-  {
-    "titulo": "Inteligência artificial acelera combate às perdas de água no Brasil",
-    "link": "https://abes-dn.org.br/inteligencia-artificial-acelera-combate-as-perdas-de-agua-no-brasil/",
-    "resumo": "Tecnologia será destaque no WaterLoss 2026, evento que tem a ABES como anfitriã e reúne especialistas para discutir eficiência no setor Leia Mais",
-    "data_publicacao": "Wed, 22 Apr 2026 14:00:14 +0000",
-    "fonte": "ABES",
-    "autor": "ABES",
+    "titulo": "Argila Expandida: Sustentabilidade e Resiliência em Soluções Geotécnicas",
+    "link": "https://www.engenhariacivil.com/argila-expandida-sustentabilidade-resiliencia-solucoes-geotecnicas",
+    "resumo": "A argila expandida foi o grande foco no seminário desta quarta-feira organizado pela Leca Portugal e pelo Laboratório Nacional de Engenharia Civil [&#8230;]",
+    "data_publicacao": "Tue, 07 Oct 2025 10:15:29 +0000",
+    "fonte": "Portal Eng. Civil",
+    "autor": "Portal Eng. Civil",
     "categorias": [
       "Notícias"
     ],
     "imagem": ""
   },
   {
-    "titulo": "WaterLoss 2026 coloca o Brasil no centro do debate global sobre perdas de água",
-    "link": "https://abes-dn.org.br/waterloss-2026-coloca-o-brasil-no-centro-do-debate-global-sobre-perdas-de-agua/",
-    "resumo": "Evento internacional reunirá especialistas no Rio de Janeiro para discutir soluções, inovação e segurança hídrica Leia Mais",
-    "data_publicacao": "Mon, 06 Apr 2026 17:52:20 +0000",
-    "fonte": "ABES",
-    "autor": "ABES",
+    "titulo": "Prata Riverside Village vence GRI Awards Europe 2025 na categoria de melhor projeto de retalho",
+    "link": "https://www.engenhariacivil.com/prata-riverside-village-vence-gri-awards-europe-2025-categoria-melhor-projeto-retalho",
+    "resumo": "O Prata Riverside Village foi ontem reconhecido na cerimónia dos GRI Awards Europe 2025 com o prémio de “melhor projeto de retalho”. [&#8230;]",
+    "data_publicacao": "Thu, 11 Sep 2025 09:12:22 +0000",
+    "fonte": "Portal Eng. Civil",
+    "autor": "Portal Eng. Civil",
     "categorias": [
       "Notícias"
     ],
